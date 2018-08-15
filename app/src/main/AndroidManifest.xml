@@ -3,6 +3,7 @@
     package="com.shlomi123.chocolith">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:allowBackup="true"
@@ -22,7 +23,8 @@
         <activity android:name=".ADMIN_ADD_STORE" />
         <activity android:name=".ADMIN_STORE_ID" />
         <activity android:name=".ADMIN_DELETE_STORE" />
-        <activity android:name=".ADMIN_CHOOSE_STORE_TO_DELETE"></activity>
+        <activity android:name=".ADMIN_CHOOSE_STORE_TO_DELETE" />
+        <activity android:name=".CLIENT_MAIN_PAGE"></activity>
     </application>
 
 </manifest>

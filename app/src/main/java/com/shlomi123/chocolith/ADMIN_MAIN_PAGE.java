@@ -17,6 +17,9 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__main__page);
 
+        //ask permission to send sms
+        requestPermissions(new String[]{android.Manifest.permission.SEND_SMS},1);
+
         delete = (Button) findViewById(R.id.buttonDelete);
         add = (Button) findViewById(R.id.buttonAdd);
         viewOrders = (Button) findViewById(R.id.buttonViewOrders);

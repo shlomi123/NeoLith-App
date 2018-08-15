@@ -3,8 +3,10 @@ package com.shlomi123.chocolith;
 import android.content.Intent;
 import android.media.MediaDrm;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -110,9 +112,24 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                         Log.d("blaaaa", "DocumentSnapshot added with ID: " + documentReference.getId());
                         Toast.makeText(getApplicationContext(), "Succesfuly added", Toast.LENGTH_LONG).show();
 
-                        Intent intent = new Intent(getBaseContext(), ADMIN_STORE_ID.class);
+
+                        try {
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage(phoneNum.getText().toString(), null, documentReference.getId(), null, null);
+                            Toast.makeText(getApplicationContext(), "SMS Sent!",
+                                    Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                            Toast.makeText(getApplicationContext(),
+                                    "SMS faild, please try again later!",
+                                    Toast.LENGTH_LONG).show();
+                            Log.d("blaaaa", e.toString());
+                            e.printStackTrace();
+                        }
+
+                        finish();
+                        /*Intent intent = new Intent(getBaseContext(), ADMIN_STORE_ID.class);
                         intent.putExtra("STORE_ID", documentReference.getId());
-                        startActivity(intent);
+                        startActivity(intent);*/
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
