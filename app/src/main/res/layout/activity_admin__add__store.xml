@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ADMIN_ADD_STORE">
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="ADD STORE"
+        android:gravity="center"
+        android:textSize="34sp" />
+
+    <TextView
+        android:id="@+id/Admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/textViewTitle"
+        android:text="Admin"
+        android:textSize="20sp"/>
+
+    <EditText
+        android:id="@+id/editTextStoreName"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Admin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:hint="Store Name"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/editTextAddress"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextStoreName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:hint="Address"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/editTextPhoneNumber1"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextAddress"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:hint="Phone Number"
+        android:inputType="phone" />
+
+    <EditText
+        android:id="@+id/editTextEmail1"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextPhoneNumber1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:hint="Email"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/editTextVerifyEmail1"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextEmail1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:hint="Verify Email"
+        android:inputType="textEmailAddress" />
+
+    <Button
+        android:id="@+id/buttonNext1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:layout_below="@id/editTextVerifyEmail1"
+        android:text="Next" />
+
+</RelativeLayout>

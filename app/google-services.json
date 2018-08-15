@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "69969000308",
+    "firebase_url": "https://chocolithapp.firebaseio.com",
+    "project_id": "chocolithapp",
+    "storage_bucket": "chocolithapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:69969000308:android:131cc293e164aabd",
+        "android_client_info": {
+          "package_name": "com.shlomi123.chocolith"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "69969000308-r0s1q23mtg3jmt1pn6goruv6qj6rhoms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-p9WnQIm0YzZnXYKYqktqrRdf1ZuPu_s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
