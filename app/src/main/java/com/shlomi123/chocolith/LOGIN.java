@@ -65,15 +65,21 @@ public class LOGIN extends AppCompatActivity {
                 {
                     //first check if an admin is trying to sign in
 
-                    if (first_signIn)
+                    if (phone.getText().toString().equals(""))
                     {
-                        signIn();
+                        adminSignIn();
                     }
                     else
                     {
-                        firstSignIn();
+                        if (first_signIn)
+                        {
+                            signIn();
+                        }
+                        else
+                        {
+                            firstSignIn();
+                        }
                     }
-                    adminSignIn();
                 }
                 else
                 {
