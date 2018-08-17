@@ -3,6 +3,7 @@ package com.shlomi123.chocolith;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,7 +44,7 @@ public class LOGIN extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        final Boolean first_signIn = sharedPreferences.getBoolean("key-flag", false);
+        final Boolean has_signed_in = sharedPreferences.getBoolean("key-flag", false);
 
         key = (EditText) findViewById(R.id.editTextKey);
         email = (EditText) findViewById(R.id.editTextEmail);
@@ -51,7 +52,7 @@ public class LOGIN extends AppCompatActivity {
         button = (Button) findViewById(R.id.buttonNext);
 
         //check if key has already been entered
-        if (first_signIn)
+        if (has_signed_in)
         {
             key.setVisibility(View.GONE);
         }
@@ -71,7 +72,8 @@ public class LOGIN extends AppCompatActivity {
                     }
                     else
                     {
-                        if (first_signIn)
+                        //check if its the first sign in
+                        if (has_signed_in)
                         {
                             signIn();
                         }
@@ -89,6 +91,7 @@ public class LOGIN extends AppCompatActivity {
         });
     }
 
+    //on first sign in
     private void firstSignIn()
     {
         CollectionReference stores = db.collection("Stores");
@@ -124,6 +127,7 @@ public class LOGIN extends AppCompatActivity {
         });
     }
 
+    //after first sign in
     private void signIn()
     {
         CollectionReference stores = db.collection("Stores");
