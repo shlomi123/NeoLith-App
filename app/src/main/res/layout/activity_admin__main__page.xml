@@ -10,26 +10,35 @@
         android:id="@+id/buttonDelete"
         android:layout_width="170dp"
         android:layout_height="150dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/buttonViewOrders"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="142dp"
         android:text="DELETE" />
 
     <Button
-        android:id="@+id/buttonAdd"
+        android:id="@+id/buttonAddStore"
         android:layout_width="170dp"
         android:layout_height="150dp"
-        android:layout_alignRight="@+id/buttonViewOrders"
-        android:layout_alignTop="@+id/buttonDelete"
-        android:text="ADD" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/buttonViewOrders"
+        android:text="ADD STORE" />
 
     <Button
         android:id="@+id/buttonViewOrders"
-        android:layout_width="350dp"
-        android:layout_height="140dp"
+        android:layout_width="170dp"
+        android:layout_height="150dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="110dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="35dp"
+        android:layout_marginStart="29dp"
         android:text="VIEW ORDERS" />
+
+    <Button
+        android:id="@+id/buttonAddProduct"
+        android:layout_width="170dp"
+        android:layout_height="150dp"
+        android:layout_alignStart="@+id/buttonViewOrders"
+        android:layout_alignTop="@+id/buttonDelete"
+        android:text="ADD PRODUCT" />
 
 </RelativeLayout>

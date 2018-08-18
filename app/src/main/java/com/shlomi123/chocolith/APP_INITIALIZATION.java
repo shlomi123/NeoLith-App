@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.List;
 
@@ -19,14 +21,15 @@ public class APP_INITIALIZATION extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app__initialization);
 
-        new MyTask().execute(10);
+        //new MyTask().execute(10);
         //TODO check for new products
         //TODO download product images
-        /*FirebaseStorage storage = FirebaseStorage.getInstance();
-        List<FileDownloadTask> tasks = storage.getReferenceFromUrl("gs://tutsplus-firebase.appspot.com").getActiveDownloadTasks();*/
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        List<FileDownloadTask> tasks = storage.getReferenceFromUrl("gs://tutsplus-firebase.appspot.com").getActiveDownloadTasks();
     }
 
     class MyTask extends AsyncTask<Integer, Integer, String> {
+
         @Override
         protected String doInBackground(Integer... params) {
             try {
@@ -36,15 +39,18 @@ public class APP_INITIALIZATION extends AppCompatActivity {
             }
             return "Task Completed.";
         }
+
         @Override
         protected void onPostExecute(String result) {
             spinner.setVisibility(View.GONE);
         }
+
         @Override
         protected void onPreExecute() {
             spinner=(ProgressBar)findViewById(R.id.progressBar);
             spinner.setVisibility(View.VISIBLE);
         }
+
         @Override
         protected void onProgressUpdate(Integer... values) {
         }

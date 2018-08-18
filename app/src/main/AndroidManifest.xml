@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".APP_INITIALIZATION">
+        <activity android:name=".LOGIN">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,9 @@
         <activity android:name=".ADMIN_CHOOSE_STORE_TO_DELETE" />
         <activity android:name=".CLIENT_MAIN_PAGE" />
         <activity android:name=".CLIENT_QR_SCANNER" />
-        <activity android:name=".LOGIN"/>
+        <activity android:name=".APP_INITIALIZATION" />
+        <activity android:name=".ADMIN_SCAN_PRODUCT" />
+        <activity android:name=".ADMIN_PICK_PRODUCT_IMAGE"></activity>
     </application>
 
 </manifest>

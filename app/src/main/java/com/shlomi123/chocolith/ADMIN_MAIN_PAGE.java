@@ -16,71 +16,47 @@ import static android.Manifest.permission.SEND_SMS;
 
 public class ADMIN_MAIN_PAGE extends AppCompatActivity {
 
-    Button delete;
-    Button add;
-    Button viewOrders;
+    private Button delete;
+    private Button addStore;
+    private Button viewOrders;
+    private Button addProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__main__page);
 
-        //ask permission to send sms
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!checkPermission())
-            {
-                requestPermission();
+        delete = (Button) findViewById(R.id.buttonDelete);
+        addStore = (Button) findViewById(R.id.buttonAddStore);
+        viewOrders = (Button) findViewById(R.id.buttonViewOrders);
+        addProduct = (Button) findViewById(R.id.buttonAddProduct);
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_DELETE_STORE.class));
             }
-        }
-    }
+        });
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        //if permission is denied ask again, only until allowed continue
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (checkPermission())
-            {
-                delete = (Button) findViewById(R.id.buttonDelete);
-                add = (Button) findViewById(R.id.buttonAdd);
-                viewOrders = (Button) findViewById(R.id.buttonViewOrders);
-
-                delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_DELETE_STORE.class));
-                    }
-                });
-
-                add.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_ADD_STORE.class));
-                    }
-                });
-
-                viewOrders.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
+        addStore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_ADD_STORE.class));
             }
-            else
-            {
-                requestPermission();
+        });
+
+        viewOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
             }
-        }
-    }
+        });
 
-    private boolean checkPermission()
-    {
-        return (ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private void requestPermission()
-    {
-        ActivityCompat.requestPermissions(this, new String[]{SEND_SMS}, 1);
+        addProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_SCAN_PRODUCT.class));
+            }
+        });
     }
 }

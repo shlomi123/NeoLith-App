@@ -1,7 +1,11 @@
 package com.shlomi123.chocolith;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -24,6 +28,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
+import static android.Manifest.permission.SEND_SMS;
+
 public class ADMIN_CHOOSE_STORE_TO_DELETE extends AppCompatActivity {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -32,11 +38,22 @@ public class ADMIN_CHOOSE_STORE_TO_DELETE extends AppCompatActivity {
     Button button;
     final CollectionReference stores = db.collection("Stores");
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__choose__store__to__delete);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!checkPermission())
+            {
+                requestPermission();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
 
         query_type = getIntent().getStringExtra("QUERY_TYPE");
         editText = (EditText) findViewById(R.id.editTextQueryToDelete);
@@ -131,5 +148,15 @@ public class ADMIN_CHOOSE_STORE_TO_DELETE extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean checkPermission()
+    {
+        return (ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission()
+    {
+        ActivityCompat.requestPermissions(this, new String[]{SEND_SMS}, 1);
     }
 }
