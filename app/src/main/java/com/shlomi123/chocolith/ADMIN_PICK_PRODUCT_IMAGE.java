@@ -129,16 +129,23 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
                             }, 500);
 
                             Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
-                            Product product = new Product(name, taskSnapshot.getMetadata().getPath());
-                            //upload to database name of product and its path for future use
-                            db.collection("Products")
-                                    .add(product)
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-                                    });
+                            //get path of uploaded product
+                            taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    Product product = new Product(name, uri.toString());
+                                    //upload to firestore name of product and its path for future use
+                                    db.collection("Products")
+                                            .add(product)
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
+                            });
+
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

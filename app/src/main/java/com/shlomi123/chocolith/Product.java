@@ -1,31 +1,31 @@
 package com.shlomi123.chocolith;
 
 public class Product {
-    private String mName;
-    private String mImageUrl;
+    private String name;
+    private String imageUrl;
 
     public Product() {
         //empty constructor needed
     }
 
     public Product(String name, String imageUrl) {
-        mName = name;
-        mImageUrl = imageUrl;
+        this.name = name;
+        this.imageUrl = imageUrl;
     }
 
     public String getName() {
-        return mName;
+        return name;
     }
 
     public void setName(String name) {
-        mName = name;
+        this.name = name;
     }
 
     public String getImageUrl() {
-        return mImageUrl;
+        return imageUrl;
     }
 
     public void setImageUrl(String imageUrl) {
-        mImageUrl = imageUrl;
+        this.imageUrl = imageUrl;
     }
 }
