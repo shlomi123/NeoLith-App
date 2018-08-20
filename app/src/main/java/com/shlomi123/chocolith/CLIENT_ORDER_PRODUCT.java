@@ -96,7 +96,7 @@ public class CLIENT_ORDER_PRODUCT extends AppCompatActivity {
                 {
                     quantity = Integer.parseInt(editText.getText().toString());
                     //first verify that the users wants to place the order
-                    showAlertDialog(CLIENT_ORDER_PRODUCT.this, quantity);
+                    showAlertDialog(CLIENT_ORDER_PRODUCT.this);
                 }
             }
         });
@@ -156,7 +156,7 @@ public class CLIENT_ORDER_PRODUCT extends AppCompatActivity {
     }
 
     //alert dialog
-    private void showAlertDialog(final Context context, final int quantity)
+    private void showAlertDialog(final Context context)
     {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("Place Order");
@@ -175,9 +175,16 @@ public class CLIENT_ORDER_PRODUCT extends AppCompatActivity {
         alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                //first make sure he sends the email before order is logged
-                sendMail(context,name);
-                dialogInterface.dismiss();
+                if (quantity == 0)
+                {
+                    dialogInterface.dismiss();
+                }
+                else
+                {
+                    //first make sure he sends the email before order is logged
+                    sendMail(context,name);
+                    dialogInterface.dismiss();
+                }
             }
         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
             @Override
