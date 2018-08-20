@@ -110,7 +110,7 @@ public class LOGIN extends AppCompatActivity {
                         editor.putBoolean("key-flag", true);
                         editor.putString("ID", documentSnapshot.getId());
                         editor.apply();
-                        Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "login successful blaaa", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
                     }
                     else
@@ -140,7 +140,7 @@ public class LOGIN extends AppCompatActivity {
                 // iterate through snapshots (there is only one snapshot because store names are unique)
                 for (DocumentSnapshot documentSnapshot : documents)
                 {
-                    Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
                 }
                 // if no store was found according to query

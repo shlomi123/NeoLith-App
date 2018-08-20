@@ -10,7 +10,7 @@ public class Store {
     private String _email;
     private String _address;
     private int _phone;
-    private ArrayList<HashMap<String, Object>> orders;
+    private ArrayList<Object> orders;
 
     public Store()
     {
@@ -26,7 +26,7 @@ public class Store {
         orders = null;
     }
 
-    Store(String name, String email, String address, int phone, ArrayList<HashMap<String, Object>> orders)
+    Store(String name, String email, String address, int phone, ArrayList<Object> orders)
     {
         _name = name;
         _email = email;
@@ -52,7 +52,27 @@ public class Store {
         return _phone;
     }
 
-    public ArrayList<HashMap<String, Object>> getOrders() {
+    public ArrayList<Object> getOrders() {
         return orders;
+    }
+
+    public void set_name(String _name) {
+        this._name = _name;
+    }
+
+    public void set_email(String _email) {
+        this._email = _email;
+    }
+
+    public void set_address(String _address) {
+        this._address = _address;
+    }
+
+    public void set_phone(int _phone) {
+        this._phone = _phone;
+    }
+
+    public void setOrders(ArrayList<Object> orders) {
+        this.orders = orders;
     }
 }
