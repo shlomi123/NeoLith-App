@@ -64,6 +64,7 @@ public class ADMIN_SCAN_PRODUCT extends AppCompatActivity implements ZXingScanne
         intent.putExtra("NAME", result.getText());
 
         startActivity(intent);
+        finish();
     }
 
     @Override

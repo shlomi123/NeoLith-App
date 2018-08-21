@@ -125,6 +125,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     startActivity(new Intent(ADMIN_PICK_PRODUCT_IMAGE.this, ADMIN_MAIN_PAGE.class));
+                                    finish();
                                 }
                             }, 500);
 

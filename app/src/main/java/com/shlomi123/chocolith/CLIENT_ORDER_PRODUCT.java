@@ -208,6 +208,7 @@ public class CLIENT_ORDER_PRODUCT extends AppCompatActivity {
         }
     }
 
+    //log the order
     private void orderProduct(final Context context)
     {
         if (id != null)

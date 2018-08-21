@@ -43,18 +43,6 @@ public class ADMIN_CHOOSE_STORE_TO_DELETE extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__choose__store__to__delete);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!checkPermission())
-            {
-                requestPermission();
-            }
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         query_type = getIntent().getStringExtra("QUERY_TYPE");
         editText = (EditText) findViewById(R.id.editTextQueryToDelete);
         button = (Button) findViewById(R.id.buttonDeleteTheStore);
@@ -148,15 +136,5 @@ public class ADMIN_CHOOSE_STORE_TO_DELETE extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private boolean checkPermission()
-    {
-        return (ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private void requestPermission()
-    {
-        ActivityCompat.requestPermissions(this, new String[]{SEND_SMS}, 1);
     }
 }

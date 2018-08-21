@@ -36,7 +36,8 @@ public class LOGIN extends AppCompatActivity {
     EditText key;
     EditText email;
     EditText phone;
-    Button button;
+    Button SignIn;
+    Button SignOut;
     String TAG = "blaaaa";
 
     @Override
@@ -49,7 +50,9 @@ public class LOGIN extends AppCompatActivity {
         key = (EditText) findViewById(R.id.editTextKey);
         email = (EditText) findViewById(R.id.editTextEmail);
         phone = (EditText) findViewById(R.id.editTextPhoneNumber);
-        button = (Button) findViewById(R.id.buttonNext);
+        SignIn = (Button) findViewById(R.id.buttonSignIn);
+        SignOut = (Button) findViewById(R.id.buttonSignOut);
+
 
         //check if key has already been entered
         if (has_signed_in)
@@ -58,7 +61,7 @@ public class LOGIN extends AppCompatActivity {
         }
 
         //on button clicked
-        button.setOnClickListener(new View.OnClickListener() {
+        SignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // check for internet
@@ -89,6 +92,16 @@ public class LOGIN extends AppCompatActivity {
                 }
             }
         });
+
+        SignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean("key-flag", false);
+                editor.apply();
+                finish();
+            }
+        });
     }
 
     //on first sign in
@@ -112,6 +125,7 @@ public class LOGIN extends AppCompatActivity {
                         editor.apply();
                         Toast.makeText(getApplicationContext(), "login successful blaaa", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
+                        finish();
                     }
                     else
                     {
