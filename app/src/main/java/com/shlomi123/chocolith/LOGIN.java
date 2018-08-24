@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,14 +33,16 @@ import java.util.Map;
 
 public class LOGIN extends AppCompatActivity {
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    SharedPreferences sharedPreferences;
-    EditText key;
-    EditText email;
-    EditText phone;
-    Button SignIn;
-    Button SignOut;
-    String TAG = "blaaaa";
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private SharedPreferences sharedPreferences;
+    private EditText key;
+    private EditText email;
+    private EditText phone;
+    private TextView title;
+    private Button SignIn;
+    private Button SignOut;
+    private String TAG = "blaaaa";
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,9 @@ public class LOGIN extends AppCompatActivity {
         phone = (EditText) findViewById(R.id.editTextPhoneNumber);
         SignIn = (Button) findViewById(R.id.buttonSignIn);
         SignOut = (Button) findViewById(R.id.buttonSignOut);
+        title = (TextView) findViewById(R.id.textViewTitle);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
+        progressBar.setVisibility(View.INVISIBLE);
 
 
         //check if key has already been entered
@@ -67,8 +74,15 @@ public class LOGIN extends AppCompatActivity {
                 // check for internet
                 if (Helper.isNetworkAvailable(getApplicationContext()))
                 {
+                    //show only progress bar
+                    title.setVisibility(View.INVISIBLE);
+                    key.setVisibility(View.INVISIBLE);
+                    email.setVisibility(View.INVISIBLE);
+                    phone.setVisibility(View.INVISIBLE);
+                    SignIn.setVisibility(View.INVISIBLE);
+                    SignOut.setVisibility(View.INVISIBLE);
+                    progressBar.setVisibility(View.VISIBLE);
                     //first check if an admin is trying to sign in
-
                     if (phone.getText().toString().equals(""))
                     {
                         adminSignIn();
@@ -156,6 +170,7 @@ public class LOGIN extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
+                    finish();
                 }
                 // if no store was found according to query
                 if (documents.isEmpty())
@@ -183,6 +198,7 @@ public class LOGIN extends AppCompatActivity {
                             {
                                 Toast.makeText(getApplicationContext(), "Welcome Admin", Toast.LENGTH_LONG).show();
                                 startActivity(new Intent(LOGIN.this, ADMIN_MAIN_PAGE.class));
+                                finish();
                             }
                             else
                             {

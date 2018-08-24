@@ -2,14 +2,14 @@ package com.shlomi123.chocolith;
 
 import java.util.Date;
 
-public class Orders {
+public class Order {
     private Date Date;
     private String Product;
     private int Quantity;
 
-    public Orders(){}
+    public Order(){}
 
-    Orders(Date date, String product, int quantity)
+    Order(Date date, String product, int quantity)
     {
         Date = date;
         Product = product;

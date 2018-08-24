@@ -18,24 +18,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LOGIN">
+        <activity android:name=".LOGIN"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ADMIN_MAIN_PAGE" />
-        <activity android:name=".ADMIN_ADD_STORE" />
-        <activity android:name=".ADMIN_STORE_ID" />
-        <activity android:name=".ADMIN_DELETE_STORE" />
-        <activity android:name=".ADMIN_CHOOSE_STORE_TO_DELETE" />
-        <activity android:name=".CLIENT_MAIN_PAGE" />
-        <activity android:name=".CLIENT_QR_SCANNER" />
-        <activity android:name=".ADMIN_SCAN_PRODUCT" />
-        <activity android:name=".ADMIN_PICK_PRODUCT_IMAGE" />
-        <activity android:name=".CLIENT_ORDER_PRODUCT" />
-        <activity android:name=".CLIENT_SHOW_ALL_PRODUCTS"></activity>
+        <activity android:name=".ADMIN_MAIN_PAGE" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_ADD_STORE" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_STORE_ID" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_DELETE_STORE" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_CHOOSE_STORE_TO_DELETE" android:screenOrientation="portrait"/>
+        <activity android:name=".CLIENT_MAIN_PAGE" android:screenOrientation="portrait"/>
+        <activity android:name=".CLIENT_QR_SCANNER" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_SCAN_PRODUCT" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_PICK_PRODUCT_IMAGE" android:screenOrientation="portrait"/>
+        <activity android:name=".CLIENT_ORDER_PRODUCT" android:screenOrientation="portrait"/>
+        <activity android:name=".CLIENT_SHOW_ALL_PRODUCTS" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_VIEW_STORES" android:screenOrientation="portrait"/>
+        <activity android:name=".ADMIN_VIEW_STORE_ORDERS" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

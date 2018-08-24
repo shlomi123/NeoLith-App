@@ -17,11 +17,11 @@ public class Helper {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-    static public ArrayList<Orders> getOrdersFromStore(Store store)
+    static public ArrayList<Order> getOrdersFromStore(Store store)
     {
         Gson gson = new Gson();
         String jsonAsString = gson.toJson(store.getOrders());
-        Type type = new TypeToken<ArrayList<Orders>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Order>>(){}.getType();
         return gson.fromJson(jsonAsString, type);
     }
 }

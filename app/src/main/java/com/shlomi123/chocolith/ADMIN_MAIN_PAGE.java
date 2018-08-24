@@ -48,7 +48,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity {
         viewOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_VIEW_STORES.class));
             }
         });
 
