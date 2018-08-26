@@ -6,10 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".ADMIN_VIEW_STORES">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_stores"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_stores"
+            android:layout_width="match_parent"
+            android:layout_height="450dp" />
+
+        <Button
+            android:id="@+id/buttonCreateExcelSheetStores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recycler_view_stores"
+            android:text="Create Excel"
+            android:layout_marginTop="7dp"
+            android:layout_gravity="center_horizontal"/>
+
+    </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/progress_circle_stores"

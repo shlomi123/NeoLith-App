@@ -17,9 +17,9 @@ public class CLIENT_MAIN_PAGE extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client__main__page);
 
-        //request permission to access camera
         Button scanner = (Button) findViewById(R.id.buttonQRScanner);
         Button products = (Button) findViewById(R.id.buttonShowAllProducts);
+        Button history = (Button) findViewById(R.id.buttonViewHistory);
 
         scanner.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +32,13 @@ public class CLIENT_MAIN_PAGE extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_SHOW_ALL_PRODUCTS.class));
+            }
+        });
+
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_ORDER_HISTORY.class));
             }
         });
     }

@@ -24,6 +24,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
@@ -56,7 +57,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         final Order OrderCurrent = mOrders.get(position);
 
         holder.Name.setText(OrderCurrent.get_product());
-        holder.Date.setText("Date: " + OrderCurrent.get_date().toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss");
+        holder.Date.setText("Date: " + simpleDateFormat.format(OrderCurrent.get_date()).toString());
         holder.Quantity.setText("Quantity: " + String.valueOf(OrderCurrent.get_quantity()));
 
         CollectionReference products = db.collection("Products");
