@@ -42,6 +42,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private StorageReference mStorageRef;
     private StorageTask mUploadTask;
+    private Boolean finished_upload = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        finished_upload = false;
         imageView = (ImageView) findViewById(R.id.imageViewPickedImage);
         textView = (TextView) findViewById(R.id.textViewProductName);
 
@@ -95,6 +96,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
     }
 
     private void openFileChooser() {
+        finished_upload = true;
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -124,6 +126,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    finished_upload = true;
                                     startActivity(new Intent(ADMIN_PICK_PRODUCT_IMAGE.this, ADMIN_MAIN_PAGE.class));
                                     finish();
                                 }
@@ -168,5 +171,15 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
         {
             Toast.makeText(this, "No file selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!finished_upload)
+        {
+            Toast.makeText(getApplicationContext(), "Upload Stopped!!!", Toast.LENGTH_LONG).show();
+        }
+
     }
 }

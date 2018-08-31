@@ -31,4 +31,10 @@
         android:layout_below="@id/buttonShowAllProducts"
         android:layout_marginTop="40dp"
         android:text="History" />
+
+    <ProgressBar
+        android:id="@+id/progress_circle_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 </RelativeLayout>

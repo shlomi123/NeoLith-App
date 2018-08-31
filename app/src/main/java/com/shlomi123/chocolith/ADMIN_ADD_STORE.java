@@ -21,6 +21,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApiNotAvailableException;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -39,19 +42,22 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import static android.Manifest.permission.SEND_SMS;
 
 public class ADMIN_ADD_STORE extends AppCompatActivity {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    EditText address;
-    EditText phoneNum;
-    EditText store;
-    EditText email;
-    EditText verifyEmail;
-    Button button;
-    public static final int SENT = 0;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private EditText address;
+    private EditText phoneNum;
+    private EditText store;
+    private EditText email;
+    private EditText verifyEmail;
+    private Button button;
+    private FirebaseAuth mAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__add__store);
+
+        mAuth = FirebaseAuth.getInstance();
 
         if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M)
         {
@@ -128,7 +134,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
         }
     }
 
-    private void addStoreToDataBase(String name, String email, String address, final int phone)
+    private void addStoreToDataBase(final String name, final String email, final String address, final int phone)
     {
         //add new store to databased
         Store s = new Store(name, email, address, phone);
@@ -140,7 +146,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                         Log.d("blaaaa", "DocumentSnapshot added with ID: " + documentReference.getId());
                         Toast.makeText(getApplicationContext(), "Succesfuly added", Toast.LENGTH_LONG).show();
 
-                        sendSms(phoneNum.getText().toString(), documentReference.getId());
+                        sendSms(String.valueOf(phone), documentReference.getId());
 
                         finish();
                     }
@@ -188,5 +194,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
 }

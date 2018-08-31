@@ -1,5 +1,6 @@
 package com.shlomi123.chocolith;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -42,7 +46,8 @@ public class LOGIN extends AppCompatActivity {
     private Button SignIn;
     private Button SignOut;
     private String TAG = "blaaaa";
-    private ProgressBar progressBar;
+    private ProgressDialog progressDialog;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +62,8 @@ public class LOGIN extends AppCompatActivity {
         SignIn = (Button) findViewById(R.id.buttonSignIn);
         SignOut = (Button) findViewById(R.id.buttonSignOut);
         title = (TextView) findViewById(R.id.textViewTitle);
-        progressBar = (ProgressBar) findViewById(R.id.progressBarLogin);
-        progressBar.setVisibility(View.INVISIBLE);
+        progressDialog = new ProgressDialog(this);
+        mAuth = FirebaseAuth.getInstance();
 
 
         //check if key has already been entered
@@ -75,13 +80,8 @@ public class LOGIN extends AppCompatActivity {
                 if (Helper.isNetworkAvailable(getApplicationContext()))
                 {
                     //show only progress bar
-                    title.setVisibility(View.INVISIBLE);
-                    key.setVisibility(View.INVISIBLE);
-                    email.setVisibility(View.INVISIBLE);
-                    phone.setVisibility(View.INVISIBLE);
-                    SignIn.setVisibility(View.INVISIBLE);
-                    SignOut.setVisibility(View.INVISIBLE);
-                    progressBar.setVisibility(View.VISIBLE);
+                    progressDialog.setMessage("Signing in...");
+                    progressDialog.show();
                     //first check if an admin is trying to sign in
                     if (phone.getText().toString().equals(""))
                     {
@@ -92,11 +92,11 @@ public class LOGIN extends AppCompatActivity {
                         //check if its the first sign in
                         if (has_signed_in)
                         {
-                            signIn();
+                            authenticate(email.getText().toString(), phone.getText().toString());
                         }
                         else
                         {
-                            firstSignIn();
+                            addAuthentication(email.getText().toString(), phone.getText().toString());
                         }
                     }
                 }
@@ -113,6 +113,7 @@ public class LOGIN extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("key-flag", false);
                 editor.apply();
+                mAuth.signOut();
                 finish();
             }
         });
@@ -123,7 +124,6 @@ public class LOGIN extends AppCompatActivity {
     {
         CollectionReference stores = db.collection("Stores");
         Query store = stores.whereEqualTo("_email", email.getText().toString()).whereEqualTo("_phone", Integer.parseInt(phone.getText().toString()));
-
         store.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -137,12 +137,14 @@ public class LOGIN extends AppCompatActivity {
                         editor.putBoolean("key-flag", true);
                         editor.putString("ID", documentSnapshot.getId());
                         editor.apply();
-                        Toast.makeText(getApplicationContext(), "login successful blaaa", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
+
+                        Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         finish();
                     }
                     else
                     {
+                        mAuth.signOut();
                         Toast.makeText(getApplicationContext(), "key is incorrect", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -169,48 +171,117 @@ public class LOGIN extends AppCompatActivity {
                 for (DocumentSnapshot documentSnapshot : documents)
                 {
                     Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class));
+                    startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                     finish();
                 }
                 // if no store was found according to query
                 if (documents.isEmpty())
                 {
+                    mAuth.signOut();
                     Toast.makeText(getApplicationContext(), "email or phone number is incorrect", Toast.LENGTH_LONG).show();
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mAuth.signOut();
             }
         });
     }
 
     private void adminSignIn()
     {
-        DocumentReference doc = db.collection("Admin").document("Admin");
-        doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        Admin admin = document.toObject(Admin.class);
-
-                        if (email.getText().toString().equals(admin.Username))
+        mAuth.signInWithEmailAndPassword(email.getText().toString(), key.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful())
                         {
-                            if (key.getText().toString().equals(admin.Password))
-                            {
-                                Toast.makeText(getApplicationContext(), "Welcome Admin", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(LOGIN.this, ADMIN_MAIN_PAGE.class));
-                                finish();
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(), "Admin - Wrong Password", Toast.LENGTH_LONG).show();
-                            }
-                        }
+                            DocumentReference doc = db.collection("Admin").document("Admin");
+                            doc.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            Admin admin = document.toObject(Admin.class);
+                                            Log.d("blaaaa", admin.getPassword() + " " + admin.getUsername());
+                                            if (email.getText().toString().equals(admin.getUsername()))
+                                            {
+                                                if (key.getText().toString().equals(admin.getPassword()))
+                                                {
+                                                    Toast.makeText(getApplicationContext(), "Welcome Admin", Toast.LENGTH_LONG).show();
+                                                    startActivity(new Intent(LOGIN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                    finish();
+                                                }
+                                                else
+                                                {
+                                                    Toast.makeText(getApplicationContext(), "Admin - Wrong Password", Toast.LENGTH_LONG).show();
+                                                }
+                                            }
 
-                    } else {
-                        Log.d(TAG, "No such document");
+                                        } else {
+                                            Log.d(TAG, "No such document");
+                                        }
+                                    } else {
+                                        Log.d(TAG, "get failed with ", task.getException());
+                                    }
+                                }
+                            });
+                        }
+                        else
+                        {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        }
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
+                });
+
+    }
+
+    private void addAuthentication(final String email, final String phone)
+    {
+        mAuth.createUserWithEmailAndPassword(email, phone).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful())
+                {
+                    firstSignIn();
+                }
+                else
+                {
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                        mAuth.signInWithEmailAndPassword(email, phone).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful())
+                                {
+                                    firstSignIn();
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Error regular", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
+    private void authenticate(final String email, final String phone)
+    {
+        mAuth.signInWithEmailAndPassword(email, phone).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful())
+                {
+                    signIn();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Error regular", Toast.LENGTH_SHORT).show();
                 }
             }
         });

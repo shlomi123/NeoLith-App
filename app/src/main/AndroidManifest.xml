@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".LOGIN"
+            android:name=".CLIENT_MAIN_PAGE"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,7 +44,7 @@
             android:name=".ADMIN_CHOOSE_STORE_TO_DELETE"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CLIENT_MAIN_PAGE"
+            android:name=".LOGIN"
             android:screenOrientation="portrait" />
         <activity
             android:name=".CLIENT_QR_SCANNER"
