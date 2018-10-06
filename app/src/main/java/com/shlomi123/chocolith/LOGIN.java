@@ -63,14 +63,15 @@ public class LOGIN extends AppCompatActivity {
         SignOut = (Button) findViewById(R.id.buttonSignOut);
         title = (TextView) findViewById(R.id.textViewTitle);
         progressDialog = new ProgressDialog(this);
+
         mAuth = FirebaseAuth.getInstance();
 
 
         //check if key has already been entered
-        if (has_signed_in)
+        /*if (has_signed_in)
         {
             key.setVisibility(View.GONE);
-        }
+        }*/
 
         //on button clicked
         SignIn.setOnClickListener(new View.OnClickListener() {
@@ -131,22 +132,14 @@ public class LOGIN extends AppCompatActivity {
                 // iterate through snapshots (there is only one snapshot because store names are unique)
                 for (DocumentSnapshot documentSnapshot : documents)
                 {
-                    if(documentSnapshot.getId().equals(key.getText().toString()))
-                    {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("key-flag", true);
-                        editor.putString("ID", documentSnapshot.getId());
-                        editor.apply();
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("key-flag", true);
+                    editor.putString("ID", documentSnapshot.getId());
+                    editor.apply();
 
-                        Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        finish();
-                    }
-                    else
-                    {
-                        mAuth.signOut();
-                        Toast.makeText(getApplicationContext(), "key is incorrect", Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LOGIN.this, CLIENT_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                    finish();
                 }
                 // if no store was found according to query
                 if (documents.isEmpty())

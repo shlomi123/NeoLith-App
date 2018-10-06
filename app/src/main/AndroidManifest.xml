@@ -69,7 +69,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".CLIENT_ORDER_HISTORY"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".CHOOSE_USER_TYPE" />
+        <activity android:name=".COMPANY_PROPERTIES" />
+        <activity android:name=".COMPANY_REGISTER"></activity>
     </application>
 
 </manifest>
