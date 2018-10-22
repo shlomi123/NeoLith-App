@@ -49,12 +49,28 @@
         android:hint="verify password"/>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/ButtonCompanyVerify"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
-        android:text="Button" />
+        android:text="Verify" />
+
+    <ProgressBar
+        android:id="@+id/progressBar1"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/textViewInstructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextCompanyPassword"
+        android:layout_centerHorizontal="true"
+        android:text="verify email to continue" />
 
 </RelativeLayout>

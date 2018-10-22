@@ -21,7 +21,7 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
         company.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                startActivity(new Intent(CHOOSE_USER_TYPE.this, COMPANY_REGISTER.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -33,3 +33,4 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
         });
     }
 }
+//TODO finish store login

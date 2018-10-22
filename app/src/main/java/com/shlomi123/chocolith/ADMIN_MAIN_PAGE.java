@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-
+//TODO convert admin actions to be compatible with generic version of app
 public class ADMIN_MAIN_PAGE extends AppCompatActivity {
 
     private Button delete;

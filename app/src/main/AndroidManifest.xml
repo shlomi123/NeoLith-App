@@ -20,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CLIENT_MAIN_PAGE"
+            android:name=".CHOOSE_USER_TYPE"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -70,9 +70,15 @@
         <activity
             android:name=".CLIENT_ORDER_HISTORY"
             android:screenOrientation="portrait" />
-        <activity android:name=".CHOOSE_USER_TYPE" />
-        <activity android:name=".COMPANY_PROPERTIES" />
-        <activity android:name=".COMPANY_REGISTER"></activity>
+        <activity
+            android:name=".CLIENT_MAIN_PAGE"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".COMPANY_PROPERTIES"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".COMPANY_REGISTER"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
