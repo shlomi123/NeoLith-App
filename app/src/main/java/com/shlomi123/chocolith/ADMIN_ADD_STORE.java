@@ -1,7 +1,9 @@
 package com.shlomi123.chocolith;
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.MediaDrm;
 import android.os.Build;
@@ -51,7 +53,8 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
     private EditText verifyEmail;
     private Button button;
     private FirebaseAuth mAuth;
-
+    private SharedPreferences sharedPreferences;
+    private String company_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,87 +62,96 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
         setContentView(R.layout.activity_admin__add__store);
 
         mAuth = FirebaseAuth.getInstance();
+        sharedPreferences = getSharedPreferences("MyPref",Context.MODE_PRIVATE);
+        company_name = sharedPreferences.getString("COMPANY_NAME", null);
 
-        if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M)
-        {
-            if(!checkPermission())
-            {
-                requestPermission();
-            }
-        }
-    }
+        address = (EditText) findViewById(R.id.editTextAddress);
+        store = (EditText) findViewById(R.id.editTextStoreName);
+        email = (EditText) findViewById(R.id.editTextEmail1);
+        verifyEmail = (EditText) findViewById(R.id.editTextVerifyEmail1);
+        phoneNum = (EditText) findViewById(R.id.editTextPhoneNumber1);
+        button = (Button) findViewById(R.id.buttonNext1);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            if (checkPermission()) {
-                address = (EditText) findViewById(R.id.editTextAddress);
-                store = (EditText) findViewById(R.id.editTextStoreName);
-                email = (EditText) findViewById(R.id.editTextEmail1);
-                verifyEmail = (EditText) findViewById(R.id.editTextVerifyEmail1);
-                phoneNum = (EditText) findViewById(R.id.editTextPhoneNumber1);
-                button = (Button) findViewById(R.id.buttonNext1);
-
-                button.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        // check for internet connection
-                        if (Helper.isNetworkAvailable(getApplicationContext()))
-                        {
-                            // verify email
-                            if (!email.getText().toString().equals(verifyEmail.getText().toString()))
-                            {
-                                Toast.makeText(getApplicationContext(), "Email is incorrect", Toast.LENGTH_LONG).show();
-                            }
-                            else {
-                                //check if store name already exists
-                                CollectionReference citiesRef = db.collection("Stores");
-                                citiesRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    // check that store name doesn't already exist
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            boolean flag = false;
-                                            for (DocumentSnapshot document : task.getResult()) {
-                                                Map<String, Object> map = document.getData();
-                                                //if store name exists return
-                                                if (map.get("_name").toString().equals(store.getText().toString())) {
-                                                    Toast.makeText(getApplicationContext(), "That username already exists.", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
-                                            }
-                                            String name = store.getText().toString();
-                                            String e = email.getText().toString();
-                                            String a = address.getText().toString();
-                                            int phone = Integer.parseInt(phoneNum.getText().toString());
-                                            // if store name doesn't exist create new store
-                                            addStoreToDataBase(name, e, a, phone);
-                                        } else {
-                                            Log.d("blaaaa", "Error getting documents: ", task.getException());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // check for internet connection
+                if (Helper.isNetworkAvailable(getApplicationContext()))
+                {
+                    // verify email
+                    if (!email.getText().toString().equals(verifyEmail.getText().toString()))
+                    {
+                        Toast.makeText(getApplicationContext(), "Email is incorrect", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        //get company's document
+                        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful())
+                                {
+                                    DocumentSnapshot documentSnapshot = null;
+                                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
+                                    {
+                                        String name = currentDocumentSnapshot.getString("Name");
+                                        if (name.equals(company_name))
+                                        {
+                                            documentSnapshot = currentDocumentSnapshot;
                                         }
                                     }
-                                });
+
+                                    //check if store name already exists
+                                    final String id = documentSnapshot.getId();
+                                    db.collection("Companies")
+                                            .document(id)
+                                            .collection("Stores")
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            // check that store name doesn't already exist
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    boolean flag = false;
+                                                    for (DocumentSnapshot document : task.getResult()) {
+                                                        //if store name exists return
+                                                        if (document != null)
+                                                        {
+                                                            if (document.getString("_name") == store.getText().toString()) {
+                                                                Toast.makeText(getApplicationContext(), "That username already exists.", Toast.LENGTH_SHORT).show();
+                                                                return;
+                                                            }
+                                                        }
+                                                    }
+                                                    String name = store.getText().toString();
+                                                    String e = email.getText().toString();
+                                                    String a = address.getText().toString();
+                                                    int phone = Integer.parseInt(phoneNum.getText().toString());
+                                                    // if store name doesn't exist create new store
+                                                    addStoreToDataBase(id, name, e, a, phone);
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
+                                }
                             }
-                        }
-                        else
-                        {
-                            Toast.makeText(getApplicationContext(), "No internet", Toast.LENGTH_LONG).show();
-                        }
+                        });
                     }
-                });
-            } else {
-                requestPermission();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "No internet", Toast.LENGTH_LONG).show();
+                }
             }
-        }
+        });
     }
 
-    private void addStoreToDataBase(final String name, final String email, final String address, final int phone)
+
+    private void addStoreToDataBase(final String id, final String name, final String email, final String address, final int phone)
     {
         //add new store to databased
         Store s = new Store(name, email, address, phone);
-        db.collection("Stores")
+        db.collection("Companies").document(id).collection("Stores")
                 .add(s)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
@@ -159,41 +171,4 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                     }
                 });
     }
-
-    private boolean checkPermission()
-    {
-        return (ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private void requestPermission()
-    {
-        ActivityCompat.requestPermissions(this, new String[]{SEND_SMS}, 1);
-    }
-
-    private void sendSms(String number, String id)
-    {
-        try {
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(number, null, id, null, null);
-            Toast.makeText(getApplicationContext(), "make sure sms was sent", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "SMS faild, please try again later!", Toast.LENGTH_LONG).show();
-
-            db.collection("Stores")
-                    .document(id)
-                    .delete()
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(), "sms wasn't sent but account was created, send key manually", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-            Log.d("blaaaa", e.toString());
-            e.printStackTrace();
-        }
-    }
-
-
-
 }
