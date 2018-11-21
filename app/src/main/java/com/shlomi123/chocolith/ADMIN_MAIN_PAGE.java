@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -30,12 +31,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 //TODO convert admin actions to be compatible with generic version of app
-public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter.OnItemClickListener*/{
+public class ADMIN_MAIN_PAGE extends AppCompatActivity implements StoreAdapter.OnItemClickListener{
 
-    private Button delete;
-    private Button addStore;
-    private Button viewOrders;
-    private Button addProduct;
+    private ImageButton addStore;
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
 
@@ -54,13 +52,14 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("MyPref",Context.MODE_PRIVATE);
         company_name = sharedPreferences.getString("COMPANY_NAME", null);
-
+        addStore = (ImageButton) findViewById(R.id.buttonAddStore);
         mRecyclerView = findViewById(R.id.recycler_view_stores_main);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mProgressCircle = findViewById(R.id.progress_circle_stores_main);
         mStores = new ArrayList<>();
 
+        // get required company
         db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -78,6 +77,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
 
                     String id = documentSnapshot.getId();
 
+                    //create a listener on store collection
                     db.collection("Companies").document(id).collection("Stores").addSnapshotListener(new EventListener<QuerySnapshot>() {
                         @Override
                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
@@ -85,8 +85,9 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
                                 Toast.makeText(getApplicationContext(), "Error with listener", Toast.LENGTH_SHORT).show();
                                 return;
                             }
-
+                            // create recycler view to show stores and their data
                             if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                                mStores.clear();
                                 for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments())
                                 {
                                     Store store = document.toObject(Store.class);
@@ -96,7 +97,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
                                 mAdapter = new StoreAdapter(ADMIN_MAIN_PAGE.this, mStores);
 
                                 mRecyclerView.setAdapter(mAdapter);
-                                //mAdapter.setOnItemClickListener(ADMIN_MAIN_PAGE.this);
+                                mAdapter.setOnItemClickListener(ADMIN_MAIN_PAGE.this);
                                 mProgressCircle.setVisibility(View.INVISIBLE);
                             }
                             else {
@@ -107,18 +108,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
                 }
             }
         });
-        /*delete = (Button) findViewById(R.id.buttonDelete);
-        addStore = (Button) findViewById(R.id.buttonAddStore);
-        viewOrders = (Button) findViewById(R.id.buttonViewOrders);
-        addProduct = (Button) findViewById(R.id.buttonAddProduct);
-        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_DELETE_STORE.class));
-            }
-        });
 
         addStore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,15 +115,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
                 startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_ADD_STORE.class));
             }
         });
-
-        viewOrders.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_VIEW_STORES.class));
-            }
-        });
-
-        addProduct.setOnClickListener(new View.OnClickListener() {
+        /*addProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_SCAN_PRODUCT.class));
@@ -149,8 +130,10 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
         return true;
     }
 
+    //menu that shows option of signing out, create excel sheet, and add product
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //TODO add option to create excel sheet and add a product
         int id = item.getItemId();
         switch (id){
             case R.id.item1:
@@ -167,23 +150,105 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity /*implements StoreAdapter
         }
     }
 
-    /*@Override
+    @Override
     public void onItemClick(int position)
     {
-        Store store = mStores.get(position);
-        Toast.makeText(getApplicationContext(), store.get_name(), Toast.LENGTH_SHORT).show();
-        /*Intent intent = new Intent(CLIENT_SHOW_ALL_PRODUCTS.this, CLIENT_ORDER_PRODUCT.class);
-        intent.putExtra("NAME", product.getName());
-        startActivity(intent);
+        Toast.makeText(getApplicationContext(), "long press to show options", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onViewStore(int position) {
-        Toast.makeText(this, "view click at position: " + position, Toast.LENGTH_SHORT).show();
+        Store chosenStore = mStores.get(position);
+
+        // check first if orders is still null
+        if (chosenStore.getOrders() != null)
+        {
+            // check if any orders were made
+            if (!chosenStore.getOrders().isEmpty())
+            {
+                Intent intent = new Intent(ADMIN_MAIN_PAGE.this, ADMIN_VIEW_STORE_ORDERS.class);
+                intent.putExtra("NAME", chosenStore.get_name());
+                startActivity(intent);
+            }
+            else
+            {
+                Toast.makeText(getApplicationContext(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onDeleteStore(int position) {
-        Toast.makeText(this, "Delete click at position: " + position, Toast.LENGTH_SHORT).show();
-    }*/
+        Store chosenStore = mStores.get(position);
+        //TODO show a warning before deletion
+        // delete chosen store
+        deleteStore(chosenStore.get_name());
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        //after leaving activity the list over stores needs to be emptied to prevent duplicates
+        mStores.clear();
+    }
+
+    private void deleteStore(final String storeName) {
+        // get required company
+        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful())
+                {
+                    DocumentSnapshot documentSnapshot = null;
+                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
+                    {
+                        String name = currentDocumentSnapshot.getString("Name");
+                        if (name.equals(company_name))
+                        {
+                            // this is the companies document
+                            documentSnapshot = currentDocumentSnapshot;
+                        }
+                    }
+
+                    final String id = documentSnapshot.getId();
+                    // get the document of the store that needs to be deleted
+                    db.collection("Companies").document(id).collection("Stores").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot documentSnapshot = null;
+                                for (DocumentSnapshot currentDocumentSnapshot : task.getResult()) {
+                                    String name = currentDocumentSnapshot.getString("_name");
+                                    if (name.equals(storeName)) {
+                                        // this is the document that needs to be deleted
+                                        documentSnapshot = currentDocumentSnapshot;
+                                    }
+                                }
+                                // deletion....
+                                db.collection("Companies")
+                                        .document(id)
+                                        .collection("Stores")
+                                        .document(documentSnapshot.getId())
+                                        .delete()
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful())
+                                                {
+                                                    Toast.makeText(getApplicationContext(), "Error While Deleting", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 }

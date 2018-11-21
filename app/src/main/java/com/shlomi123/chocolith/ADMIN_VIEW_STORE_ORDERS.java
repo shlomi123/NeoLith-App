@@ -1,5 +1,7 @@
 package com.shlomi123.chocolith;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +27,8 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
     private OrderAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private String Name;
+    private SharedPreferences sharedPreferences;
+    private String company_name;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Order> mOrders;
@@ -34,6 +38,9 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__view__store__orders);
 
+        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+
         mRecyclerView = findViewById(R.id.recycler_view_orders);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -42,32 +49,63 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
         mOrders = new ArrayList<>();
         Name = getIntent().getStringExtra("NAME");
 
-        CollectionReference stores = db.collection("Stores");
+        final CollectionReference companies = db.collection("Companies");
 
-        stores.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        //find the document of required company
+        companies.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful())
                 {
-                    for (DocumentSnapshot documentSnapshot: task.getResult())
+                    DocumentSnapshot documentSnapshot = null;
+                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
                     {
-                        Store store = documentSnapshot.toObject(Store.class);
-                        if (store.get_name().equals(Name))
+                        String name = currentDocumentSnapshot.getString("Name");
+                        if (name.equals(company_name))
                         {
-                            mOrders = Helper.getOrdersFromStore(store);
+                            // this is the companies document
+                            documentSnapshot = currentDocumentSnapshot;
                         }
-
                     }
 
-                    mAdapter = new OrderAdapter(ADMIN_VIEW_STORE_ORDERS.this, mOrders);
+                    String id = documentSnapshot.getId();
 
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.setOnItemClickListener(ADMIN_VIEW_STORE_ORDERS.this);
-                    mProgressCircle.setVisibility(View.INVISIBLE);
+                    //find the document of the store that needs to be viewed
+                    companies.document(id).collection("Stores").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful())
+                            {
+                                for (DocumentSnapshot documentSnapshot: task.getResult())
+                                {
+                                    //this is the document of the corresponding document
+                                    Store store = documentSnapshot.toObject(Store.class);
+                                    if (store.get_name().equals(Name))
+                                    {
+                                        // add stores orders to the order list
+                                        mOrders = Helper.getOrdersFromStore(store);
+                                    }
+
+                                }
+
+                                // create recycler view
+                                mAdapter = new OrderAdapter(ADMIN_VIEW_STORE_ORDERS.this, mOrders);
+
+                                mRecyclerView.setAdapter(mAdapter);
+                                mAdapter.setOnItemClickListener(ADMIN_VIEW_STORE_ORDERS.this);
+                                mProgressCircle.setVisibility(View.INVISIBLE);
+                            }
+                            else
+                            {
+                                Toast.makeText(getApplicationContext(), "Error getting stores", Toast.LENGTH_SHORT).show();
+                                mProgressCircle.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    });
                 }
                 else
                 {
-                    Toast.makeText(getApplicationContext(), "Error getting stores", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Error getting company", Toast.LENGTH_SHORT).show();
                     mProgressCircle.setVisibility(View.INVISIBLE);
                 }
             }
@@ -79,8 +117,5 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
     {
         Order order = mOrders.get(position);
         Toast.makeText(getApplicationContext(), order.get_product(), Toast.LENGTH_SHORT).show();
-        /*Intent intent = new Intent(CLIENT_SHOW_ALL_PRODUCTS.this, CLIENT_ORDER_PRODUCT.class);
-        intent.putExtra("NAME", product.getName());
-        startActivity(intent);*/
     }
 }

@@ -52,7 +52,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
             holder.Orders.setText("Order: 0");
         }
 
-        holder.button.setOnClickListener(new View.OnClickListener() {
+        /*holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 PopupMenu popup = new PopupMenu(mContext, view);
@@ -76,7 +76,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
                 //displaying the popup
                 popup.show();
             }
-        });
+        });*/
     }
 
     @Override
@@ -84,7 +84,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         return mStores.size();
     }
 
-    public class StoreViewHolder extends RecyclerView.ViewHolder /*implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener*/{
+    public class StoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
         public TextView Name;
         public TextView Address;
         public TextView Phone;
@@ -96,23 +96,22 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         public StoreViewHolder(View itemView) {
             super(itemView);
 
-            //itemView.setOnClickListener(this);
-            //itemView.setOnCreateContextMenuListener(this);
+            itemView.setOnClickListener(this);
+            itemView.setOnCreateContextMenuListener(this);
 
             Name = itemView.findViewById(R.id.textViewStoreName);
             Address = itemView.findViewById(R.id.textViewStoreAddress);
             Phone = itemView.findViewById(R.id.textViewStorePhone);
             Email = itemView.findViewById(R.id.textViewStoreEmail);
             Orders = itemView.findViewById(R.id.textViewStoreOrders);
-            button = itemView.findViewById(R.id.imageView_popup_menu);
         }
 
-        /*@Override
+        @Override
         public void onClick(View v) {
             if (mListener != null) {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    //mListener.onItemClick(position);
+                    mListener.onItemClick(position);
                 }
             }
         }
@@ -143,18 +142,18 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
                 }
             }
             return false;
-        }*/
+        }
     }
 
     public interface OnItemClickListener {
-        //void onItemClick(int position);
+        void onItemClick(int position);
 
         void onViewStore(int position);
 
         void onDeleteStore(int position);
     }
 
-    /*public void setOnItemClickListener(StoreAdapter.OnItemClickListener listener) {
+    public void setOnItemClickListener(StoreAdapter.OnItemClickListener listener) {
         mListener = listener;
-    }*/
+    }
 }

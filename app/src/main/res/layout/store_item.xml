@@ -61,12 +61,5 @@
 
         </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView_popup_menu"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:srcCompat="@drawable/ic_baseline_more_vert_24px"
-        android:layout_gravity="right"/>
-
 
 </android.support.v7.widget.CardView>
