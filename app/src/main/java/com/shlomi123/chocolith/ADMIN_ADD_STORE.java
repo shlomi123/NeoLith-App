@@ -117,7 +117,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                                                         if (document != null)
                                                         {
                                                             if (document.getString("_name") == store.getText().toString()) {
-                                                                Toast.makeText(getApplicationContext(), "That username already exists.", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(getApplicationContext(), "That store name already exists.", Toast.LENGTH_SHORT).show();
                                                                 return;
                                                             }
                                                         }
@@ -145,7 +145,6 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
             }
         });
     }
-
 
     private void addStoreToDataBase(final String id, final String name, final String email, final String address, final int phone)
     {

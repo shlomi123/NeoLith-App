@@ -57,24 +57,24 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                         return;
                                     }
                                 }
-                                //add company to database
-                                db.collection("Companies").document().set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful())
-                                        {
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString("COMPANY_NAME", name.getText().toString());
-                                            editor.apply();
-                                            startActivity(new Intent(COMPANY_PROPERTIES.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                        }
-                                        else
-                                        {
-                                            Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
-                                        }
-                                    }
-                                });
                             }
+                            //add company to database
+                            db.collection("Companies").document().set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful())
+                                    {
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("COMPANY_NAME", name.getText().toString());
+                                        editor.apply();
+                                        startActivity(new Intent(COMPANY_PROPERTIES.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
                         } else {
                             Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
                         }

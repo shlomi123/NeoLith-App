@@ -10,7 +10,6 @@ public class Store {
     private String _email;
     private String _address;
     private int _phone;
-    private String _authUID;
     private ArrayList<Object> orders;
 
     public Store()
@@ -24,7 +23,6 @@ public class Store {
         _email = email;
         _address = address;
         _phone = phone;
-        _authUID = null;
         orders = null;
     }
 
@@ -34,7 +32,6 @@ public class Store {
         _email = email;
         _address = address;
         _phone = phone;
-        _authUID = authUID;
         this.orders = orders;
     }
 
@@ -59,8 +56,6 @@ public class Store {
         return orders;
     }
 
-    public String get_authUID() {return _authUID;}
-
     public void set_name(String _name) {
         this._name = _name;
     }
@@ -80,6 +75,4 @@ public class Store {
     public void setOrders(ArrayList<Object> orders) {
         this.orders = orders;
     }
-
-    public void set_authUID(String _authUID) {this._authUID = _authUID;}
 }

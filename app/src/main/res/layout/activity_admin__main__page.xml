@@ -6,7 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ADMIN_MAIN_PAGE">
 
-    <Button
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_stores_main"
+            android:layout_width="match_parent"
+            android:layout_height="450dp" />
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progress_circle_stores_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+    <!--<Button
         android:id="@+id/buttonDelete"
         android:layout_width="170dp"
         android:layout_height="150dp"
@@ -39,6 +57,6 @@
         android:layout_height="150dp"
         android:layout_alignStart="@+id/buttonViewOrders"
         android:layout_alignTop="@+id/buttonDelete"
-        android:text="ADD PRODUCT" />
+        android:text="ADD PRODUCT" /> -->
 
 </RelativeLayout>
