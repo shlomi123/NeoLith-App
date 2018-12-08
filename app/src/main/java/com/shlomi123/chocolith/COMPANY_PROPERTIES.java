@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -64,6 +65,30 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
                                     {
+                                        /*db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful())
+                                                {
+                                                    DocumentSnapshot documentSnapshot = null;
+                                                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
+                                                    {
+                                                        String current_name = currentDocumentSnapshot.getString("Name");
+                                                        if (current_name.equals(name.getText().toString()))
+                                                        {
+                                                            documentSnapshot = currentDocumentSnapshot;
+                                                        }
+                                                    }
+
+                                                    String id = documentSnapshot.getId();
+
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    editor.putString("COMPANY_ID", id);
+                                                    editor.apply();
+                                                }
+                                            }
+                                        });*/
+
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString("COMPANY_NAME", name.getText().toString());
                                         editor.apply();

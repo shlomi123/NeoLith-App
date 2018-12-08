@@ -20,7 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity implements ImageAdapter.OnItemClickListener{
+public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity /*implements ImageAdapter.OnItemClickListener*/{
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
 
@@ -57,7 +57,7 @@ public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity implements Image
                     mAdapter = new ImageAdapter(CLIENT_SHOW_ALL_PRODUCTS.this, mProducts);
 
                     mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.setOnItemClickListener(CLIENT_SHOW_ALL_PRODUCTS.this);
+                    //mAdapter.setOnItemClickListener(CLIENT_SHOW_ALL_PRODUCTS.this);
                     mProgressCircle.setVisibility(View.INVISIBLE);
                 }
                 else
@@ -69,12 +69,12 @@ public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity implements Image
         });
     }
 
-    @Override
+    /*@Override
     public void onItemClick(int position)
     {
         Product product = mProducts.get(position);
         Intent intent = new Intent(CLIENT_SHOW_ALL_PRODUCTS.this, CLIENT_ORDER_PRODUCT.class);
         intent.putExtra("NAME", product.getName());
         startActivity(intent);
-    }
+    }*/
 }

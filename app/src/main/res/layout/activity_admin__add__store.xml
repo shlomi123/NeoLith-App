@@ -86,4 +86,10 @@
         android:layout_below="@id/editTextVerifyEmail1"
         android:text="Next" />
 
+    <ProgressBar
+        android:id="@+id/progress_circle_add_store"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
 </RelativeLayout>

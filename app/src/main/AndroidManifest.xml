@@ -30,7 +30,8 @@
         </activity>
         <activity
             android:name=".ADMIN_MAIN_PAGE"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ADMIN_ADD_STORE"
             android:screenOrientation="portrait" />
@@ -81,7 +82,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".CHOOSE_USER_TYPE"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".ADMIN_ADD_PRODUCT"></activity>
     </application>
 
 </manifest>

@@ -51,32 +51,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         {
             holder.Orders.setText("Order: 0");
         }
-
-        /*holder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PopupMenu popup = new PopupMenu(mContext, view);
-                //inflating menu from xml resource
-                popup.inflate(R.menu.store_options);
-                //adding click listener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_view_store:
-
-                                break;
-                            case R.id.menu_delete_store:
-                                //handle menu2 click
-                                break;
-                        }
-                        return false;
-                    }
-                });
-                //displaying the popup
-                popup.show();
-            }
-        });*/
     }
 
     @Override
@@ -118,8 +92,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem viewStore = menu.add(Menu.NONE, 1, 1, "View Store");
-            MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
+            MenuItem viewStore = menu.add(Menu.NONE, 1, 1, "view orders");
+            MenuItem delete = menu.add(Menu.NONE, 2, 2, "delete");
 
             viewStore.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);

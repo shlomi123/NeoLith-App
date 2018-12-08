@@ -50,7 +50,7 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
         setContentView(R.layout.activity_admin__pick__product__image);
 
         //initialize variables
-        upload = (Button) findViewById(R.id.buttonUploadProduct);
+        /*upload = (Button) findViewById(R.id.buttonUploadProduct);
         progressBar = (ProgressBar) findViewById(R.id.progressBarUpload);
         name = getIntent().getStringExtra("NAME");
         mStorageRef = FirebaseStorage.getInstance().getReference("Products");
@@ -71,10 +71,10 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 uploadFile();
             }
-        });
+        });*/
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         finished_upload = false;
@@ -181,5 +181,5 @@ public class ADMIN_PICK_PRODUCT_IMAGE extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Upload Stopped!!!", Toast.LENGTH_LONG).show();
         }
 
-    }
+    }*/
 }

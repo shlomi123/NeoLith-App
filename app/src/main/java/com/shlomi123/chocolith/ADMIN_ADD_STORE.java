@@ -12,11 +12,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,6 +57,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPreferences;
     private String company_name;
+    private ProgressBar mProgressCircle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,19 +74,29 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
         verifyEmail = (EditText) findViewById(R.id.editTextVerifyEmail1);
         phoneNum = (EditText) findViewById(R.id.editTextPhoneNumber1);
         button = (Button) findViewById(R.id.buttonNext1);
+        mProgressCircle = findViewById(R.id.progress_circle_add_store);
+        mProgressCircle.setVisibility(View.INVISIBLE);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // check for internet connection
-                if (Helper.isNetworkAvailable(getApplicationContext()))
-                {
+                /*if (Helper.isNetworkAvailable(getApplicationContext()))
+                {*/
                     // verify email
                     if (!email.getText().toString().equals(verifyEmail.getText().toString()))
                     {
                         Toast.makeText(getApplicationContext(), "Email is incorrect", Toast.LENGTH_LONG).show();
                     }
                     else {
+                        //show progress circle and make other views invisible
+                        mProgressCircle.setVisibility(View.VISIBLE);
+                        address.setVisibility(View.INVISIBLE);
+                        store.setVisibility(View.INVISIBLE);
+                        email.setVisibility(View.INVISIBLE);
+                        verifyEmail.setVisibility(View.INVISIBLE);
+                        phoneNum.setVisibility(View.INVISIBLE);
+                        button.setVisibility(View.INVISIBLE);
                         //get company's document
                         db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -134,14 +147,18 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                                             }
                                         });
                                 }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
                     }
-                }
+                /*}
                 else
                 {
                     Toast.makeText(getApplicationContext(), "No internet", Toast.LENGTH_LONG).show();
-                }
+                }*/
             }
         });
     }

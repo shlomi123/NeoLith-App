@@ -35,6 +35,8 @@ public class COMPANY_REGISTER extends AppCompatActivity {
     private EditText verify_password;
     private TextView title;
 
+    //TODO add sign in option(if account already exists)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
