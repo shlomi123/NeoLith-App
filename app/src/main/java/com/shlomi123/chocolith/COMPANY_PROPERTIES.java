@@ -44,6 +44,7 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
             public void onClick(View view) {
                 final Map<String, Object> map = new HashMap<>();
                 map.put("Name", name.getText().toString());
+                map.put("Email", sharedPreferences.getString("COMPANY_EMAIL", null));
                 db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     // check that company name doesn't already exist
                     @Override
@@ -65,7 +66,8 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful())
                                     {
-                                        /*db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        //save company id
+                                        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful())
@@ -87,8 +89,9 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                                     editor.apply();
                                                 }
                                             }
-                                        });*/
+                                        });
 
+                                        //save company name
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString("COMPANY_NAME", name.getText().toString());
                                         editor.apply();

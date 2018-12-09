@@ -83,7 +83,8 @@
         <activity
             android:name=".CHOOSE_USER_TYPE"
             android:screenOrientation="portrait" />
-        <activity android:name=".ADMIN_ADD_PRODUCT"></activity>
+        <activity android:name=".ADMIN_ADD_PRODUCT" />
+        <activity android:name=".COMPANY_SIGN_IN"></activity>
     </application>
 
 </manifest>

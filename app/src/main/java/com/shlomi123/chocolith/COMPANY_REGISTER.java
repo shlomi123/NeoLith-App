@@ -1,6 +1,8 @@
 package com.shlomi123.chocolith;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +28,7 @@ import java.util.Map;
 public class COMPANY_REGISTER extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Button verify;
-    private EditText name;
+    private EditText email;
     private EditText password;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Boolean sign_in_flag = false;
@@ -34,6 +36,10 @@ public class COMPANY_REGISTER extends AppCompatActivity {
     private TextView textView;
     private EditText verify_password;
     private TextView title;
+    private TextView logIn;
+    private SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+
 
     //TODO add sign in option(if account already exists)
 
@@ -42,11 +48,15 @@ public class COMPANY_REGISTER extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company__register);
 
+        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
         verify = (Button) findViewById(R.id.ButtonCompanyVerify);
-        name = (EditText) findViewById(R.id.editTextCompanyName);
+        email = (EditText) findViewById(R.id.editTextCompanyEmail);
         password = (EditText) findViewById(R.id.editTextCompanyPassword);
         verify_password = (EditText) findViewById(R.id.editTextCompanyPasswordVerify);
         title = (TextView) findViewById(R.id.textViewCompanyRegister);
+        logIn = (TextView) findViewById(R.id.textView_log_in);
         textView = (TextView) findViewById(R.id.textViewInstructions);
         textView.setVisibility(View.GONE);
         spinner=(ProgressBar)findViewById(R.id.progressBar1);
@@ -56,7 +66,7 @@ public class COMPANY_REGISTER extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //create user
-                mAuth.createUserWithEmailAndPassword(name.getText().toString(), password.getText().toString())
+                mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -66,6 +76,14 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                             }
                         }
                     });
+            }
+        });
+
+        logIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.removeAuthStateListener(mAuthListener);
+                startActivity(new Intent(COMPANY_REGISTER.this, COMPANY_SIGN_IN.class));
             }
         });
 
@@ -84,8 +102,6 @@ public class COMPANY_REGISTER extends AppCompatActivity {
         };
 
         mAuth.addAuthStateListener(mAuthListener);
-
-
     }
 
     @Override
@@ -93,7 +109,6 @@ public class COMPANY_REGISTER extends AppCompatActivity {
     {
         // when user returns to app check if signed in before
         super.onResume();
-        Toast.makeText(getApplicationContext(), "resume " + String.valueOf(sign_in_flag), Toast.LENGTH_LONG).show();
         if(sign_in_flag)
         {
             // if user signed in before check if he verified his email
@@ -107,6 +122,9 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                         if (user.isEmailVerified())
                         {
                             // user is verified, start company properties activity
+                            editor.putString("COMPANY_EMAIL", email.getText().toString());
+                            editor.apply();
+                            mAuth.removeAuthStateListener(mAuthListener);
                             startActivity(new Intent(COMPANY_REGISTER.this, COMPANY_PROPERTIES.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         }
                         else
@@ -139,8 +157,9 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                             verify.setVisibility(View.INVISIBLE);
                             password.setVisibility(View.INVISIBLE);
                             verify_password.setVisibility(View.INVISIBLE);
-                            name.setVisibility(View.INVISIBLE);
+                            email.setVisibility(View.INVISIBLE);
                             title.setVisibility(View.INVISIBLE);
+                            logIn.setVisibility(View.INVISIBLE);
                         }
                         else
                         {

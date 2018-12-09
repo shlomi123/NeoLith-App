@@ -91,7 +91,6 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
                         @Override
                         public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                             if (e != null) {
-                                Toast.makeText(getActivity(), "Error with listener", Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             // create recycler view to show stores and their data
