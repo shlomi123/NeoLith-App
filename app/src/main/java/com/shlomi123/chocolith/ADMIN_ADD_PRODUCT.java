@@ -34,7 +34,6 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 //TODO check if product already exists
-//TODO check what happens when there's no internet
 public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
 
     private Button chooseFile;
@@ -50,6 +49,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
     private String company_name;
     private SharedPreferences sharedPreferences;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private String id;
 
 
     @Override
@@ -70,7 +70,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference("Products");
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        id = sharedPreferences.getString("COMPANY_ID", null);
 
 
         chooseFile.setOnClickListener(new View.OnClickListener() {
@@ -149,44 +149,24 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                                 final Product product = new Product(name.getText().toString(), uri.toString(), Integer.parseInt(cost.getText().toString()), Integer.parseInt(units.getText().toString()));
                                 //upload to firestore name, image path, cost per unit, and units per package
 
-                                db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful())
-                                        {
-                                            DocumentSnapshot documentSnapshot = null;
-                                            for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
-                                            {
-                                                String name = currentDocumentSnapshot.getString("Name");
-                                                if (name.equals(company_name))
+                                db.collection("Companies").document(id).collection("Products")
+                                        .add(product)
+                                        .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if (task.isSuccessful())
                                                 {
-                                                    documentSnapshot = currentDocumentSnapshot;
+                                                    Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
+                                                    finish();
                                                 }
                                             }
-
-                                            String id = documentSnapshot.getId();
-
-                                            db.collection("Companies").document(id).collection("Products")
-                                                    .add(product)
-                                                    .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                            if (task.isSuccessful())
-                                                            {
-                                                                Toast.makeText(getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
-                                                                finish();
-                                                            }
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                                        }
-                                                    });
-                                        }
-                                    }
-                                });
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                                }
+                                 });
                             }
                         });
 

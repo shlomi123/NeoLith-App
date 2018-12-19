@@ -1,5 +1,5 @@
 package com.shlomi123.chocolith;
- //TODO cost per unit, number of units per package
+
 public class Product {
     private String name;
     private String imageUrl;

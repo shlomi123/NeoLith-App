@@ -40,7 +40,6 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
     private ImageAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Product> mProducts;
-    private String company_name;
     private String id;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -51,12 +50,12 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        id = sharedPreferences.getString("COMPANY_ID", null);
         addProduct = view.findViewById(R.id.button_add_product);
         mStorage = FirebaseStorage.getInstance();
         mProgressCircle = view.findViewById(R.id.progress_circle_products);
@@ -73,46 +72,31 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
         mAdapter.setOnItemClickListener(ProductsFragment.this);
 
 
-        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot documentSnapshot = null;
-                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult()) {
-                        String name = currentDocumentSnapshot.getString("Name");
-                        if (name.equals(company_name)) {
-                            documentSnapshot = currentDocumentSnapshot;
+        db.collection("Companies")
+                .document(id)
+                .collection("Products")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        // create recycler view to show stores and their data
+                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                            mProducts.clear();
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                                Product product = documentSnapshot.toObject(Product.class);
+                                mProducts.add(product);
+                            }
+
+                            mAdapter.notifyDataSetChanged();
+                            mProgressCircle.setVisibility(View.INVISIBLE);
+                        } else {
+                            mProgressCircle.setVisibility(View.INVISIBLE);
+                            mProducts.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
-
-                    id = documentSnapshot.getId();
-
-                    db.collection("Companies").document(id).collection("Products").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                return;
-                            }
-                            // create recycler view to show stores and their data
-                            if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
-                                mProducts.clear();
-                                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
-                                    Product product = documentSnapshot.toObject(Product.class);
-                                    mProducts.add(product);
-                                }
-
-                                mAdapter.notifyDataSetChanged();
-
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                            } else {
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                                mProducts.clear();
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            }
         });
 
         addProduct.setOnClickListener(new View.OnClickListener() {

@@ -41,7 +41,6 @@ public class COMPANY_REGISTER extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
 
-    //TODO add sign in option(if account already exists)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

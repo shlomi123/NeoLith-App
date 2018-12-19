@@ -92,6 +92,7 @@ public class Helper {
         int counter = 1;
         for (Store store: stores)
         {
+            //TODO show products of stores
             row1 = sheet1.createRow(counter);
 
             c = row1.createCell(0);

@@ -1,8 +1,14 @@
 package com.shlomi123.chocolith;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,20 +17,34 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
-import com.google.firebase.auth.FirebaseAuth;
 
-//TODO convert admin actions to be compatible with generic version of app: sign out, add product, save excel sheet of one/all store/s
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
+//TODO edit profile fragment
 public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private int fragment_num = 1;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private SharedPreferences sharedPreferences;
+    private String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__main__page);
+
+        // company id
+        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        id = sharedPreferences.getString("COMPANY_ID", null);
 
         //add custom toolbar
         Toolbar toolbar = findViewById(R.id.main_page_toolbar);
@@ -45,6 +65,14 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                     new StoresFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_stores);
             getSupportActionBar().setTitle("Stores");
+        }
+
+        if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M)
+        {
+            if(!checkPermission())
+            {
+                requestPermission();
+            }
         }
     }
 
@@ -91,8 +119,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_SIGN_IN.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
             case R.id.nav_excel:
-                //TODO create excel sheet
-                Toast.makeText(this, "excel", Toast.LENGTH_SHORT).show();
+                createExcelSheet();
                 break;
         }
 
@@ -107,6 +134,39 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void createExcelSheet(){
+        db.collection("Companies")
+                .document(id)
+                .collection("Stores")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    // check that store name doesn't already exist
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            if (Helper.saveExcelFile(getApplicationContext(), task.getResult().toObjects(Store.class)))
+                            {
+                                Toast.makeText(getApplicationContext(), "excel sheet created in downloads", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "error creating excel sheet", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
+
+    private boolean checkPermission()
+    {
+        return (ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission()
+    {
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
     }
 
 }

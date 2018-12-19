@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-//TODO fix adapter with popup menu
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHolder> {
     private Context mContext;
     private List<Store> mStores;

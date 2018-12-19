@@ -29,7 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StoresFragment extends Fragment implements StoreAdapter.OnItemClickListener{
+public class StoresFragment extends Fragment implements StoreAdapter.OnItemClickListener {
 
     private ImageButton addStore;
     private SharedPreferences sharedPreferences;
@@ -38,7 +38,6 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     private StoreAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Store> mStores;
-    private String company_name;
     private String id;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -49,12 +48,12 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState){
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        id = sharedPreferences.getString("COMPANY_ID", null);
         addStore = (ImageButton) view.findViewById(R.id.button_add_store);
         mRecyclerView = view.findViewById(R.id.recycler_view_stores_main);
         mRecyclerView.setHasFixedSize(true);
@@ -68,53 +67,33 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
         mAdapter.setOnItemClickListener(StoresFragment.this);
 
         // get required company
-        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot documentSnapshot = null;
-                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
-                    {
-                        String name = currentDocumentSnapshot.getString("Name");
-                        if (name.equals(company_name))
-                        {
-                            documentSnapshot = currentDocumentSnapshot;
+        db.collection("Companies")
+                .document(id)
+                .collection("Stores")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        // create recycler view to show stores and their data
+                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
+                            mStores.clear();
+                            for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments()) {
+                                Store store = document.toObject(Store.class);
+                                mStores.add(store);
+                            }
+
+                            mAdapter.notifyDataSetChanged();
+
+                            mProgressCircle.setVisibility(View.INVISIBLE);
+                        } else {
+                            mProgressCircle.setVisibility(View.INVISIBLE);
+                            mStores.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
-
-                    id = documentSnapshot.getId();
-
-                    //create a listener on store collection
-                    db.collection("Companies").document(id).collection("Stores").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                            if (e != null) {
-                                return;
-                            }
-                            // create recycler view to show stores and their data
-                            if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
-                                mStores.clear();
-                                for (DocumentSnapshot document : queryDocumentSnapshots.getDocuments())
-                                {
-                                    Store store = document.toObject(Store.class);
-                                    mStores.add(store);
-                                }
-
-                                mAdapter.notifyDataSetChanged();
-
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                            }
-                            else {
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                                mStores.clear();
-                                mAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    });
-                }
-            }
-        });
+                });
 
         addStore.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,8 +104,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     }
 
     @Override
-    public void onItemClick(int position)
-    {
+    public void onItemClick(int position) {
         Toast.makeText(getActivity(), "long press to show options", Toast.LENGTH_SHORT).show();
     }
 
@@ -135,22 +113,16 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
         Store chosenStore = mStores.get(position);
 
         // check first if orders is still null
-        if (chosenStore.getOrders() != null)
-        {
+        if (chosenStore.getOrders() != null) {
             // check if any orders were made
-            if (!chosenStore.getOrders().isEmpty())
-            {
+            if (!chosenStore.getOrders().isEmpty()) {
                 Intent intent = new Intent(getActivity(), ADMIN_VIEW_STORE_ORDERS.class);
                 intent.putExtra("NAME", chosenStore.get_name());
                 startActivity(intent);
-            }
-            else
-            {
+            } else {
                 Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
         }
     }
@@ -165,55 +137,37 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
     private void deleteStore(final String storeName) {
         // get required company
-        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        db.collection("Companies")
+                .document(id)
+                .collection("Stores")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot documentSnapshot = null;
-                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
-                    {
-                        String name = currentDocumentSnapshot.getString("Name");
-                        if (name.equals(company_name))
-                        {
-                            // this is the companies document
-                            documentSnapshot = currentDocumentSnapshot;
-                        }
-                    }
-
-                    final String id = documentSnapshot.getId();
-                    // get the document of the store that needs to be deleted
-                    db.collection("Companies").document(id).collection("Stores").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                DocumentSnapshot documentSnapshot = null;
-                                for (DocumentSnapshot currentDocumentSnapshot : task.getResult()) {
-                                    String name = currentDocumentSnapshot.getString("_name");
-                                    if (name.equals(storeName)) {
-                                        // this is the document that needs to be deleted
-                                        documentSnapshot = currentDocumentSnapshot;
-                                    }
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = null;
+                            for (DocumentSnapshot currentDocumentSnapshot : task.getResult()) {
+                                String name = currentDocumentSnapshot.getString("_name");
+                                if (name.equals(storeName)) {
+                                    // this is the document that needs to be deleted
+                                    documentSnapshot = currentDocumentSnapshot;
                                 }
-                                // deletion....
-                                db.collection("Companies")
-                                        .document(id)
-                                        .collection("Stores")
-                                        .document(documentSnapshot.getId())
-                                        .delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (!task.isSuccessful())
-                                                {
-                                                    Toast.makeText(getActivity(), "Error While Deleting", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
                             }
+                            // deletion....
+                            db.collection("Companies")
+                                    .document(id)
+                                    .collection("Stores")
+                                    .document(documentSnapshot.getId())
+                                    .delete()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (!task.isSuccessful()) {
+                                                Toast.makeText(getActivity(), "Error While Deleting", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         }
-                    });
-                }
             }
         });
     }
