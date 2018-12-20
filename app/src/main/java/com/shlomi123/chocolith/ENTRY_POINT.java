@@ -24,10 +24,12 @@ public class ENTRY_POINT extends AppCompatActivity {
                 startActivity(new Intent(ENTRY_POINT.this, CHOOSE_USER_TYPE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
             case 1:
+                //admin main page
                 startActivity(new Intent(ENTRY_POINT.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
             case 2:
-                startActivity(new Intent(ENTRY_POINT.this, CLIENT_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                //client main page
+                startActivity(new Intent(ENTRY_POINT.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
             case 3:
                 //go to company sign in

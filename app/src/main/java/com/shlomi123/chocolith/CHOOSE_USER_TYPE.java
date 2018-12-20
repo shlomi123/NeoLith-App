@@ -39,7 +39,7 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("USER_TYPE", 2);
                 editor.apply();
-                startActivity(new Intent(CHOOSE_USER_TYPE.this, LOGIN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(CHOOSE_USER_TYPE.this, STORE_REGISTER.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
     }
