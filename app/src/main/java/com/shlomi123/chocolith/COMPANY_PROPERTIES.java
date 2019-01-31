@@ -72,30 +72,21 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful())
                                                 {
-                                                    DocumentSnapshot documentSnapshot = null;
                                                     for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
                                                     {
                                                         String current_name = currentDocumentSnapshot.getString("Name");
                                                         if (current_name.equals(name.getText().toString()))
                                                         {
-                                                            documentSnapshot = currentDocumentSnapshot;
+                                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                            editor.putString("COMPANY_ID", currentDocumentSnapshot.getId());
+                                                            editor.putString("COMPANY_NAME", name.getText().toString());
+                                                            editor.apply();
+                                                            startActivity(new Intent(COMPANY_PROPERTIES.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                                         }
                                                     }
-
-                                                    String id = documentSnapshot.getId();
-
-                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                    editor.putString("COMPANY_ID", id);
-                                                    editor.apply();
                                                 }
                                             }
                                         });
-
-                                        //save company name
-                                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                                        editor.putString("COMPANY_NAME", name.getText().toString());
-                                        editor.apply();
-                                        startActivity(new Intent(COMPANY_PROPERTIES.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                     }
                                     else
                                     {

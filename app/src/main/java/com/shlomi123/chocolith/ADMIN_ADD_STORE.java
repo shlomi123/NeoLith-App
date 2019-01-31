@@ -41,7 +41,9 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
     private Button button;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPreferences;
-    private String id;
+    private String company_id;
+    private String company_name;
+    private String company_email;
     private ProgressBar mProgressCircle;
 
     @Override
@@ -51,7 +53,9 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        id = sharedPreferences.getString("COMPANY_ID", null);
+        company_id = sharedPreferences.getString("COMPANY_ID", null);
+        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
 
         address = (EditText) findViewById(R.id.editTextAddress);
         store = (EditText) findViewById(R.id.editTextStoreName);
@@ -83,7 +87,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                     //get company's document
 
                     db.collection("Companies")
-                            .document(id)
+                            .document(company_id)
                             .collection("Stores")
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -105,7 +109,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                                         String a = address.getText().toString();
                                         int phone = Integer.parseInt(phoneNum.getText().toString());
                                         // if store name doesn't exist create new store
-                                        addStoreToDataBase(id, name, e, a, phone);
+                                        addStoreToDataBase(name, e, a, phone);
                                     } else {
                                         Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
                                     }
@@ -116,18 +120,32 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
         });
     }
 
-    private void addStoreToDataBase(final String id, final String name, final String email, final String address, final int phone) {
+    private void addStoreToDataBase(final String name, final String email, final String address, final int phone) {
         //add new store to databased
-        Store s = new Store(name, email, address, phone);
-        db.collection("Companies").document(id).collection("Stores")
+        final Store s = new Store(name, email, address, phone);
+        db.collection("Companies").document(company_id).collection("Stores")
                 .add(s)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d("blaaaa", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        Toast.makeText(getApplicationContext(), "Succesfuly added", Toast.LENGTH_LONG).show();
+                        final Distributor distributor = new Distributor(company_name, company_email, company_id);
 
-                        finish();
+                        db.collection("Stores")
+                                .document(email)
+                                .collection("Distributors")
+                                .add(distributor)
+                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                        if (task.isSuccessful()){
+                                            Toast.makeText(getApplicationContext(), "Succesfuly added", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }else{
+                                            Toast.makeText(getApplicationContext(), "Error, wasn't added", Toast.LENGTH_LONG).show();
+                                            finish();
+                                        }
+                                    }
+                                });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -34,7 +34,6 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
         final Distributor distributorCurrent = mDistributor.get(position);
         holder.Name.setText(distributorCurrent.getName());
         holder.Email.setText("Email: " + distributorCurrent.getEmail());
-        holder.Num_Orders.setText("Products: " + String.valueOf(distributorCurrent.getNum_products()));
     }
 
     @Override

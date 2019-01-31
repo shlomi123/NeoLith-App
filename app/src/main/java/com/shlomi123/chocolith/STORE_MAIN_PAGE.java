@@ -55,7 +55,7 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+            getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
                     new DistributorFragment()).commit();
             navigationView.setCheckedItem(R.id.nav_distributors);
             getSupportActionBar().setTitle("Distributor");
@@ -76,7 +76,7 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
 
         switch (fragment_num){
             case 1:
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
                         new DistributorFragment()).commit();
                 navigationView.setCheckedItem(R.id.nav_stores);
                 getSupportActionBar().setTitle("Distributor");
@@ -91,7 +91,7 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
             case R.id.nav_distributors:
                 //open store fragment
                 fragment_num = 1;
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
                         new DistributorFragment()).commit();
                 getSupportActionBar().setTitle("Distributors");
                 break;

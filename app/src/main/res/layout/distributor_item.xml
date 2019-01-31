@@ -7,8 +7,9 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:orientation="vertical"
+            android:gravity="center_vertical"
             android:layout_marginStart="20dp">
 
             <TextView
@@ -20,25 +21,8 @@
                 android:layout_marginTop="8dp"
                 android:text="Name"
                 android:textColor="@android:color/black"
-                android:textSize="20sp" />
+                android:textSize="40sp" />
 
-            <TextView
-                android:id="@+id/textViewDistributorEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Email"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/textViewDistributorProducts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Products"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
 
         </LinearLayout>
 

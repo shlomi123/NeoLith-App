@@ -24,7 +24,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
+//TODO sign out
+//TODO scan product
 public class CLIENT_MAIN_PAGE extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;

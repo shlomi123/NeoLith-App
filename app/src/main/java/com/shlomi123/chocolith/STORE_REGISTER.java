@@ -86,7 +86,7 @@ public class STORE_REGISTER extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 mAuth.removeAuthStateListener(mAuthListener);
-                startActivity(new Intent(.this, COMPANY_SIGN_IN.class));
+                startActivity(new Intent(.this, STORE_SIGN_IN.class));
             }
         });*/
 
@@ -125,9 +125,8 @@ public class STORE_REGISTER extends AppCompatActivity {
                             editor.putString("STORE_EMAIL", email.getText().toString());
                             editor.apply();
 
-                            //TODO save store name, company email, name, and id
                             mAuth.removeAuthStateListener(mAuthListener);
-                            startActivity(new Intent(STORE_REGISTER.this, STORE_CHOOSE_COMPANY.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            startActivity(new Intent(STORE_REGISTER.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         } else {
                             // if user returned to application without verifying email
                             Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();

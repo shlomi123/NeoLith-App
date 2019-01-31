@@ -4,10 +4,15 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.common.collect.Table;
 import com.google.common.reflect.TypeToken;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -147,4 +152,13 @@ public class Helper {
         return formatter.format(date);
     }
 
+    static public Distributor document_to_distributor(DocumentSnapshot documentSnapshot){
+        final Distributor distributor = new Distributor();
+
+        distributor.setEmail(documentSnapshot.getString("Email"));
+        distributor.setId(documentSnapshot.getId());
+        distributor.setName(documentSnapshot.getString("Name"));
+
+        return distributor;
+    }
 }
