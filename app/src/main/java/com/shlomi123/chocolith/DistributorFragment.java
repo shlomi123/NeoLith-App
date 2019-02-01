@@ -83,7 +83,6 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
                         if (e != null) {
                             return;
                         }
-                        // create recycler view to show stores and their data
                         if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                             mDistributors.clear();
                             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
@@ -104,11 +103,11 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(getActivity(), "long press to show options", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onViewProducts(int position) {
-        //TODO view products and order
+        Distributor distributor = mDistributors.get(position);
+        Intent intent = new Intent(getActivity(), STORE_SHOW_DISTRIBUTOR_PRODUCTS.class);
+        intent.putExtra("DISTRIBUTOR_ID", distributor.getId());
+        intent.putExtra("DISTRIBUTOR_EMAIL", distributor.getEmail());
+        intent.putExtra("DISTRIBUTOR_NAME", distributor.getName());
+        startActivity(intent);
     }
 }

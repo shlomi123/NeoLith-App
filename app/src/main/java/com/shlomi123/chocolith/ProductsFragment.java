@@ -81,7 +81,6 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
                         if (e != null) {
                             return;
                         }
-                        // create recycler view to show stores and their data
                         if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                             mProducts.clear();
                             for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {

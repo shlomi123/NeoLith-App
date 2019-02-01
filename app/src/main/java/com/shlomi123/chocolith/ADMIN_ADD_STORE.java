@@ -123,20 +123,24 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
     private void addStoreToDataBase(final String name, final String email, final String address, final int phone) {
         //add new store to databased
         final Store s = new Store(name, email, address, phone);
-        db.collection("Companies").document(company_id).collection("Stores")
-                .add(s)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        db.collection("Companies")
+                .document(company_id)
+                .collection("Stores")
+                .document(email)
+                .set(s)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         final Distributor distributor = new Distributor(company_name, company_email, company_id);
 
                         db.collection("Stores")
                                 .document(email)
                                 .collection("Distributors")
-                                .add(distributor)
-                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                .document(company_email)
+                                .set(distributor)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()){
                                             Toast.makeText(getApplicationContext(), "Succesfuly added", Toast.LENGTH_LONG).show();
                                             finish();

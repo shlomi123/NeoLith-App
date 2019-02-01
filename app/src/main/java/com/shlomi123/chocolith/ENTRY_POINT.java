@@ -37,6 +37,7 @@ public class ENTRY_POINT extends AppCompatActivity {
                 break;
             case 4:
                 //go to store sign in
+                startActivity(new Intent(ENTRY_POINT.this, STORE_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 break;
         }
     }

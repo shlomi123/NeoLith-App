@@ -39,6 +39,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     private ProgressBar mProgressCircle;
     private List<Store> mStores;
     private String id;
+    private String company_email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
@@ -54,6 +55,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         id = sharedPreferences.getString("COMPANY_ID", null);
+        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
         addStore = (ImageButton) view.findViewById(R.id.button_add_store);
         mRecyclerView = view.findViewById(R.id.recycler_view_stores_main);
         mRecyclerView.setHasFixedSize(true);
@@ -132,44 +134,39 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
         Store chosenStore = mStores.get(position);
         //TODO show a warning before deletion
         // delete chosen store
-        deleteStore(chosenStore.get_name());
+        deleteStore(chosenStore.get_name(), chosenStore.get_email());
     }
 
-    private void deleteStore(final String storeName) {
+    private void deleteStore(final String storeName, final String storeEmail) {
         // get required company
+        //TODO what if store is in the middle of ordering
+
         db.collection("Companies")
                 .document(id)
                 .collection("Stores")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = null;
-                            for (DocumentSnapshot currentDocumentSnapshot : task.getResult()) {
-                                String name = currentDocumentSnapshot.getString("_name");
-                                if (name.equals(storeName)) {
-                                    // this is the document that needs to be deleted
-                                    documentSnapshot = currentDocumentSnapshot;
-                                }
-                            }
-                            // deletion....
-                            db.collection("Companies")
-                                    .document(id)
-                                    .collection("Stores")
-                                    .document(documentSnapshot.getId())
-                                    .delete()
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (!task.isSuccessful()) {
-                                                Toast.makeText(getActivity(), "Error While Deleting", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                .document(storeEmail)
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Error While Deleting", Toast.LENGTH_SHORT).show();
                         }
-            }
-        });
+                    }
+                });
+        db.collection("Stores")
+                .document(storeEmail)
+                .collection("Distributors")
+                .document(company_email)
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (!task.isSuccessful()) {
+                            Toast.makeText(getActivity(), "Error While Deleting", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 }

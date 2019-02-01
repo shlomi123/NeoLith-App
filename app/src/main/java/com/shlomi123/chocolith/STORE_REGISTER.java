@@ -82,13 +82,13 @@ public class STORE_REGISTER extends AppCompatActivity {
         });
 
         //TODO client sign in
-        /*logIn.setOnClickListener(new View.OnClickListener() {
+        logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mAuth.removeAuthStateListener(mAuthListener);
-                startActivity(new Intent(.this, STORE_SIGN_IN.class));
+                startActivity(new Intent(STORE_REGISTER.this, STORE_SIGN_IN.class));
             }
-        });*/
+        });
 
         // listens for user sign in
         mAuthListener = new FirebaseAuth.AuthStateListener() {

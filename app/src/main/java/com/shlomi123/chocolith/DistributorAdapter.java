@@ -33,7 +33,6 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
     public void onBindViewHolder(DistributorAdapter.DistributorViewHolder holder, int position) {
         final Distributor distributorCurrent = mDistributor.get(position);
         holder.Name.setText(distributorCurrent.getName());
-        holder.Email.setText("Email: " + distributorCurrent.getEmail());
     }
 
     @Override
@@ -41,21 +40,17 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
         return mDistributor.size();
     }
 
-    public class DistributorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
+    public class DistributorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView Name;
-        public TextView Num_Orders;
-        public TextView Email;
 
 
         public DistributorViewHolder(View itemView) {
             super(itemView);
 
             itemView.setOnClickListener(this);
-            itemView.setOnCreateContextMenuListener(this);
+            //itemView.setOnCreateContextMenuListener(this);
 
             Name = itemView.findViewById(R.id.textViewDistributorName);
-            Num_Orders = itemView.findViewById(R.id.textViewDistributorProducts);
-            Email = itemView.findViewById(R.id.textViewDistributorEmail);
         }
 
         @Override
@@ -67,35 +62,10 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
                 }
             }
         }
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem viewProducts = menu.add(Menu.NONE, 1, 1, "view products");
-
-            viewProducts.setOnMenuItemClickListener(this);
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            if (mListener != null) {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-
-                    switch (item.getItemId()) {
-                        case 1:
-                            mListener.onViewProducts(position);
-                            return true;
-                    }
-                }
-            }
-            return false;
-        }
     }
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-
-        void onViewProducts(int position);
     }
 
     public void setOnItemClickListener(DistributorAdapter.OnItemClickListener listener) {
