@@ -81,7 +81,6 @@ public class STORE_REGISTER extends AppCompatActivity {
             }
         });
 
-        //TODO client sign in
         logIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
