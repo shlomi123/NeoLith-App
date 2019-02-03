@@ -60,36 +60,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy, HH:mm:ss");
         holder.Date.setText("Date: " + simpleDateFormat.format(OrderCurrent.get_date()).toString());
         holder.Quantity.setText("Quantity: " + String.valueOf(OrderCurrent.get_quantity()));
+        holder.Distributor.setText("Distributor: " + OrderCurrent.get_distributor());
 
-        CollectionReference products = db.collection("Products");
-        //get image of product
-        products.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot documentSnapshot: task.getResult())
-                    {
-                        Product product = documentSnapshot.toObject(Product.class);
-                        if (product.getName().equals(OrderCurrent.get_product()))
-                        {
-                            StorageReference storageReference = storage.getReferenceFromUrl(product.getImageUrl());
-                            Glide.with(mContext)
-                                    .using(new FirebaseImageLoader())
-                                    .load(storageReference)
-                                    .fitCenter()
-                                    .placeholder(circularProgressDrawable)
-                                    .into(holder.imageView);
-                        }
-
-                    }
-                }
-                else
-                {
-                    Toast.makeText(mContext, "Error getting stores", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        StorageReference storageReference = storage.getReferenceFromUrl(OrderCurrent.get_url());
+        Glide.with(mContext)
+                .using(new FirebaseImageLoader())
+                .load(storageReference)
+                .fitCenter()
+                .placeholder(circularProgressDrawable)
+                .into(holder.imageView);
 
     }
 
@@ -102,6 +81,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         public TextView Name;
         public TextView Date;
         public TextView Quantity;
+        public TextView Distributor;
         public ImageView imageView;
 
 
@@ -113,6 +93,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
             Date = itemView.findViewById(R.id.textViewProductOrderDate);
             Quantity = itemView.findViewById(R.id.textViewOrderQuantity);
             imageView = itemView.findViewById(R.id.imageViewProductImage);
+            Distributor = itemView.findViewById(R.id.textViewOrderDistributor);
         }
 
         @Override

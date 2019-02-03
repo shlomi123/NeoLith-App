@@ -60,10 +60,10 @@ public class CLIENT_QR_SCANNER extends AppCompatActivity implements ZXingScanner
 
     @Override
     public void handleResult(Result result) {
-        Intent intent = new Intent(CLIENT_QR_SCANNER.this,CLIENT_ORDER_PRODUCT.class);
+        /*Intent intent = new Intent(CLIENT_QR_SCANNER.this,CLIENT_ORDER_PRODUCT.class);
         intent.putExtra("NAME", result.toString());
         startActivity(intent);
-        finish();
+        finish();*/
     }
 
     @Override

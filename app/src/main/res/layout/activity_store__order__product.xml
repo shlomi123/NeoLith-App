@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CLIENT_ORDER_PRODUCT">
+    tools:context=".STORE_ORDER_PRODUCT">
 
     <TextView
         android:id="@+id/textViewProductName1"
@@ -43,13 +43,12 @@
         android:text="Order" />
 
     <TextView
-        android:id="@+id/textViewInformation"
+        android:id="@+id/textViewUnitsPerPackage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dp"
         android:text="one unit is a box of 24 items" />
-
 
 </RelativeLayout>

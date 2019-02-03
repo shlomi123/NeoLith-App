@@ -101,11 +101,10 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
                         new ProductsFragment()).commit();
                 getSupportActionBar().setTitle("Scan");
-                break;
+                break;*/
             case R.id.nav_orders:
-                fragment_num = 1;
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
-                        new StoresFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
+                        new StoreOrdersFragment()).commit();
                 getSupportActionBar().setTitle("Orders");
                 break;
             /*case R.id.nav_sign_out:

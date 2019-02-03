@@ -120,13 +120,6 @@ public class CLIENT_MAIN_PAGE extends AppCompatActivity {
                 startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_SHOW_ALL_PRODUCTS.class));
             }
         });
-
-        history.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_ORDER_HISTORY.class));
-            }
-        });
         firebaseAuth.addAuthStateListener(authStateListener);
     }
 

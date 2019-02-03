@@ -57,9 +57,6 @@
             android:name=".ADMIN_PICK_PRODUCT_IMAGE"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CLIENT_ORDER_PRODUCT"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".CLIENT_SHOW_ALL_PRODUCTS"
             android:screenOrientation="portrait" />
         <activity
@@ -67,9 +64,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ADMIN_VIEW_STORE_ORDERS"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".CLIENT_ORDER_HISTORY"
             android:screenOrientation="portrait" />
         <activity
             android:name=".CLIENT_MAIN_PAGE"
@@ -96,8 +90,15 @@
             android:name=".STORE_MAIN_PAGE"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".STORE_SIGN_IN" />
-        <activity android:name=".STORE_SHOW_DISTRIBUTOR_PRODUCTS"></activity>
+        <activity
+            android:name=".STORE_SIGN_IN"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".STORE_SHOW_DISTRIBUTOR_PRODUCTS"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".STORE_ORDER_PRODUCT"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

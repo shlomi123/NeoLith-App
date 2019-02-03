@@ -1,5 +1,6 @@
 package com.shlomi123.chocolith;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
 
     private String distributor_id;
     private String distributor_email;
+    private String distributor_name;
     private RecyclerView mRecyclerView;
     private DistributorProductsAdapter mAdapter;
     private ProgressBar mProgressCircle;
@@ -34,6 +36,7 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
 
         distributor_id = getIntent().getStringExtra("DISTRIBUTOR_ID");
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
+        distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
 
         mProgressCircle = findViewById(R.id.progress_circle_distributors_products);
 
@@ -48,6 +51,7 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(STORE_SHOW_DISTRIBUTOR_PRODUCTS.this);
 
+        // recycler view of distributors products
         db.collection("Companies")
                 .document(distributor_id)
                 .collection("Products")
@@ -77,6 +81,17 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
 
     @Override
     public void onItemClick(int position) {
-        //TODO order product
+        Product product = mProducts.get(position);
+
+        Intent intent = new Intent(STORE_SHOW_DISTRIBUTOR_PRODUCTS.this, STORE_ORDER_PRODUCT.class);
+        intent.putExtra("DISTRIBUTOR_ID", distributor_id);
+        intent.putExtra("DISTRIBUTOR_EMAIL", distributor_email);
+        intent.putExtra("DISTRIBUTOR_NAME", distributor_name);
+        intent.putExtra("PRODUCT_NAME", product.getName());
+        intent.putExtra("PRODUCT_COST", product.getCost());
+        intent.putExtra("PRODUCT_IMG_URL", product.getImageUrl());
+        intent.putExtra("PRODUCT_UNITS_PER_PACKAGE", product.getUnits_per_package());
+
+        startActivity(intent);
     }
 }
