@@ -24,8 +24,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-//TODO sign out
-//TODO scan product
 public class CLIENT_MAIN_PAGE extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
@@ -110,7 +108,7 @@ public class CLIENT_MAIN_PAGE extends AppCompatActivity {
         scanner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_QR_SCANNER.class));
+                //startActivity(new Intent(CLIENT_MAIN_PAGE.this, CLIENT_QR_SCANNER.class));
             }
         });
 

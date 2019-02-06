@@ -20,7 +20,6 @@ import java.util.List;
 
 public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implements DistributorProductsAdapter.OnItemClickListener{
 
-    private String distributor_id;
     private String distributor_email;
     private String distributor_name;
     private RecyclerView mRecyclerView;
@@ -34,7 +33,6 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store__show__distributor__products);
 
-        distributor_id = getIntent().getStringExtra("DISTRIBUTOR_ID");
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
         distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
 
@@ -53,7 +51,7 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
 
         // recycler view of distributors products
         db.collection("Companies")
-                .document(distributor_id)
+                .document(distributor_email)
                 .collection("Products")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -84,7 +82,6 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
         Product product = mProducts.get(position);
 
         Intent intent = new Intent(STORE_SHOW_DISTRIBUTOR_PRODUCTS.this, STORE_ORDER_PRODUCT.class);
-        intent.putExtra("DISTRIBUTOR_ID", distributor_id);
         intent.putExtra("DISTRIBUTOR_EMAIL", distributor_email);
         intent.putExtra("DISTRIBUTOR_NAME", distributor_name);
         intent.putExtra("PRODUCT_NAME", product.getName());

@@ -6,29 +6,75 @@
     android:layout_height="match_parent"
     tools:context=".COMPANY_PROPERTIES">
 
-    <EditText
-        android:id="@+id/editTextCompanyName"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="company name"
-        android:layout_centerInParent="true"/>
-
     <TextView
         android:id="@+id/textViewCompanyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
         android:text="Company"
         android:textSize="36sp"
         android:textColor="#000000"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/textViewCompanyName"
+        android:paddingBottom="10dp"
+        android:layout_marginTop="50dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/imageView_company_profile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="30dp"
+                app:srcCompat="@drawable/ic_android_black_24dp"/>
+
+            <Button
+                android:id="@+id/button_open_file_chooser_for_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="choose"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="130dp"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/editTextCompanyName"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:hint="company name"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/buttonCompanyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
         android:text="Next" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_company_profile_upload"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

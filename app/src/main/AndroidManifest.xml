@@ -48,9 +48,6 @@
             android:name=".LOGIN"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".CLIENT_QR_SCANNER"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ADMIN_SCAN_PRODUCT"
             android:screenOrientation="portrait" />
         <activity
@@ -92,13 +89,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".STORE_SIGN_IN"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".STORE_SHOW_DISTRIBUTOR_PRODUCTS"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".STORE_ORDER_PRODUCT"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".STORE_QR_SCAN"></activity>
     </application>
 
 </manifest>

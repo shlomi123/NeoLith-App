@@ -38,7 +38,6 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
     private String store_email;
     private String distributor_email;
-    private String distributor_id;
     private String distributor_name;
     private String product_name;
     private int product_cost;
@@ -64,7 +63,6 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         store_email = sharedPreferences.getString("STORE_EMAIL", null);
 
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
-        distributor_id = getIntent().getStringExtra("DISTRIBUTOR_ID");
         distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
         product_cost = getIntent().getIntExtra("PRODUCT_COST", 0);
         product_name = getIntent().getStringExtra("PRODUCT_NAME");
@@ -163,7 +161,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     {
         //get store details for email
         db.collection("Companies")
-                .document(distributor_id)
+                .document(distributor_email)
                 .collection("Stores")
                 .document(store_email)
                 .get()

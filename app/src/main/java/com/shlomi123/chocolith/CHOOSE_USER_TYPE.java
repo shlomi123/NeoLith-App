@@ -44,4 +44,3 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
         });
     }
 }
-//TODO finish store login

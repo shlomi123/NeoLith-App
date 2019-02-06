@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.google.zxing.Result;
 
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
+/*import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -82,4 +82,4 @@ public class ADMIN_SCAN_PRODUCT extends AppCompatActivity implements ZXingScanne
     {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
-}
+}*/

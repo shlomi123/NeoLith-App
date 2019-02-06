@@ -156,7 +156,6 @@ public class Helper {
         final Distributor distributor = new Distributor();
 
         distributor.setEmail(documentSnapshot.getString("Email"));
-        distributor.setId(documentSnapshot.getId());
         distributor.setName(documentSnapshot.getString("Name"));
 
         return distributor;

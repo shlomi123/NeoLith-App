@@ -40,7 +40,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
     private ImageAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Product> mProducts;
-    private String id;
+    private String email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
@@ -55,7 +55,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        id = sharedPreferences.getString("COMPANY_ID", null);
+        email = sharedPreferences.getString("COMPANY_EMAIL", null);
         addProduct = view.findViewById(R.id.button_add_product);
         mStorage = FirebaseStorage.getInstance();
         mProgressCircle = view.findViewById(R.id.progress_circle_products);
@@ -73,7 +73,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
 
 
         db.collection("Companies")
-                .document(id)
+                .document(email)
                 .collection("Products")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -133,7 +133,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     // get the document of the product that needs to be deleted
-                    db.collection("Companies").document(id).collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    db.collection("Companies").document(email).collection("Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
@@ -147,7 +147,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
                                 }
                                 // deletion....
                                 db.collection("Companies")
-                                        .document(id)
+                                        .document(email)
                                         .collection("Products")
                                         .document(documentSnapshot.getId())
                                         .delete()

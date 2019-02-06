@@ -33,7 +33,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-//TODO check if product already exists
 public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
 
     private Button chooseFile;
@@ -49,7 +48,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
     private String company_name;
     private SharedPreferences sharedPreferences;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String id;
+    private String email;
 
 
     @Override
@@ -70,7 +69,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
         mStorageRef = FirebaseStorage.getInstance().getReference("Products");
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        id = sharedPreferences.getString("COMPANY_ID", null);
+        email = sharedPreferences.getString("COMPANY_EMAIL", null);
 
 
         chooseFile.setOnClickListener(new View.OnClickListener() {
@@ -88,15 +87,32 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                         && units.getText().toString().trim().length() > 0
                         && imageFlag)
                 {
-                    chooseFile.setVisibility(View.INVISIBLE);
-                    mImageView.setVisibility(View.INVISIBLE);
-                    upload.setVisibility(View.INVISIBLE);
-                    name.setVisibility(View.INVISIBLE);
-                    cost.setVisibility(View.INVISIBLE);
-                    units.setVisibility(View.INVISIBLE);
-                    progressBar.setVisibility(View.VISIBLE);
+                    //check if product exists
+                    db.collection("Companies")
+                            .document(email)
+                            .collection("Products")
+                            .whereEqualTo("name", name.getText().toString())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()){
+                                        if (task.getResult().size() > 0){
+                                            Toast.makeText(getApplicationContext(), "product already exists", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            chooseFile.setVisibility(View.INVISIBLE);
+                                            mImageView.setVisibility(View.INVISIBLE);
+                                            upload.setVisibility(View.INVISIBLE);
+                                            name.setVisibility(View.INVISIBLE);
+                                            cost.setVisibility(View.INVISIBLE);
+                                            units.setVisibility(View.INVISIBLE);
+                                            progressBar.setVisibility(View.VISIBLE);
 
-                    uploadProduct();
+                                            uploadProduct();
+                                        }
+                                    }
+                                }
+                            });
                 }
                 else
                 {
@@ -149,7 +165,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                                 final Product product = new Product(name.getText().toString(), uri.toString(), Integer.parseInt(cost.getText().toString()), Integer.parseInt(units.getText().toString()));
                                 //upload to firestore name, image path, cost per unit, and units per package
 
-                                db.collection("Companies").document(id).collection("Products")
+                                db.collection("Companies").document(email).collection("Products")
                                         .add(product)
                                         .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override

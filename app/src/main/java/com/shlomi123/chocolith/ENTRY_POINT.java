@@ -22,22 +22,27 @@ public class ENTRY_POINT extends AppCompatActivity {
         {
             case 0:
                 startActivity(new Intent(ENTRY_POINT.this, CHOOSE_USER_TYPE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
                 break;
             case 1:
                 //admin main page
                 startActivity(new Intent(ENTRY_POINT.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
                 break;
             case 2:
                 //client main page
                 startActivity(new Intent(ENTRY_POINT.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
                 break;
             case 3:
                 //go to company sign in
                 startActivity(new Intent(ENTRY_POINT.this, COMPANY_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
                 break;
             case 4:
                 //go to store sign in
                 startActivity(new Intent(ENTRY_POINT.this, STORE_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
                 break;
         }
     }

@@ -17,14 +17,15 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import static android.Manifest.permission.CAMERA;
 
-//TODO implement client side
-public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+//TODO add profile picture
+public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -89,28 +90,24 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
         //item clicked in drawer menu
         switch (item.getItemId()) {
             case R.id.nav_distributors:
-                //open store fragment
                 fragment_num = 1;
                 getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
                         new DistributorFragment()).commit();
                 getSupportActionBar().setTitle("Distributors");
                 break;
-            /*case R.id.nav_scan:
-                //open product fragment
-                fragment_num = 2;
-                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
-                        new ProductsFragment()).commit();
-                getSupportActionBar().setTitle("Scan");
-                break;*/
+            case R.id.nav_scan:
+                startActivity(new Intent(STORE_MAIN_PAGE.this, STORE_QR_SCAN.class));
+                break;
             case R.id.nav_orders:
                 getSupportFragmentManager().beginTransaction().replace(R.id.store_content_frame,
                         new StoreOrdersFragment()).commit();
                 getSupportActionBar().setTitle("Orders");
                 break;
-            /*case R.id.nav_sign_out:
+            case R.id.nav_sign_out:
                 mAuth.signOut();
-                startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_SIGN_IN.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                break;*/
+                startActivity(new Intent(STORE_MAIN_PAGE.this, STORE_SIGN_IN.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

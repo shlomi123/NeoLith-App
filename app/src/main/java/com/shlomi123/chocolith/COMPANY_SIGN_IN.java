@@ -94,7 +94,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                                 // change company details, in the case that he signs in as a different company
                                 editor.putString("COMPANY_EMAIL", email.getText().toString());
                                 editor.putString("COMPANY_NAME", currDocument.getString("Name"));
-                                editor.putString("COMPANY_ID", currDocument.getId());
+                                editor.putString("COMPANY_PROFILE", currDocument.getString("Profile"));
                                 editor.putInt("USER_TYPE", 1);
                                 editor.apply();
                                 startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

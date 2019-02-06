@@ -41,7 +41,6 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
     private Button button;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPreferences;
-    private String company_id;
     private String company_name;
     private String company_email;
     private ProgressBar mProgressCircle;
@@ -53,7 +52,6 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_id = sharedPreferences.getString("COMPANY_ID", null);
         company_name = sharedPreferences.getString("COMPANY_NAME", null);
         company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
 
@@ -87,7 +85,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
                     //get company's document
 
                     db.collection("Companies")
-                            .document(company_id)
+                            .document(company_email)
                             .collection("Stores")
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -124,14 +122,14 @@ public class ADMIN_ADD_STORE extends AppCompatActivity {
         //add new store to databased
         final Store s = new Store(name, email, address, phone);
         db.collection("Companies")
-                .document(company_id)
+                .document(company_email)
                 .collection("Stores")
                 .document(email)
                 .set(s)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        final Distributor distributor = new Distributor(company_name, company_email, company_id);
+                        final Distributor distributor = new Distributor(company_name, company_email);
 
                         db.collection("Stores")
                                 .document(email)

@@ -1,6 +1,7 @@
 package com.shlomi123.chocolith;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,7 +40,6 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     private StoreAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Store> mStores;
-    private String id;
     private String company_email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -54,7 +55,6 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        id = sharedPreferences.getString("COMPANY_ID", null);
         company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
         addStore = (ImageButton) view.findViewById(R.id.button_add_store);
         mRecyclerView = view.findViewById(R.id.recycler_view_stores_main);
@@ -70,7 +70,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
         // get required company
         db.collection("Companies")
-                .document(id)
+                .document(company_email)
                 .collection("Stores")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -131,18 +131,35 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
     @Override
     public void onDeleteStore(int position) {
-        Store chosenStore = mStores.get(position);
-        //TODO show a warning before deletion
-        // delete chosen store
-        deleteStore(chosenStore.get_name(), chosenStore.get_email());
+        final Store chosenStore = mStores.get(position);
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
+        alertDialog.setTitle("Delete Store");
+        alertDialog.setMessage("Are you sure you want to delete the store " + chosenStore.get_name() + "?");
+
+        //if the user verifies the order
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // delete chosen store
+                deleteStore(chosenStore.get_email());
+            }
+        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog alert = alertDialog.create();
+        alert.show();
     }
 
-    private void deleteStore(final String storeName, final String storeEmail) {
+    private void deleteStore(final String storeEmail) {
         // get required company
         //TODO what if store is in the middle of ordering
 
         db.collection("Companies")
-                .document(id)
+                .document(company_email)
                 .collection("Stores")
                 .document(storeEmail)
                 .delete()

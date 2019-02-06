@@ -3,21 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="192dp"
     android:background="?attr/colorAccent"
-    android:padding="16dp"
+    android:padding="6dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
     android:gravity="bottom">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/profile_picture"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@mipmap/ic_launcher_round" />
 
     <TextView
+        android:id="@+id/profile_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="My header title"
-        android:paddingTop="8dp"
+        android:textSize="15sp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
 </LinearLayout>

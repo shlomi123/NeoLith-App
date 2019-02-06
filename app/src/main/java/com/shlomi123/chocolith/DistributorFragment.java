@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//TODO show distributors that store is assigned to
 public class DistributorFragment extends Fragment implements DistributorAdapter.OnItemClickListener{
 
     private SharedPreferences sharedPreferences;
@@ -105,7 +104,6 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
     public void onItemClick(int position) {
         Distributor distributor = mDistributors.get(position);
         Intent intent = new Intent(getActivity(), STORE_SHOW_DISTRIBUTOR_PRODUCTS.class);
-        intent.putExtra("DISTRIBUTOR_ID", distributor.getId());
         intent.putExtra("DISTRIBUTOR_EMAIL", distributor.getEmail());
         intent.putExtra("DISTRIBUTOR_NAME", distributor.getName());
         startActivity(intent);
