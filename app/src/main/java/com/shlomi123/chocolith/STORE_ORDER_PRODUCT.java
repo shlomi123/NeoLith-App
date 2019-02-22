@@ -108,8 +108,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     {
         //load pic into image view with url
         StorageReference storageReference = storage.getReferenceFromUrl(product_img_url);
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
+        GlideApp.with(getApplicationContext())
                 .load(storageReference)
                 .fitCenter()
                 .placeholder(circularProgressDrawable)

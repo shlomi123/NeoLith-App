@@ -1,6 +1,8 @@
 package com.shlomi123.chocolith;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -8,7 +10,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
@@ -16,6 +27,8 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
     private Context mContext;
     private List<Distributor> mDistributor;
     private com.shlomi123.chocolith.DistributorAdapter.OnItemClickListener mListener;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+
 
     public DistributorAdapter(Context context, List<Distributor> distributors) {
         mContext = context;
@@ -30,9 +43,30 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
     }
 
     @Override
-    public void onBindViewHolder(DistributorAdapter.DistributorViewHolder holder, int position) {
+    public void onBindViewHolder(final DistributorAdapter.DistributorViewHolder holder, int position) {
         final Distributor distributorCurrent = mDistributor.get(position);
         holder.Name.setText(distributorCurrent.getName());
+
+
+
+        final StorageReference storageReference = storage.getReferenceFromUrl(distributorCurrent.getProfile());
+
+        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                CircularProgressDrawable circularProgressDrawable;
+                circularProgressDrawable = new CircularProgressDrawable(mContext);
+                circularProgressDrawable.start();
+
+                GlideApp.with(mContext)
+                        .load(storageReference)
+                        .fitCenter()
+                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        .placeholder(circularProgressDrawable)
+                        .into(holder.Profile);
+            }
+        });
+
     }
 
     @Override
@@ -42,7 +76,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
 
     public class DistributorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView Name;
-
+        public ImageView Profile;
 
         public DistributorViewHolder(View itemView) {
             super(itemView);
@@ -51,6 +85,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
             //itemView.setOnCreateContextMenuListener(this);
 
             Name = itemView.findViewById(R.id.textViewDistributorName);
+            Profile = itemView.findViewById(R.id.imageViewDistributorProfilePicture);
         }
 
         @Override

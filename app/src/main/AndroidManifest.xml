@@ -96,7 +96,8 @@
         <activity
             android:name=".STORE_ORDER_PRODUCT"
             android:screenOrientation="portrait" />
-        <activity android:name=".STORE_QR_SCAN"></activity>
+        <activity android:name=".STORE_QR_SCAN" />
+        <activity android:name=".COMPANY_EDIT_PROFILE"></activity>
     </application>
 
 </manifest>

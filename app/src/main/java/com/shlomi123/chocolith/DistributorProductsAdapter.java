@@ -50,8 +50,7 @@ public class DistributorProductsAdapter extends RecyclerView.Adapter<Distributor
         holder.textViewUnits.setText("Units/Package: " + ProductCurrent.getUnits_per_package());
 
         StorageReference storageReference = storage.getReferenceFromUrl(ProductCurrent.getImageUrl());
-        Glide.with(mContext)
-                .using(new FirebaseImageLoader())
+        GlideApp.with(mContext)
                 .load(storageReference)
                 .fitCenter()
                 .placeholder(circularProgressDrawable)

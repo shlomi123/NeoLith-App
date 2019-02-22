@@ -63,8 +63,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
         holder.Distributor.setText("Distributor: " + OrderCurrent.get_distributor());
 
         StorageReference storageReference = storage.getReferenceFromUrl(OrderCurrent.get_url());
-        Glide.with(mContext)
-                .using(new FirebaseImageLoader())
+        GlideApp.with(mContext)
                 .load(storageReference)
                 .fitCenter()
                 .placeholder(circularProgressDrawable)

@@ -30,6 +30,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button button;
+    private Button change_type;
     private ProgressBar spinner;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -48,6 +49,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
         email = (EditText) findViewById(R.id.editText_signIn_email);
         password = (EditText) findViewById(R.id.editText_signIn_password);
         button = (Button) findViewById(R.id.button_signIn);
+        change_type = (Button) findViewById(R.id.button_company_change_user_type);
         spinner = (ProgressBar)findViewById(R.id.progressBar_signIn);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -76,6 +78,16 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+
+        change_type.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editor.putInt("USER_TYPE", 0);
+                editor.apply();
+                startActivity(new Intent(COMPANY_SIGN_IN.this, ENTRY_POINT.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
     }

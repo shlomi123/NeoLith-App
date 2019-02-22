@@ -25,6 +25,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private Button button;
+    private Button change_user;
     private ProgressBar spinner;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -42,6 +43,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
         email = (EditText) findViewById(R.id.editText_store_signIn_email);
         password = (EditText) findViewById(R.id.editText_store_signIn_password);
         button = (Button) findViewById(R.id.button_store_signIn);
+        change_user = (Button) findViewById(R.id.button_store_change_user_type);
         spinner = (ProgressBar)findViewById(R.id.progressBar_store_signIn);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -73,6 +75,16 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                                 }
                             }
                         });
+            }
+        });
+
+        change_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editor.putInt("USER_TYPE", 0);
+                editor.apply();
+                startActivity(new Intent(STORE_SIGN_IN.this, ENTRY_POINT.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         });
     }

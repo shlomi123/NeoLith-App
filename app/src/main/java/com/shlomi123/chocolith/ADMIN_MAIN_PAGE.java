@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -17,25 +18,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.ObjectKey;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-//TODO edit profile fragment
-//TODO implement profile picture where needed
 //TODO show distributor how to use scanning feature
 public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -52,6 +59,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private String name;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +84,19 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
         circularProgressDrawable.start();
         profile_picture = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
-        StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
-        Glide.with(getApplicationContext())
-                .using(new FirebaseImageLoader())
-                .load(storageReference)
-                .fitCenter()
-                .placeholder(circularProgressDrawable)
-                .into(profile_picture);
+        final StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
+        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+
+                GlideApp.with(getApplicationContext())
+                        .load(storageReference)
+                        .fitCenter()
+                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        .placeholder(circularProgressDrawable)
+                        .into(profile_picture);
+            }
+        });
 
         //add profile name
         profile_name = navigationView.getHeaderView(0).findViewById(R.id.profile_name);
@@ -126,6 +140,26 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 navigationView.setCheckedItem(R.id.nav_products);
                 getSupportActionBar().setTitle("Products");
                 break;
+            case 3:
+                final StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
+                storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+
+                        GlideApp.with(getApplicationContext())
+                                .load(storageReference)
+                                .fitCenter()
+                                .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                                .placeholder(circularProgressDrawable)
+                                .into(profile_picture);
+                    }
+                });
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                        new StoresFragment()).commit();
+                navigationView.setCheckedItem(R.id.nav_stores);
+                getSupportActionBar().setTitle("Stores");
+                break;
         }
     }
 
@@ -146,6 +180,14 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
                         new ProductsFragment()).commit();
                 getSupportActionBar().setTitle("Products");
+                break;
+            case R.id.nav_profile:
+                //open edit profile fragment
+                fragment_num = 3;
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_EDIT_PROFILE.class));
+                /*getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                        new DistributorProfileFragment()).commit();
+                getSupportActionBar().setTitle("Profile");*/
                 break;
             case R.id.nav_sign_out:
                 mAuth.signOut();
@@ -201,6 +243,12 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private void requestPermission()
     {
         ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }
