@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ADMIN_EDIT_PRODUCT">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="123dp"
+        android:layout_height="117dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="47dp"
+        app:srcCompat="@drawable/ic_android_black_24dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="81dp"
+        android:text="Button" />
+
+    <TextView
+        android:id="@+id/textView_edit_product_name"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="240dp"
+        android:layout_alignStart="@+id/imageView"
+        android:textSize="20sp"
+        android:gravity="bottom"
+        android:text="name" />
+
+    <EditText
+        android:id="@+id/editText_edit_product_name"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="230dp"
+        android:layout_alignStart="@+id/imageView"
+        android:textSize="20sp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:focusable="true"
+        android:text=""/>
+
+    <TextView
+        android:id="@+id/textView_price_per_unit"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_marginBottom="170dp"
+        android:gravity="bottom"
+        android:textSize="20sp"
+        android:text="price per unit" />
+
+    <EditText
+        android:id="@+id/editText_price_per_unit"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_marginBottom="160dp"
+        android:inputType="number"
+        android:maxLines="1"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/textView_units_per_package"
+        android:layout_width="240dp"
+        android:layout_height="40dp"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="100dp"
+        android:gravity="bottom"
+        android:textSize="20sp"
+        android:text="units per package" />
+
+    <EditText
+        android:id="@+id/editText_units_per_package"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="90dp"
+        android:inputType="number"
+        android:maxLines="1"
+        android:textSize="20sp"/>
+
+    <!-- price per units images -->
+
+    <ImageView
+        android:id="@+id/imageView_edit_2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_price_per_unit"
+        android:layout_alignBottom="@+id/textView_price_per_unit"
+        app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageView_check_2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_price_per_unit"
+        android:layout_alignBottom="@+id/textView_price_per_unit"
+        app:srcCompat="@drawable/ic_check_black_24dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_update_price_per_unit"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_price_per_unit"
+        android:layout_alignBottom="@+id/textView_price_per_unit" />
+
+    <!-- product name images -->
+
+    <ImageView
+        android:id="@+id/imageView_edit_4"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_edit_product_name"
+        android:layout_alignBottom="@+id/textView_edit_product_name"
+        app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageView_check_4"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_edit_product_name"
+        android:layout_alignBottom="@+id/textView_edit_product_name"
+        app:srcCompat="@drawable/ic_check_black_24dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_update_product_name"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_edit_product_name"
+        android:layout_alignBottom="@+id/textView_edit_product_name" />
+
+    <!-- units per package images -->
+
+    <ImageView
+        android:id="@+id/imageView_edit_3"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_units_per_package"
+        android:layout_alignBottom="@id/textView_units_per_package"
+        app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+    <ImageView
+        android:id="@+id/imageView_check_3"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_units_per_package"
+        android:layout_alignBottom="@+id/textView_units_per_package"
+        app:srcCompat="@drawable/ic_check_black_24dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_update_units_per_package"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignEnd="@+id/textView_units_per_package"
+        android:layout_alignBottom="@+id/textView_units_per_package" />
+
+    <!-- info text views -->
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_below="@+id/textView_edit_product_name"
+        android:layout_marginTop="-240dp"
+        android:text="product name"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_below="@+id/textView_price_per_unit"
+        android:layout_marginTop="-170dp"
+        android:text="price per unit"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/imageView"
+        android:layout_below="@+id/textView_units_per_package"
+        android:layout_marginTop="-100dp"
+        android:text="units per package"
+        android:textSize="10sp" />
+
+</RelativeLayout>

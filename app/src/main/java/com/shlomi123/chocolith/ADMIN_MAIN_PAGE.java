@@ -185,9 +185,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 //open edit profile fragment
                 fragment_num = 3;
                 startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_EDIT_PROFILE.class));
-                /*getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
-                        new DistributorProfileFragment()).commit();
-                getSupportActionBar().setTitle("Profile");*/
                 break;
             case R.id.nav_sign_out:
                 mAuth.signOut();

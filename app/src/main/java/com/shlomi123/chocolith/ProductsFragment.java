@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,7 +121,14 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
 
     @Override
     public void onEditProduct(int position) {
-        //TODO edit product
+        Product product = mProducts.get(position);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(product);
+
+        Intent intent = new Intent(getActivity(), ADMIN_EDIT_PRODUCT.class);
+        intent.putExtra("JSON", json);
+        startActivity(intent);
     }
 
     private void deleteProduct(Product product) {
