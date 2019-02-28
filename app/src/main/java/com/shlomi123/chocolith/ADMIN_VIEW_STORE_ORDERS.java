@@ -12,6 +12,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,9 +28,11 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
     private RecyclerView mRecyclerView;
     private OrderAdapter mAdapter;
     private ProgressBar mProgressCircle;
-    private String Name;
+    private String store_name;
+    private String store_email;
     private SharedPreferences sharedPreferences;
     private String company_name;
+    private String company_email;
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Order> mOrders;
@@ -40,6 +44,7 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
 
         mRecyclerView = findViewById(R.id.recycler_view_orders);
         mRecyclerView.setHasFixedSize(true);
@@ -47,9 +52,35 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
         mProgressCircle = findViewById(R.id.progress_circle_orders);
 
         mOrders = new ArrayList<>();
-        Name = getIntent().getStringExtra("NAME");
+        store_name = getIntent().getStringExtra("NAME");
+        store_email = getIntent().getStringExtra("EMAIL");
 
-        final CollectionReference companies = db.collection("Companies");
+        db.collection("Stores")
+                .document(store_email)
+                .collection("Orders")
+                .whereEqualTo("_distributor", company_name)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            mOrders.add(documentSnapshot.toObject(Order.class));
+                        }
+
+                        mAdapter = new OrderAdapter(ADMIN_VIEW_STORE_ORDERS.this, mOrders);
+
+                        mRecyclerView.setAdapter(mAdapter);
+                        mAdapter.setOnItemClickListener(ADMIN_VIEW_STORE_ORDERS.this);
+                        mProgressCircle.setVisibility(View.INVISIBLE);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        /*final CollectionReference companies = db.collection("Companies");
 
         //find the document of required company
         companies.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -109,7 +140,7 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
                     mProgressCircle.setVisibility(View.INVISIBLE);
                 }
             }
-        });
+        });*/
     }
 
     @Override

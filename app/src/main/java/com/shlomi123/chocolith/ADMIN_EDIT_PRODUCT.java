@@ -1,14 +1,20 @@
 package com.shlomi123.chocolith;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,10 +22,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.signature.ObjectKey;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
 public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
@@ -42,6 +57,13 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private SharedPreferences sharedPreferences;
     private String email;
+    private FirebaseStorage storage = FirebaseStorage.getInstance();
+    private ImageView product_image;
+    private Button choose_file;
+    private CircularProgressDrawable circularProgressDrawable;
+    private String image_path;
+    private Uri mImageUri;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +72,14 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
 
         Gson gson = new Gson();
         final Product product = gson.fromJson(getIntent().getStringExtra("JSON"), Product.class);
+        image_path = product.getImageUrl();
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("COMPANY_EMAIL", null);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_product_new_image);
+        product_image = (ImageView) findViewById(R.id.imageView_edit_product_image);
+        choose_file = (Button) findViewById(R.id.button_open_file_chooser_for_product);
         edit4 = (ImageView) findViewById(R.id.imageView_edit_4);
         edit3 = (ImageView) findViewById(R.id.imageView_edit_3);
         edit2 = (ImageView) findViewById(R.id.imageView_edit_2);
@@ -70,6 +96,8 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         units_per_package = (TextView) findViewById(R.id.textView_units_per_package);
         edit_units_per_package = (EditText) findViewById(R.id.editText_units_per_package);
 
+        progressBar.setVisibility(View.INVISIBLE);
+
         product_name.setText(product.getName());
         edit_product_name.setVisibility(View.INVISIBLE);
         check2.setVisibility(View.INVISIBLE);
@@ -85,6 +113,33 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         check4.setVisibility(View.INVISIBLE);
         progress_units.setVisibility(View.INVISIBLE);
 
+        // set image of product
+        circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+        circularProgressDrawable.start();
+        final StorageReference storageReference = storage.getReferenceFromUrl(image_path);
+        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+
+                GlideApp.with(getApplicationContext())
+                        .load(storageReference)
+                        .fitCenter()
+                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        .placeholder(circularProgressDrawable)
+                        .into(product_image);
+            }
+        });
+
+        // open file chooser
+        choose_file.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
+
+        // edit name
         edit4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,6 +202,7 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
             }
         });
 
+        // edit units per package
         edit3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,6 +266,7 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
             }
         });
 
+        // edit price per unit
         edit2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,5 +329,114 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+
+            product_image.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            StorageReference storageReference = storage.getReferenceFromUrl(image_path);
+
+            storageReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        StorageReference newStorageReference = FirebaseStorage.getInstance()
+                                .getReference("Products")
+                                .child(product_name.getText().toString() + "." + getFileExtension(mImageUri));
+
+                        newStorageReference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        final String path = uri.toString();
+                                        image_path = path;
+
+                                        db.collection("Companies")
+                                                .document(email)
+                                                .collection("Products")
+                                                .whereEqualTo("name", product_name.getText().toString())
+                                                .get()
+                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots)
+                                                        {
+                                                            db.collection("Companies")
+                                                                    .document(email)
+                                                                    .collection("Products")
+                                                                    .document(documentSnapshot.getId())
+                                                                    .update("imageUrl", path)
+                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                        @Override
+                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                            if (task.isSuccessful()) {
+                                                                                // show new image
+                                                                                product_image.setVisibility(View.VISIBLE);
+                                                                                progressBar.setVisibility(View.INVISIBLE);
+
+                                                                                circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                                                                                circularProgressDrawable.start();
+                                                                                final StorageReference storageReference = storage.getReferenceFromUrl(image_path);
+                                                                                storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                                                                    @Override
+                                                                                    public void onSuccess(StorageMetadata storageMetadata) {
+
+                                                                                        GlideApp.with(getApplicationContext())
+                                                                                                .load(storageReference)
+                                                                                                .fitCenter()
+                                                                                                .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                                                                                                .placeholder(circularProgressDrawable)
+                                                                                                .into(product_image);
+                                                                                    }
+                                                                                });
+                                                                            }
+                                                                        }
+                                                                    });
+                                                        }
+                                                    }
+                                                });
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                                progressBar.setProgress((int) progress);
+                            }
+                        });
+
+                    }else {
+                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 }

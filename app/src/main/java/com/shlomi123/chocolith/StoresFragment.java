@@ -20,6 +20,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,6 +43,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     private ProgressBar mProgressCircle;
     private List<Store> mStores;
     private String company_email;
+    private String company_name;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
@@ -56,6 +59,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        company_name = sharedPreferences.getString("COMPANY_NAME", null);
         addStore = (ImageButton) view.findViewById(R.id.button_add_store);
         mRecyclerView = view.findViewById(R.id.recycler_view_stores_main);
         mRecyclerView.setHasFixedSize(true);
@@ -112,21 +116,48 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
     @Override
     public void onViewStore(int position) {
-        Store chosenStore = mStores.get(position);
+        final Store chosenStore = mStores.get(position);
+
+
+        db.collection("Stores")
+                .document(chosenStore.get_email())
+                .collection("Orders")
+                .whereEqualTo("_distributor", company_name)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        int counter = 0;
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            counter++;
+                        }
+
+                       if (counter > 0) {
+                           Intent intent = new Intent(getActivity(), ADMIN_VIEW_STORE_ORDERS.class);
+                           intent.putExtra("NAME", chosenStore.get_name());
+                           intent.putExtra("EMAIL", chosenStore.get_email());
+                           startActivity(intent);
+                       } else {
+                           Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
+                       }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // check first if orders is still null
-        if (chosenStore.getOrders() != null) {
+        /*if (chosenStore.getOrders() != null) {
             // check if any orders were made
             if (!chosenStore.getOrders().isEmpty()) {
-                Intent intent = new Intent(getActivity(), ADMIN_VIEW_STORE_ORDERS.class);
-                intent.putExtra("NAME", chosenStore.get_name());
-                startActivity(intent);
+
             } else {
-                Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     @Override

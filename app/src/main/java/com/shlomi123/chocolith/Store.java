@@ -10,7 +10,7 @@ public class Store {
     private String _email;
     private String _address;
     private int _phone;
-    private ArrayList<Object> orders;
+    //private ArrayList<Object> orders;
 
     public Store()
     {
@@ -23,7 +23,7 @@ public class Store {
         _email = email;
         _address = address;
         _phone = phone;
-        orders = null;
+        //orders = null;
     }
 
     Store(String name, String email, String address, int phone, String authUID, ArrayList<Object> orders)
@@ -32,7 +32,7 @@ public class Store {
         _email = email;
         _address = address;
         _phone = phone;
-        this.orders = orders;
+        //this.orders = orders;
     }
 
 
@@ -52,9 +52,9 @@ public class Store {
         return _phone;
     }
 
-    public ArrayList<Object> getOrders() {
+    /*public ArrayList<Object> getOrders() {
         return orders;
-    }
+    }*/
 
     public void set_name(String _name) {
         this._name = _name;
@@ -72,7 +72,7 @@ public class Store {
         this._phone = _phone;
     }
 
-    public void setOrders(ArrayList<Object> orders) {
+    /*public void setOrders(ArrayList<Object> orders) {
         this.orders = orders;
-    }
+    }*/
 }

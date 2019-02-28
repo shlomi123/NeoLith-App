@@ -42,14 +42,14 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         holder.Email.setText("Email: " + StoreCurrent.get_email());
         holder.Phone.setText("Phone: " + String.valueOf(StoreCurrent.get_phone()));
         holder.Address.setText("Address: " + StoreCurrent.get_address());
-        if (StoreCurrent.getOrders() != null)
+        /*if (StoreCurrent.getOrders() != null)
         {
             holder.Orders.setText("Order: " + String.valueOf(StoreCurrent.getOrders().size()));
         }
         else
         {
             holder.Orders.setText("Order: 0");
-        }
+        }*/
     }
 
     @Override
@@ -76,7 +76,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
             Address = itemView.findViewById(R.id.textViewStoreAddress);
             Phone = itemView.findViewById(R.id.textViewStorePhone);
             Email = itemView.findViewById(R.id.textViewStoreEmail);
-            Orders = itemView.findViewById(R.id.textViewStoreOrders);
+            //Orders = itemView.findViewById(R.id.textViewStoreOrders);
         }
 
         @Override

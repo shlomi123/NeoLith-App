@@ -43,13 +43,13 @@ public class Helper {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    static public ArrayList<Order> getOrdersFromStore(Store store)
+    /*static public ArrayList<Order> getOrdersFromStore(Store store)
     {
         Gson gson = new Gson();
         String jsonAsString = gson.toJson(store.getOrders());
         Type type = new TypeToken<ArrayList<Order>>(){}.getType();
         return gson.fromJson(jsonAsString, type);
-    }
+    }*/
 
     static public boolean saveExcelFile(Context context, List<Store> stores) {
 

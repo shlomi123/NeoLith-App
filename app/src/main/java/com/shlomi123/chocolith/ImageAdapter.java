@@ -15,8 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +45,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     }
 
     @Override
-    public void onBindViewHolder(ImageViewHolder holder, int position) {
+    public void onBindViewHolder(final ImageViewHolder holder, int position) {
         circularProgressDrawable = new CircularProgressDrawable(mContext);
         circularProgressDrawable.setStrokeWidth(10f);
         circularProgressDrawable.setCenterRadius(30f);
@@ -53,12 +56,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.textViewCost.setText("Cost/Unit: " + ProductCurrent.getCost() + "$");
         holder.textViewUnits.setText("Units/Package: " + ProductCurrent.getUnits_per_package());
 
-        StorageReference storageReference = storage.getReferenceFromUrl(ProductCurrent.getImageUrl());
-        GlideApp.with(mContext)
-                .load(storageReference)
-                .fitCenter()
-                .placeholder(circularProgressDrawable)
-                .into(holder.imageView);
+        final StorageReference storageReference = storage.getReferenceFromUrl(ProductCurrent.getImageUrl());
+        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+
+                GlideApp.with(mContext)
+                        .load(storageReference)
+                        .fitCenter()
+                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        .placeholder(circularProgressDrawable)
+                        .into(holder.imageView);
+            }
+        });
     }
 
     @Override
