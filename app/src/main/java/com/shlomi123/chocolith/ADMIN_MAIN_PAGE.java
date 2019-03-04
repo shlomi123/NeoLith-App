@@ -1,15 +1,18 @@
 package com.shlomi123.chocolith;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v4.widget.DrawerLayout;
@@ -40,6 +43,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import java.io.File;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -181,6 +186,11 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                         new ProductsFragment()).commit();
                 getSupportActionBar().setTitle("Products");
                 break;
+            case R.id.nav_scan_feature:
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                        new ScanFragment()).commit();
+                getSupportActionBar().setTitle("Scan Feature");
+                break;
             case R.id.nav_profile:
                 //open edit profile fragment
                 fragment_num = 3;
@@ -192,7 +202,11 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 finish();
                 break;
             case R.id.nav_excel:
-                createExcelSheet();
+                /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                Uri uri = Uri.parse(Environment.getExternalStorageDirectory()
+                        + "/neoliv/");
+                intent.setDataAndType(uri, "text/csv");
+                startActivity(Intent.createChooser(intent, "Open folder"));*/
                 break;
         }
 
@@ -207,29 +221,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         } else {
             super.onBackPressed();
         }
-    }
-
-    private void createExcelSheet(){
-        db.collection("Companies")
-                .document(email)
-                .collection("Stores")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    // check that store name doesn't already exist
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (Helper.saveExcelFile(getApplicationContext(), task.getResult().toObjects(Store.class)))
-                            {
-                                Toast.makeText(getApplicationContext(), "excel sheet created in downloads", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "error creating excel sheet", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
     }
 
     private boolean checkPermission()

@@ -42,14 +42,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         holder.Email.setText("Email: " + StoreCurrent.get_email());
         holder.Phone.setText("Phone: " + String.valueOf(StoreCurrent.get_phone()));
         holder.Address.setText("Address: " + StoreCurrent.get_address());
-        /*if (StoreCurrent.getOrders() != null)
-        {
-            holder.Orders.setText("Order: " + String.valueOf(StoreCurrent.getOrders().size()));
-        }
-        else
-        {
-            holder.Orders.setText("Order: 0");
-        }*/
     }
 
     @Override
@@ -62,7 +54,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         public TextView Address;
         public TextView Phone;
         public TextView Email;
-        public TextView Orders;
         public ImageView button;
 
 
@@ -76,7 +67,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
             Address = itemView.findViewById(R.id.textViewStoreAddress);
             Phone = itemView.findViewById(R.id.textViewStorePhone);
             Email = itemView.findViewById(R.id.textViewStoreEmail);
-            //Orders = itemView.findViewById(R.id.textViewStoreOrders);
         }
 
         @Override
@@ -93,9 +83,11 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
             MenuItem viewStore = menu.add(Menu.NONE, 1, 1, "view orders");
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "delete");
+            MenuItem excel = menu.add(Menu.NONE, 3, 3, "excel sheet");
 
             viewStore.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
+            excel.setOnMenuItemClickListener(this);
         }
 
         @Override
@@ -111,6 +103,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
                         case 2:
                             mListener.onDeleteStore(position);
                             return true;
+                        case 3:
+                            mListener.onExcelSheet(position);
                     }
                 }
             }
@@ -124,6 +118,8 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         void onViewStore(int position);
 
         void onDeleteStore(int position);
+
+        void onExcelSheet(int position);
     }
 
     public void setOnItemClickListener(StoreAdapter.OnItemClickListener listener) {

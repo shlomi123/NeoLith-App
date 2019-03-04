@@ -109,7 +109,8 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                                 editor.putString("COMPANY_PROFILE", currDocument.getString("Profile"));
                                 editor.putInt("USER_TYPE", 1);
                                 editor.apply();
-                                startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                finish();
                             }
                         }
                     }

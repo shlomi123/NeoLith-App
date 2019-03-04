@@ -23,6 +23,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import org.apache.poi.*;
@@ -51,7 +53,14 @@ public class Helper {
         return gson.fromJson(jsonAsString, type);
     }*/
 
-    static public boolean saveExcelFile(Context context, List<Store> stores) {
+    static public boolean saveExcelFile(Context context, Store store, List<Order> store_orders) {
+        //sort list
+        Collections.sort(store_orders, new Comparator<Order>() {
+            @Override
+            public int compare(Order o1, Order o2) {
+                return o1.get_date().compareTo(o2.get_date());
+            }
+        });
 
         boolean success = false;
 
@@ -67,25 +76,25 @@ public class Helper {
 
         //New Sheet
         Sheet sheet1 = null;
-        sheet1 = wb.createSheet("Store Orders (" + getSimpleDate() + ")");
+        sheet1 = wb.createSheet(   store.get_name() + "_orders - " + getSimpleDate());
 
         // Generate column headings
         Row row = sheet1.createRow(0);
 
         c = row.createCell(0);
-        c.setCellValue("Store Name");
+        c.setCellValue("Product Name");
         c.setCellStyle(cs);
 
         c = row.createCell(1);
-        c.setCellValue("Store Address");
+        c.setCellValue("Order Date");
         c.setCellStyle(cs);
 
         c = row.createCell(2);
-        c.setCellValue("Store Phone Number");
+        c.setCellValue("Quantity");
         c.setCellStyle(cs);
 
         c = row.createCell(3);
-        c.setCellValue("Store Email Address");
+        c.setCellValue("Total Cost");
         c.setCellStyle(cs);
 
         sheet1.setColumnWidth(0, (15 * 500));
@@ -93,32 +102,57 @@ public class Helper {
         sheet1.setColumnWidth(2, (15 * 500));
         sheet1.setColumnWidth(3, (15 * 500));
 
+        int prev_month = getMonth(store_orders.get(0).get_date());
+        int curr_month;
         Row row1;
         int counter = 1;
-        for (Store store: stores)
+
+        for (Order order: store_orders)
         {
-            //TODO show products of stores
-            row1 = sheet1.createRow(counter);
+            curr_month = getMonth(order.get_date());
 
-            c = row1.createCell(0);
-            c.setCellValue(store.get_name());
+            if (curr_month > prev_month){
+                prev_month = curr_month;
+                counter++;
 
-            c = row1.createCell(1);
-            c.setCellValue(store.get_address());
+                row1 = sheet1.createRow(counter);
 
-            c = row1.createCell(2);
-            c.setCellValue(String.valueOf(store.get_phone()));
+                c = row1.createCell(0);
+                c.setCellValue(order.get_product());
 
-            c = row1.createCell(3);
-            c.setCellValue(store.get_email());
+                c = row1.createCell(1);
+                c.setCellValue(getSimpleDate(order.get_date()));
 
-            counter++;
+                c = row1.createCell(2);
+                c.setCellValue(String.valueOf(order.get_quantity()));
+
+                c = row1.createCell(3);
+                c.setCellValue(String.valueOf(order.get_total_cost()));
+
+                counter++;
+            } else {
+                row1 = sheet1.createRow(counter);
+
+                c = row1.createCell(0);
+                c.setCellValue(order.get_product());
+
+                c = row1.createCell(1);
+                c.setCellValue(getSimpleDate(order.get_date()));
+
+                c = row1.createCell(2);
+                c.setCellValue(String.valueOf(order.get_quantity()));
+
+                c = row1.createCell(3);
+                c.setCellValue(String.valueOf(order.get_total_cost()));
+
+                counter++;
+            }
         }
 
         // Create a path where we will place our List of objects on external storage
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Neoliv", "Stores.xls");
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + store_orders.get(0).get_distributor(), store.get_name() + ".xls");
         if (!file.exists()) {
-            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/Neoliv");
+            File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + store_orders.get(0).get_distributor());
             directory.mkdirs();
         }
         FileOutputStream os = null;
@@ -142,6 +176,12 @@ public class Helper {
         return success;
     }
 
+    public static int getMonth(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal.get(Calendar.MONTH);
+    }
+
     static public String getSimpleDate()
     {
         Date date = Calendar.getInstance().getTime();
@@ -149,6 +189,15 @@ public class Helper {
         // Display a date in day, month, year format
         //
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        return formatter.format(date);
+    }
+
+    static public String getSimpleDate(Date date)
+    {
+        //
+        // Display a date in day, month, year format
+        //
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm");
         return formatter.format(date);
     }
 

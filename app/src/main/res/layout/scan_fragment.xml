@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:text="Follow the Steps:"
+                android:textColor="@android:color/background_dark"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/textView_step_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_marginTop="70dp"
+                android:text="1. example website:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView_url"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textView_step_1"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="https://www.qr-code-generator.com/"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/textView_step_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/textView_url"
+                android:layout_marginTop="30dp"
+                android:text="2. pick text value:"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/imageView_text_value_option"
+                android:layout_width="360dp"
+                android:layout_height="180dp"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/textView_step_2"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/text_value" />
+
+            <TextView
+                android:id="@+id/textView_step_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/imageView_text_value_option"
+                android:layout_marginTop="30dp"
+                android:text="3. paste this text:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView_text_to_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/textView_step_3"
+                android:layout_marginTop="10dp"
+                android:text="neoliv##salamigoner@gmail.com"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="22sp"
+                android:textIsSelectable="true"/>
+
+            <TextView
+                android:id="@+id/textView_step_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/textView_text_to_copy"
+                android:layout_marginTop="30dp"
+                android:text="4. generate and use qr code:"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/textView_explanation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/textView4"
+                android:layout_below="@id/textView_step_4"
+                android:layout_marginTop="10dp"
+                android:text="Once the qr code has been generated, it must be printed on the container of all your products. This feature allows for your client to find your products efficiently and quickly in the application."
+                android:textSize="14sp"
+                android:textColor="@android:color/background_dark"/>
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+
+
+</RelativeLayout>

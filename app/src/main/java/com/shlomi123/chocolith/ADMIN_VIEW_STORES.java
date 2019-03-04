@@ -106,14 +106,14 @@ public class ADMIN_VIEW_STORES extends AppCompatActivity /*implements StoreAdapt
                                 Store store = documentSnapshot.toObject(Store.class);
                                 mStores1.add(store);
                             }
-                            if (Helper.saveExcelFile(getApplicationContext(), mStores))
+                            /*if (Helper.saveExcelFile(getApplicationContext(), mStores))
                             {
                                 Toast.makeText(getApplicationContext(), "Successfully created excel", Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
                                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-                            }
+                            }*/
                         }
                         else
                         {

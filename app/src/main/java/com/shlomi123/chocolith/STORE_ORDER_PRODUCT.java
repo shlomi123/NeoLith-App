@@ -53,6 +53,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     private CircularProgressDrawable circularProgressDrawable;
     private boolean mailClientOpened = false;
     private int quantity;
+    private int total_cost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
         //set text view to product name
         textView.setText(product_name);
-        textView_units.setText("one package contains " + product_units_per_package + " units");
+        textView_units.setText("one package contains " + String.valueOf(product_units_per_package) + " units");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,17 +119,21 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     //alert dialog
     private void showAlertDialog(final Context context)
     {
+        total_cost = product_units_per_package * product_cost * quantity;
+
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("Place Order");
         // make text according to entered quantity
         if (quantity == 1) {
-            alertDialog.setMessage("You want to order " + editText.getText().toString() + " box of product");
+            alertDialog.setMessage("You want to order " + editText.getText().toString() + " box of product\n\n"
+                    + "Total cost: " + String.valueOf(total_cost) + "$");
         }
         else if(quantity == 0) {
             alertDialog.setMessage("Please place an order of more that one product");
         }
         else {
-            alertDialog.setMessage("You want to order " + editText.getText().toString() + " boxes of product");
+            alertDialog.setMessage("You want to order " + editText.getText().toString() + " boxes of product\n\n"
+                    + "Total cost: " + String.valueOf(total_cost) + "$");
         }
 
         //if the user verifies the order
@@ -182,7 +187,8 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Product Order");
                             emailIntent.putExtra(Intent.EXTRA_TEXT, "Store: " + store.get_name() + "\n" +
                                     "Address: " + store.get_address() + "\n" +
-                                    "Order: " + String.valueOf(quantity) + " boxes of " + name);
+                                    "Order: " + String.valueOf(quantity) + " boxes of " + name + "\n\n" +
+                                    "Total cost: " + String.valueOf(total_cost));
 
                             try {
                                 //open email client
@@ -212,7 +218,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     //log the order
     private void orderProduct(final Context context)
     {
-        Order order = new Order(Timestamp.now().toDate(), product_name, quantity, distributor_name, product_img_url);
+        Order order = new Order(Timestamp.now().toDate(), product_name, quantity, distributor_name, product_img_url, total_cost);
 
         db.collection("Stores")
                 .document(store_email)

@@ -8,16 +8,18 @@ public class Order {
     private int _quantity;
     private String _distributor;
     private String _url;
+    private int _total_cost;
 
     public Order(){}
 
-    Order(Date date, String product, int quantity, String distributor, String url)
+    Order(Date date, String product, int quantity, String distributor, String url, int total_cost)
     {
         _date = date;
         _product = product;
         _quantity = quantity;
         _distributor = distributor;
         _url = url;
+        _total_cost = total_cost;
     }
 
     public Date get_date() {
@@ -38,5 +40,9 @@ public class Order {
 
     public String get_url() {
         return _url;
+    }
+
+    public int get_total_cost() {
+        return _total_cost;
     }
 }

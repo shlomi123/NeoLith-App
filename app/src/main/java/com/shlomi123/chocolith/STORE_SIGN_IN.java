@@ -65,7 +65,8 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                                     editor.putString("STORE_EMAIL", email.getText().toString());
                                     editor.putInt("USER_TYPE", 2);
                                     editor.apply();
-                                    startActivity(new Intent(STORE_SIGN_IN.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    startActivity(new Intent(STORE_SIGN_IN.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    finish();
                                 }else{
                                     email.setVisibility(View.VISIBLE);
                                     password.setVisibility(View.VISIBLE);

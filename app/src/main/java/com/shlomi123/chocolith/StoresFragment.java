@@ -115,6 +115,39 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     }
 
     @Override
+    public void onExcelSheet(int position){
+        final Store chosenStore = mStores.get(position);
+
+        final List<Order> store_orders = new ArrayList<>();
+
+        db.collection("Stores")
+                .document(chosenStore.get_email())
+                .collection("Orders")
+                .whereEqualTo("_distributor", company_name)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                            Order order = documentSnapshot.toObject(Order.class);
+                            store_orders.add(order);
+                        }
+
+                        if (Helper.saveExcelFile(getContext(), chosenStore, store_orders)){
+                            Toast.makeText(getContext(), "excel sheet created - (saved to documents)", Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(getContext(), "error creating excel sheet", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
     public void onViewStore(int position) {
         final Store chosenStore = mStores.get(position);
 

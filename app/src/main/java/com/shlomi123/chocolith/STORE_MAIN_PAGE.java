@@ -1,5 +1,6 @@
 package com.shlomi123.chocolith;
 
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
