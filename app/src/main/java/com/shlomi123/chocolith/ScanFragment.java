@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -18,7 +19,8 @@ import java.util.List;
 
 public class ScanFragment extends Fragment {
 
-    private String copyableText;
+    private String code;
+    private TextView copyableText;
     private SharedPreferences sharedPreferences;
     private String company_email;
     private String company_name;
@@ -36,5 +38,11 @@ public class ScanFragment extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
         company_name = sharedPreferences.getString("COMPANY_NAME", null);
+
+
+        code = company_name + "##" + company_email;
+
+        copyableText = (TextView) getActivity().findViewById(R.id.textView_text_to_copy);
+        copyableText.setText(code);
     }
 }

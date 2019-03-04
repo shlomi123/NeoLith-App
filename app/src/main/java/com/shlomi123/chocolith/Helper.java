@@ -53,6 +53,55 @@ public class Helper {
         return gson.fromJson(jsonAsString, type);
     }*/
 
+    static public class sortOrdersByDate implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            return o1.get_date().compareTo(o2.get_date());
+        }
+    }
+
+    static public class sortOrdersByDistributor implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            return o1.get_distributor().compareTo(o2.get_distributor());
+        }
+    }
+
+    static public class sortOrdersByProductName implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            return o1.get_product().compareTo(o2.get_product());
+        }
+    }
+
+    static public class sortOrdersByTotalCost implements Comparator<Order> {
+        @Override
+        public int compare(Order o1, Order o2) {
+            return o1.get_total_cost() - o2.get_total_cost();
+        }
+    }
+
+    static public class sortProductsByName implements Comparator<Product> {
+        @Override
+        public int compare(Product o1, Product o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    static public class sortProductsByCost implements Comparator<Product> {
+        @Override
+        public int compare(Product o1, Product o2) {
+            return o1.getCost() - o2.getCost();
+        }
+    }
+
+    static public class sortProductsByUnitsPerPackage implements Comparator<Product> {
+        @Override
+        public int compare(Product o1, Product o2) {
+            return o1.getUnits_per_package() - o2.getUnits_per_package();
+        }
+    }
+
     static public boolean saveExcelFile(Context context, Store store, List<Order> store_orders) {
         //sort list
         Collections.sort(store_orders, new Comparator<Order>() {
