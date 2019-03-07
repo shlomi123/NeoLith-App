@@ -34,6 +34,7 @@ public class STORE_REGISTER extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Button verify;
     private EditText email;
+    private EditText name;
     private EditText password;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Boolean sign_in_flag = false;
@@ -56,6 +57,7 @@ public class STORE_REGISTER extends AppCompatActivity {
 
         verify = (Button) findViewById(R.id.ButtonStoreVerify);
         email = (EditText) findViewById(R.id.editTextStoreEmail);
+        name = (EditText) findViewById(R.id.editTextStoreName);
         password = (EditText) findViewById(R.id.editTextStorePassword);
         verify_password = (EditText) findViewById(R.id.editTextStorePasswordVerify);
         title = (TextView) findViewById(R.id.textViewStoreRegister);
@@ -69,15 +71,19 @@ public class STORE_REGISTER extends AppCompatActivity {
         verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                if (name.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "enter store name", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAuth.createUserWithEmailAndPassword(email.getText().toString(), password.getText().toString())
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (!task.isSuccessful()) {
+                                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
 
@@ -119,13 +125,29 @@ public class STORE_REGISTER extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
 
                         if (user.isEmailVerified()) {
-                            //save store email
-                            editor = sharedPreferences.edit();
-                            editor.putString("STORE_EMAIL", email.getText().toString());
-                            editor.apply();
+                            //add store to database
+                            Store store = new Store(name.getText().toString(), email.getText().toString());
 
-                            mAuth.removeAuthStateListener(mAuthListener);
-                            startActivity(new Intent(STORE_REGISTER.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            db.collection("Stores")
+                                    .document(email.getText().toString())
+                                    .set(store)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                editor = sharedPreferences.edit();
+                                                editor.putString("STORE_EMAIL", email.getText().toString());
+                                                editor.putString("STORE_NAME", name.getText().toString());
+                                                editor.apply();
+
+                                                mAuth.removeAuthStateListener(mAuthListener);
+                                                startActivity(new Intent(STORE_REGISTER.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                finish();
+                                            }else {
+                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
                         } else {
                             // if user returned to application without verifying email
                             Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();

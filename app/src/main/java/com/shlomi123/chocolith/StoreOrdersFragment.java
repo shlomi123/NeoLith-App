@@ -9,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,9 +43,6 @@ public class StoreOrdersFragment extends Fragment {
     private OrderAdapter mAdapter;
     private List<Order> mOrders;
     private String store_email;
-    private TextView textView;
-    private Button sortBy;
-    private int flag;
 
     @Nullable
     @Override
@@ -53,6 +53,7 @@ public class StoreOrdersFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         store_email = sharedPreferences.getString("STORE_EMAIL", null);
@@ -60,51 +61,9 @@ public class StoreOrdersFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProgressCircle = view.findViewById(R.id.progress_circle_store_orders);
-        textView = view.findViewById(R.id.textView_orders_sort_by);
-        sortBy = view.findViewById(R.id.button_orders_sort_by);
         mOrders = new ArrayList<>();
         mAdapter = new OrderAdapter(getContext(), mOrders);
         mRecyclerView.setAdapter(mAdapter);
-
-        textView.setText("Sort by: date");
-        flag = 0;
-
-        //0 - date
-        //1 - distributor
-        //2 - product name
-        //3 - total cost
-
-        sortBy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (flag){
-                    case 0:
-                        flag = 1;
-                        Collections.sort(mOrders, new Helper.sortOrdersByDistributor());
-                        mAdapter.notifyDataSetChanged();
-                        textView.setText("Sort by: distributor");
-                        break;
-                    case 1:
-                        flag = 2;
-                        Collections.sort(mOrders, new Helper.sortOrdersByProductName());
-                        mAdapter.notifyDataSetChanged();
-                        textView.setText("Sort by: product name");
-                        break;
-                    case 2:
-                        flag = 3;
-                        Collections.sort(mOrders, new Helper.sortOrdersByTotalCost());
-                        mAdapter.notifyDataSetChanged();
-                        textView.setText("Sort by: total cost");
-                        break;
-                    case 3:
-                        flag = 0;
-                        Collections.sort(mOrders, new Helper.sortOrdersByDate());
-                        mAdapter.notifyDataSetChanged();
-                        textView.setText("Sort by: date");
-                        break;
-                }
-            }
-        });
 
         db.collection("Stores")
                 .document(store_email)
@@ -140,5 +99,33 @@ public class StoreOrdersFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.orders_sort, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_orders_sort_by_distributor:
+                Collections.sort(mOrders, new Helper.sortOrdersByDistributor());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_orders_sort_by_name:
+                Collections.sort(mOrders, new Helper.sortOrdersByProductName());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_orders_sort_by_cost:
+                Collections.sort(mOrders, new Helper.sortOrdersByTotalCost());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_orders_sort_by_date:
+                Collections.sort(mOrders, new Helper.sortOrdersByDate());
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
     }
 }

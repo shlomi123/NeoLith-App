@@ -25,7 +25,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import static android.Manifest.permission.CAMERA;
 
-//TODO add profile picture
 public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();

@@ -4,34 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FirebaseStorage;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class DistributorFragment extends Fragment implements DistributorAdapter.OnItemClickListener{
 
@@ -41,9 +33,7 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
     private DistributorAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Distributor> mDistributors;
-    private List<String> IDS;
     private String store_email;
-    private Button button;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Nullable
@@ -55,23 +45,21 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         store_email = sharedPreferences.getString("STORE_EMAIL", null);
 
         mProgressCircle = view.findViewById(R.id.progress_circle_distributors);
-        //button = view.findViewById(R.id.button_add_distributor);
 
         mRecyclerView = view.findViewById(R.id.recycler_view_distributors);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mDistributors = new ArrayList<>();
-        //IDS = new ArrayList<>();
-
         mAdapter = new DistributorAdapter(getActivity(), mDistributors);
-
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(DistributorFragment.this);
+
 
         db.collection("Stores")
                 .document(store_email)
@@ -89,6 +77,8 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
                                 mDistributors.add(distributor);
                             }
 
+                            Collections.sort(mDistributors, new Helper.sortDistributorByName());
+
                             mAdapter.notifyDataSetChanged();
                             mProgressCircle.setVisibility(View.INVISIBLE);
                         } else {
@@ -98,6 +88,26 @@ public class DistributorFragment extends Fragment implements DistributorAdapter.
                         }
                     }
                 });
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.distributor_sort, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_distributor_sort_by_name:
+                Collections.sort(mDistributors, new Helper.sortDistributorByName());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_distributor_sort_by_email:
+                Collections.sort(mDistributors, new Helper.sortDistributorByEmail());
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
     }
 
     @Override

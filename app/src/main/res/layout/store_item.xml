@@ -23,24 +23,6 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/textViewStoreAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Address"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/textViewStorePhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Phone Number"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <TextView
                 android:id="@+id/textViewStoreEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,17 +31,6 @@
                 android:textColor="@android:color/black"
                 android:textSize="15sp"
                 android:layout_marginBottom="10dp"/>
-
-            <!--
-            <TextView
-                android:id="@+id/textViewStoreOrders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="Orders"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-                -->
 
         </LinearLayout>
 

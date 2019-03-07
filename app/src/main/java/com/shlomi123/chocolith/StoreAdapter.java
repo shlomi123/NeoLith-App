@@ -40,8 +40,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         final Store StoreCurrent = mStores.get(position);
         holder.Name.setText(StoreCurrent.get_name());
         holder.Email.setText("Email: " + StoreCurrent.get_email());
-        holder.Phone.setText("Phone: " + String.valueOf(StoreCurrent.get_phone()));
-        holder.Address.setText("Address: " + StoreCurrent.get_address());
     }
 
     @Override
@@ -51,8 +49,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
 
     public class StoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener{
         public TextView Name;
-        public TextView Address;
-        public TextView Phone;
         public TextView Email;
         public ImageView button;
 
@@ -64,8 +60,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
             itemView.setOnCreateContextMenuListener(this);
 
             Name = itemView.findViewById(R.id.textViewStoreName);
-            Address = itemView.findViewById(R.id.textViewStoreAddress);
-            Phone = itemView.findViewById(R.id.textViewStorePhone);
             Email = itemView.findViewById(R.id.textViewStoreEmail);
         }
 

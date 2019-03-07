@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -29,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ProductsFragment extends Fragment implements ImageAdapter.OnItemClickListener {
@@ -53,6 +57,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
@@ -60,15 +65,11 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
         addProduct = view.findViewById(R.id.button_add_product);
         mStorage = FirebaseStorage.getInstance();
         mProgressCircle = view.findViewById(R.id.progress_circle_products);
-
         mRecyclerView = view.findViewById(R.id.recycler_view_products);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProducts = new ArrayList<>();
-
-
         mAdapter = new ImageAdapter(getActivity(), mProducts);
-
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(ProductsFragment.this);
 
@@ -88,6 +89,8 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
                                 Product product = documentSnapshot.toObject(Product.class);
                                 mProducts.add(product);
                             }
+
+                            Collections.sort(mProducts, new Helper.sortProductsByName());
 
                             mAdapter.notifyDataSetChanged();
                             mProgressCircle.setVisibility(View.INVISIBLE);
@@ -129,6 +132,26 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
         Intent intent = new Intent(getActivity(), ADMIN_EDIT_PRODUCT.class);
         intent.putExtra("JSON", json);
         startActivity(intent);
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.product_sort, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_product_sort_by_name:
+                Collections.sort(mProducts, new Helper.sortProductsByName());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_product_sort_by_cost:
+                Collections.sort(mProducts, new Helper.sortProductsByCost());
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
     }
 
     private void deleteProduct(Product product) {

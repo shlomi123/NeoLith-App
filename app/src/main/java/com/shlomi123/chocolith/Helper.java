@@ -45,18 +45,10 @@ public class Helper {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    /*static public ArrayList<Order> getOrdersFromStore(Store store)
-    {
-        Gson gson = new Gson();
-        String jsonAsString = gson.toJson(store.getOrders());
-        Type type = new TypeToken<ArrayList<Order>>(){}.getType();
-        return gson.fromJson(jsonAsString, type);
-    }*/
-
     static public class sortOrdersByDate implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
-            return o1.get_date().compareTo(o2.get_date());
+            return o2.get_date().compareTo(o1.get_date());
         }
     }
 
@@ -95,10 +87,31 @@ public class Helper {
         }
     }
 
-    static public class sortProductsByUnitsPerPackage implements Comparator<Product> {
+    static public class sortStoresByName implements Comparator<Store> {
         @Override
-        public int compare(Product o1, Product o2) {
-            return o1.getUnits_per_package() - o2.getUnits_per_package();
+        public int compare(Store o1, Store o2) {
+            return o1.get_name().compareTo(o2.get_name());
+        }
+    }
+
+    static public class sortStoresByEmail implements Comparator<Store> {
+        @Override
+        public int compare(Store o1, Store o2) {
+            return o1.get_email().compareTo(o2.get_email());
+        }
+    }
+
+    static public class sortDistributorByName implements Comparator<Distributor> {
+        @Override
+        public int compare(Distributor o1, Distributor o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    static public class sortDistributorByEmail implements Comparator<Distributor> {
+        @Override
+        public int compare(Distributor o1, Distributor o2) {
+            return o1.getEmail().compareTo(o2.getEmail());
         }
     }
 

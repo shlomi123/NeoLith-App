@@ -5,8 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -16,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implements DistributorProductsAdapter.OnItemClickListener{
@@ -35,17 +40,12 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
 
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
         distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
-
         mProgressCircle = findViewById(R.id.progress_circle_distributors_products);
-
         mRecyclerView = findViewById(R.id.recycler_view_distributors_products);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mProducts = new ArrayList<>();
-
-
         mAdapter = new DistributorProductsAdapter(getApplicationContext(), mProducts);
-
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(STORE_SHOW_DISTRIBUTOR_PRODUCTS.this);
 
@@ -66,6 +66,8 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
                                 mProducts.add(product);
                             }
 
+                            Collections.sort(mProducts, new Helper.sortProductsByName());
+
                             mAdapter.notifyDataSetChanged();
                             mProgressCircle.setVisibility(View.INVISIBLE);
                         } else {
@@ -75,6 +77,29 @@ public class STORE_SHOW_DISTRIBUTOR_PRODUCTS extends AppCompatActivity implement
                         }
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.product_sort, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_product_sort_by_name:
+                Collections.sort(mProducts, new Helper.sortProductsByName());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_product_sort_by_cost:
+                Collections.sort(mProducts, new Helper.sortProductsByCost());
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
     }
 
     @Override

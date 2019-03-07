@@ -186,7 +186,6 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                             emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
                             emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Product Order");
                             emailIntent.putExtra(Intent.EXTRA_TEXT, "Store: " + store.get_name() + "\n" +
-                                    "Address: " + store.get_address() + "\n" +
                                     "Order: " + String.valueOf(quantity) + " boxes of " + name + "\n\n" +
                                     "Total cost: " + String.valueOf(total_cost));
 

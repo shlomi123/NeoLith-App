@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -48,7 +49,7 @@ import java.io.File;
 
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-//TODO show distributor how to use scanning feature
+
 public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();

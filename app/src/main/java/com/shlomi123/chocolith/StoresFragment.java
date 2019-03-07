@@ -13,10 +13,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class StoresFragment extends Fragment implements StoreAdapter.OnItemClickListener {
@@ -55,6 +61,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        setHasOptionsMenu(true);
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
@@ -90,6 +97,8 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
                                 mStores.add(store);
                             }
 
+                            Collections.sort(mStores, new Helper.sortStoresByName());
+
                             mAdapter.notifyDataSetChanged();
 
                             mProgressCircle.setVisibility(View.INVISIBLE);
@@ -107,6 +116,26 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
                 startActivity(new Intent(getActivity(), ADMIN_ADD_STORE.class));
             }
         });
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.store_sort, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.item_store_sort_by_name:
+                Collections.sort(mStores, new Helper.sortStoresByName());
+                mAdapter.notifyDataSetChanged();
+                return true;
+            case R.id.item_store_sort_by_email:
+                Collections.sort(mStores, new Helper.sortStoresByEmail());
+                mAdapter.notifyDataSetChanged();
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -180,17 +209,6 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        // check first if orders is still null
-        /*if (chosenStore.getOrders() != null) {
-            // check if any orders were made
-            if (!chosenStore.getOrders().isEmpty()) {
-
-            } else {
-            }
-        } else {
-            Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
-        }*/
     }
 
     @Override

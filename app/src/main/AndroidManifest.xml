@@ -95,18 +95,7 @@
             android:screenOrientation="portrait" />
         <activity android:name=".STORE_QR_SCAN" />
         <activity android:name=".COMPANY_EDIT_PROFILE" />
-        <activity android:name=".ADMIN_EDIT_PRODUCT"></activity>
-
-
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
-        </provider>
+        <activity android:name=".ADMIN_EDIT_PRODUCT" />
     </application>
 
 </manifest>
