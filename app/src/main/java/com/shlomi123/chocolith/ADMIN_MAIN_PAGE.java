@@ -61,8 +61,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private String email;
     private String profile_path;
     private ImageView profile_picture;
-    private TextView profile_name;
-    private String name;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
@@ -76,7 +74,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         email = sharedPreferences.getString("COMPANY_EMAIL", null);
         profile_path = sharedPreferences.getString("COMPANY_PROFILE", null);
-        name = sharedPreferences.getString("COMPANY_NAME", null);
         //add custom toolbar
         Toolbar toolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(toolbar);
@@ -103,10 +100,6 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                         .into(profile_picture);
             }
         });
-
-        //add profile name
-        profile_name = navigationView.getHeaderView(0).findViewById(R.id.profile_name);
-        profile_name.setText(name);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -202,12 +195,8 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_SIGN_IN.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
                 break;
-            case R.id.nav_excel:
-                /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                Uri uri = Uri.parse(Environment.getExternalStorageDirectory()
-                        + "/neoliv/");
-                intent.setDataAndType(uri, "text/csv");
-                startActivity(Intent.createChooser(intent, "Open folder"));*/
+            case R.id.nav_feedback:
+                startActivity(new Intent(ADMIN_MAIN_PAGE.this, ADMIN_FEEDBACK.class));
                 break;
         }
 

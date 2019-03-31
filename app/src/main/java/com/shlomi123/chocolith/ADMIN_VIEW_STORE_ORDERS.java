@@ -23,6 +23,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO check if store has made any orders
 public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderAdapter.OnItemClickListener{
 
     private RecyclerView mRecyclerView;

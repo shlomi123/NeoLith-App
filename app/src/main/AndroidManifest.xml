@@ -19,6 +19,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".STORE_FEEDBACK"></activity>
+        <activity android:name=".ADMIN_FEEDBACK" />
         <activity
             android:name=".ENTRY_POINT"
             android:screenOrientation="portrait">

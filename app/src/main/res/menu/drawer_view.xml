@@ -29,8 +29,9 @@
                 android:icon="@drawable/ic_exit_to_app_black_24dp"
                 android:title="sign out" />
             <item
-                android:id="@+id/nav_excel"
-                android:title="excel" />
+                android:id="@+id/nav_feedback"
+                android:icon="@drawable/ic_feedback_black_24dp"
+                android:title="feedback" />
         </menu>
     </item>
 </menu>

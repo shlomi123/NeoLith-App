@@ -108,6 +108,9 @@ public class STORE_MAIN_PAGE extends AppCompatActivity implements NavigationView
                 startActivity(new Intent(STORE_MAIN_PAGE.this, STORE_SIGN_IN.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                 finish();
                 break;
+            case R.id.nav_feedback:
+                startActivity(new Intent(STORE_MAIN_PAGE.this, STORE_FEEDBACK.class));
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);

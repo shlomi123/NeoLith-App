@@ -180,7 +180,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     public void onViewStore(int position) {
         final Store chosenStore = mStores.get(position);
 
-
+        //TODO move this to ADMIN_VIEW_STORE_ORDERS
         db.collection("Stores")
                 .document(chosenStore.get_email())
                 .collection("Orders")
