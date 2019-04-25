@@ -26,14 +26,14 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 //Product adapter
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ImageViewHolder> {
     private Context mContext;
     private List<Product> mProducts;
-    private com.shlomi123.chocolith.ImageAdapter.OnItemClickListener mListener;
+    private com.shlomi123.chocolith.ProductAdapter.OnItemClickListener mListener;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
 
-    public ImageAdapter(Context context, List<Product> Products) {
+    public ProductAdapter(Context context, List<Product> Products) {
         mContext = context;
         mProducts = Products;
     }

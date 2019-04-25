@@ -112,7 +112,7 @@ public class STORE_REGISTER extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         // when user returns to app check if signed in before
         super.onResume();
@@ -157,10 +157,19 @@ public class STORE_REGISTER extends AppCompatActivity {
             });
 
         }
-    }
+    }*/
 
     private void sendVerificationEmail() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        spinner.setVisibility(View.VISIBLE);
+        verify.setVisibility(View.INVISIBLE);
+        password.setVisibility(View.INVISIBLE);
+        verify_password.setVisibility(View.INVISIBLE);
+        email.setVisibility(View.INVISIBLE);
+        name.setVisibility(View.INVISIBLE);
+        title.setVisibility(View.INVISIBLE);
+        logIn.setVisibility(View.INVISIBLE);
 
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -170,16 +179,23 @@ public class STORE_REGISTER extends AppCompatActivity {
                             // email sent
                             Toast.makeText(getApplicationContext(), "verification email sent", Toast.LENGTH_SHORT).show();
 
-                            // show only progress bar
-                            spinner.setVisibility(View.VISIBLE);
-                            textView.setVisibility(View.VISIBLE);
-                            verify.setVisibility(View.INVISIBLE);
-                            password.setVisibility(View.INVISIBLE);
-                            verify_password.setVisibility(View.INVISIBLE);
-                            email.setVisibility(View.INVISIBLE);
-                            title.setVisibility(View.INVISIBLE);
-                            logIn.setVisibility(View.INVISIBLE);
+                            editor = sharedPreferences.edit();
+                            editor.putString("STORE_EMAIL", email.getText().toString());
+                            editor.putString("STORE_NAME", name.getText().toString());
+                            editor.apply();
+
+                            mAuth.removeAuthStateListener(mAuthListener);
+                            startActivity(new Intent(STORE_REGISTER.this, STORE_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                            finish();
                         } else {
+                            spinner.setVisibility(View.INVISIBLE);
+                            verify.setVisibility(View.VISIBLE);
+                            password.setVisibility(View.VISIBLE);
+                            verify_password.setVisibility(View.VISIBLE);
+                            email.setVisibility(View.VISIBLE);
+                            title.setVisibility(View.VISIBLE);
+                            logIn.setVisibility(View.VISIBLE);
+                            name.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
                         }
                     }

@@ -22,7 +22,7 @@ import java.util.List;
 
 public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity /*implements ImageAdapter.OnItemClickListener*/{
     private RecyclerView mRecyclerView;
-    private ImageAdapter mAdapter;
+    private ProductAdapter mAdapter;
 
     private ProgressBar mProgressCircle;
 
@@ -54,7 +54,7 @@ public class CLIENT_SHOW_ALL_PRODUCTS extends AppCompatActivity /*implements Ima
                         mProducts.add(product);
                     }
 
-                    mAdapter = new ImageAdapter(CLIENT_SHOW_ALL_PRODUCTS.this, mProducts);
+                    mAdapter = new ProductAdapter(CLIENT_SHOW_ALL_PRODUCTS.this, mProducts);
 
                     mRecyclerView.setAdapter(mAdapter);
                     //mAdapter.setOnItemClickListener(CLIENT_SHOW_ALL_PRODUCTS.this);

@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -126,7 +127,7 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                         //if company name exists return
                         if (document != null)
                         {
-                            if (document.getString("Name") == name.getText().toString()) {
+                            if (document.getString("Name").toLowerCase() == name.getText().toString().toLowerCase()) {
                                 Toast.makeText(getApplicationContext(), "that company name already exists.", Toast.LENGTH_SHORT).show();
                                 return;
                             }
@@ -176,7 +177,9 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                                                             editor.putString("COMPANY_NAME", name.getText().toString());
                                                                             editor.putString("COMPANY_PROFILE", path);
                                                                             editor.apply();
-                                                                            startActivity(new Intent(COMPANY_PROPERTIES.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                                            FirebaseAuth.getInstance().signOut();
+                                                                            startActivity(new Intent(COMPANY_PROPERTIES.this, COMPANY_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                                            finish();
                                                                         }
                                                                     }
                                                                 }

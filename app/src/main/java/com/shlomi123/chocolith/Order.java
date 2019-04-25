@@ -8,11 +8,11 @@ public class Order {
     private int _quantity;
     private String _distributor;
     private String _url;
-    private int _total_cost;
+    private double _total_cost;
 
     public Order(){}
 
-    Order(Date date, String product, int quantity, String distributor, String url, int total_cost)
+    Order(Date date, String product, int quantity, String distributor, String url, double total_cost)
     {
         _date = date;
         _product = product;
@@ -42,7 +42,7 @@ public class Order {
         return _url;
     }
 
-    public int get_total_cost() {
+    public double get_total_cost() {
         return _total_cost;
     }
 }

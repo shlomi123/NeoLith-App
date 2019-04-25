@@ -3,25 +3,25 @@ package com.shlomi123.chocolith;
 public class Product {
     private String name;
     private String imageUrl;
-    private int cost;
+    private Double cost;
     private int units_per_package;
 
     public Product() {
         //empty constructor needed
     }
 
-    public Product(String name, String imageUrl, int cost, int units_per_package) {
+    public Product(String name, String imageUrl, Double cost, int units_per_package) {
         this.name = name;
         this.imageUrl = imageUrl;
         this.cost = cost;
         this.units_per_package = units_per_package;
     }
 
-     public int getCost() {
+     public Double getCost() {
          return cost;
      }
 
-     public void setCost(int cost) {
+     public void setCost(Double cost) {
          this.cost = cost;
      }
 

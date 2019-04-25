@@ -39,7 +39,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
     public void onBindViewHolder(StoreAdapter.StoreViewHolder holder, int position) {
         final Store StoreCurrent = mStores.get(position);
         holder.Name.setText(StoreCurrent.get_name());
-        holder.Email.setText("Email: " + StoreCurrent.get_email());
+        holder.Email.setText(StoreCurrent.get_email());
     }
 
     @Override

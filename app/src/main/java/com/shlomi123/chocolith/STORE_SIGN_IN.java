@@ -16,7 +16,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class STORE_SIGN_IN extends AppCompatActivity {
 
@@ -27,7 +30,9 @@ public class STORE_SIGN_IN extends AppCompatActivity {
     private Button button;
     private Button change_user;
     private ProgressBar spinner;
+    private String name;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
 
         //change entry point to company sign in
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        name = sharedPreferences.getString("STORE_NAME", null);
         editor = sharedPreferences.edit();
         editor.putInt("USER_TYPE", 4);
         editor.apply();
@@ -62,11 +68,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful())
                                 {
-                                    editor.putString("STORE_EMAIL", email.getText().toString());
-                                    editor.putInt("USER_TYPE", 2);
-                                    editor.apply();
-                                    startActivity(new Intent(STORE_SIGN_IN.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    finish();
+                                    signIn();
                                 }else{
                                     email.setVisibility(View.VISIBLE);
                                     password.setVisibility(View.VISIBLE);
@@ -88,5 +90,45 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void signIn(){
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified()){
+            Store store = new Store(name, email.getText().toString());
+
+            db.collection("Stores")
+                    .document(email.getText().toString())
+                    .set(store)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                editor = sharedPreferences.edit();
+                                editor.putInt("USER_TYPE", 2);
+                                editor.apply();
+                                startActivity(new Intent(STORE_SIGN_IN.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                finish();
+                            }else {
+                                email.setVisibility(View.VISIBLE);
+                                password.setVisibility(View.VISIBLE);
+                                button.setVisibility(View.VISIBLE);
+                                spinner.setVisibility(View.INVISIBLE);
+                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+        }else{
+            email.setVisibility(View.VISIBLE);
+            password.setVisibility(View.VISIBLE);
+            button.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.INVISIBLE);
+            Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+        }
+
     }
 }

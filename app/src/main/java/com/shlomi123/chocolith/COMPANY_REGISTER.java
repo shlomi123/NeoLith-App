@@ -24,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class COMPANY_REGISTER extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private Button verify;
@@ -91,6 +90,7 @@ public class COMPANY_REGISTER extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
+
                 if (user != null) {
                     sign_in_flag = true;
                     // User is signed in
@@ -103,7 +103,7 @@ public class COMPANY_REGISTER extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-    @Override
+    /*@Override
     protected void onResume()
     {
         // when user returns to app check if signed in before
@@ -137,11 +137,19 @@ public class COMPANY_REGISTER extends AppCompatActivity {
             });
 
         }
-    }
+    }*/
 
     private void sendVerificationEmail()
     {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        spinner.setVisibility(View.VISIBLE);
+        verify.setVisibility(View.INVISIBLE);
+        password.setVisibility(View.INVISIBLE);
+        verify_password.setVisibility(View.INVISIBLE);
+        email.setVisibility(View.INVISIBLE);
+        title.setVisibility(View.INVISIBLE);
+        logIn.setVisibility(View.INVISIBLE);
 
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -149,21 +157,26 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             // email sent
+                            editor = sharedPreferences.edit();
+                            // user is verified, start company properties activity
+                            editor.putString("COMPANY_EMAIL", email.getText().toString());
+                            editor.apply();
+                            mAuth.removeAuthStateListener(mAuthListener);
                             Toast.makeText(getApplicationContext(), "verification email sent", Toast.LENGTH_SHORT).show();
-
-                            // show only progress bar
-                            spinner.setVisibility(View.VISIBLE);
-                            textView.setVisibility(View.VISIBLE);
-                            verify.setVisibility(View.INVISIBLE);
-                            password.setVisibility(View.INVISIBLE);
-                            verify_password.setVisibility(View.INVISIBLE);
-                            email.setVisibility(View.INVISIBLE);
-                            title.setVisibility(View.INVISIBLE);
-                            logIn.setVisibility(View.INVISIBLE);
+                            startActivity(new Intent(COMPANY_REGISTER.this, COMPANY_PROPERTIES.class));
+                            finish();
                         }
                         else
                         {
                             Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
+                            spinner.setVisibility(View.INVISIBLE);
+                            textView.setVisibility(View.VISIBLE);
+                            verify.setVisibility(View.VISIBLE);
+                            password.setVisibility(View.VISIBLE);
+                            verify_password.setVisibility(View.VISIBLE);
+                            email.setVisibility(View.VISIBLE);
+                            title.setVisibility(View.VISIBLE);
+                            logIn.setVisibility(View.VISIBLE);
                         }
                     }
                 });

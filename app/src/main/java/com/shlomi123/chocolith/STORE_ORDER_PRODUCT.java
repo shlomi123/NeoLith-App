@@ -40,7 +40,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     private String distributor_email;
     private String distributor_name;
     private String product_name;
-    private int product_cost;
+    private double product_cost;
     private String product_img_url;
     private int product_units_per_package;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -53,7 +53,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
     private CircularProgressDrawable circularProgressDrawable;
     private boolean mailClientOpened = false;
     private int quantity;
-    private int total_cost;
+    private double total_cost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
         distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
-        product_cost = getIntent().getIntExtra("PRODUCT_COST", 0);
+        product_cost = getIntent().getDoubleExtra("PRODUCT_COST", 0);
         product_name = getIntent().getStringExtra("PRODUCT_NAME");
         product_img_url = getIntent().getStringExtra("PRODUCT_IMG_URL");
         product_units_per_package = getIntent().getIntExtra("PRODUCT_UNITS_PER_PACKAGE", 0);

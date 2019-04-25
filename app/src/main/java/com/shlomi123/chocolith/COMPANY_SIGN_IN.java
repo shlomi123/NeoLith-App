@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -68,7 +69,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful())
                                 {
-                                    changeCompanyId();
+                                    signIn();
                                 }else{
                                     email.setVisibility(View.VISIBLE);
                                     password.setVisibility(View.VISIBLE);
@@ -92,32 +93,49 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
         });
     }
 
-    private void changeCompanyId(){
-        db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    for (DocumentSnapshot currDocument: task.getResult())
+    private void signIn(){
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified()){
+            db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful())
                     {
-                        if (currDocument != null)
+                        for (DocumentSnapshot currDocument: task.getResult())
                         {
-                            if (currDocument.getString("Email").equals(email.getText().toString())) {
-                                // change company details, in the case that he signs in as a different company
-                                editor.putString("COMPANY_EMAIL", email.getText().toString());
-                                editor.putString("COMPANY_NAME", currDocument.getString("Name"));
-                                editor.putString("COMPANY_PROFILE", currDocument.getString("Profile"));
-                                editor.putInt("USER_TYPE", 1);
-                                editor.apply();
-                                startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                                finish();
+                            if (currDocument != null)
+                            {
+                                if (currDocument.getString("Email").equals(email.getText().toString())) {
+                                    // change company details, in the case that he signs in as a different company
+                                    editor.putString("COMPANY_EMAIL", email.getText().toString());
+                                    editor.putString("COMPANY_NAME", currDocument.getString("Name"));
+                                    editor.putString("COMPANY_PROFILE", currDocument.getString("Profile"));
+                                    editor.putInt("USER_TYPE", 1);
+                                    editor.apply();
+                                    startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                                    finish();
+                                }
                             }
                         }
+                    }else{
+                        email.setVisibility(View.VISIBLE);
+                        password.setVisibility(View.VISIBLE);
+                        button.setVisibility(View.VISIBLE);
+                        spinner.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
+        }else{
+            email.setVisibility(View.VISIBLE);
+            password.setVisibility(View.VISIBLE);
+            button.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.INVISIBLE);
+            Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();
+            FirebaseAuth.getInstance().signOut();
+        }
+
     }
 }

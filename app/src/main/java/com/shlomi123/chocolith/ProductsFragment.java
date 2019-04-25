@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ProductsFragment extends Fragment implements ImageAdapter.OnItemClickListener {
+public class ProductsFragment extends Fragment implements ProductAdapter.OnItemClickListener {
 
     private ImageButton addProduct;
     private SharedPreferences sharedPreferences;
     private FirebaseAuth firebaseAuth;
     private FirebaseStorage mStorage;
     private RecyclerView mRecyclerView;
-    private ImageAdapter mAdapter;
+    private ProductAdapter mAdapter;
     private ProgressBar mProgressCircle;
     private List<Product> mProducts;
     private String email;
@@ -69,7 +69,7 @@ public class ProductsFragment extends Fragment implements ImageAdapter.OnItemCli
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProducts = new ArrayList<>();
-        mAdapter = new ImageAdapter(getActivity(), mProducts);
+        mAdapter = new ProductAdapter(getActivity(), mProducts);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(ProductsFragment.this);
 

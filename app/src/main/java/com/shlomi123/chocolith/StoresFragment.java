@@ -180,35 +180,10 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     public void onViewStore(int position) {
         final Store chosenStore = mStores.get(position);
 
-        //TODO move this to ADMIN_VIEW_STORE_ORDERS
-        db.collection("Stores")
-                .document(chosenStore.get_email())
-                .collection("Orders")
-                .whereEqualTo("_distributor", company_name)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        int counter = 0;
-                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            counter++;
-                        }
-
-                       if (counter > 0) {
-                           Intent intent = new Intent(getActivity(), ADMIN_VIEW_STORE_ORDERS.class);
-                           intent.putExtra("NAME", chosenStore.get_name());
-                           intent.putExtra("EMAIL", chosenStore.get_email());
-                           startActivity(intent);
-                       } else {
-                           Toast.makeText(getActivity(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
-                       }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        Intent intent = new Intent(getActivity(), ADMIN_VIEW_STORE_ORDERS.class);
+        intent.putExtra("NAME", chosenStore.get_name());
+        intent.putExtra("EMAIL", chosenStore.get_email());
+        startActivity(intent);
     }
 
     @Override

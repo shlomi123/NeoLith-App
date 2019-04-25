@@ -69,7 +69,9 @@ public class Helper {
     static public class sortOrdersByTotalCost implements Comparator<Order> {
         @Override
         public int compare(Order o1, Order o2) {
-            return o1.get_total_cost() - o2.get_total_cost();
+            if (o1.get_total_cost() < o2.get_total_cost()) return -1;
+            if (o1.get_total_cost() > o2.get_total_cost()) return 1;
+            return 0;
         }
     }
 
@@ -83,7 +85,9 @@ public class Helper {
     static public class sortProductsByCost implements Comparator<Product> {
         @Override
         public int compare(Product o1, Product o2) {
-            return o1.getCost() - o2.getCost();
+            if (o1.getCost() < o2.getCost()) return -1;
+            if (o1.getCost() > o2.getCost()) return 1;
+            return 0;
         }
     }
 

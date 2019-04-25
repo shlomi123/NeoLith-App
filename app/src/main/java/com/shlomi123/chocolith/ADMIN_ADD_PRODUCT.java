@@ -162,7 +162,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                             @Override
                             public void onSuccess(Uri uri) {
 
-                                final Product product = new Product(name.getText().toString(), uri.toString(), Integer.parseInt(cost.getText().toString()), Integer.parseInt(units.getText().toString()));
+                                final Product product = new Product(name.getText().toString(), uri.toString(), Double.parseDouble(cost.getText().toString()), Integer.parseInt(units.getText().toString()));
                                 //upload to firestore name, image path, cost per unit, and units per package
 
                                 db.collection("Companies").document(email).collection("Products")

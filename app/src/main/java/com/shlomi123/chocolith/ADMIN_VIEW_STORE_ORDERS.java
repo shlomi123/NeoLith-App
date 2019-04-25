@@ -23,7 +23,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO check if store has made any orders
 public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderAdapter.OnItemClickListener{
 
     private RecyclerView mRecyclerView;
@@ -64,6 +63,11 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty())
+                        {
+                            Toast.makeText(getApplicationContext(), "No Orders Were Made", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             mOrders.add(documentSnapshot.toObject(Order.class));
                         }
@@ -80,68 +84,6 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
                 Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        /*final CollectionReference companies = db.collection("Companies");
-
-        //find the document of required company
-        companies.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful())
-                {
-                    DocumentSnapshot documentSnapshot = null;
-                    for (DocumentSnapshot currentDocumentSnapshot : task.getResult())
-                    {
-                        String name = currentDocumentSnapshot.getString("Name");
-                        if (name.equals(company_name))
-                        {
-                            // this is the companies document
-                            documentSnapshot = currentDocumentSnapshot;
-                        }
-                    }
-
-                    String id = documentSnapshot.getId();
-
-                    //find the document of the store that needs to be viewed
-                    companies.document(id).collection("Stores").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful())
-                            {
-                                for (DocumentSnapshot documentSnapshot: task.getResult())
-                                {
-                                    //this is the document of the corresponding document
-                                    Store store = documentSnapshot.toObject(Store.class);
-                                    if (store.get_name().equals(Name))
-                                    {
-                                        // add stores orders to the order list
-                                        mOrders = Helper.getOrdersFromStore(store);
-                                    }
-
-                                }
-
-                                // create recycler view
-                                mAdapter = new OrderAdapter(ADMIN_VIEW_STORE_ORDERS.this, mOrders);
-
-                                mRecyclerView.setAdapter(mAdapter);
-                                mAdapter.setOnItemClickListener(ADMIN_VIEW_STORE_ORDERS.this);
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                            }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(), "Error getting stores", Toast.LENGTH_SHORT).show();
-                                mProgressCircle.setVisibility(View.INVISIBLE);
-                            }
-                        }
-                    });
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Error getting company", Toast.LENGTH_SHORT).show();
-                    mProgressCircle.setVisibility(View.INVISIBLE);
-                }
-            }
-        });*/
     }
 
     @Override
