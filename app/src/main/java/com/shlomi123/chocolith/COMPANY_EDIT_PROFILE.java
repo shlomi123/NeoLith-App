@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -42,6 +43,7 @@ public class COMPANY_EDIT_PROFILE extends AppCompatActivity {
     private ProgressBar progressBar;
     private Uri mImageUri;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +52,13 @@ public class COMPANY_EDIT_PROFILE extends AppCompatActivity {
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         profile_path = sharedPreferences.getString("COMPANY_PROFILE", null);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
-        name = sharedPreferences.getString("COMPANY_NAME", null);
+        email = mAuth.getCurrentUser().getEmail();
+        name = mAuth.getCurrentUser().getDisplayName();
         change_profile = findViewById(R.id.buttonPickNewPicture);
         profile_picture = findViewById(R.id.imageViewCurrentProfilePicture);
         progressBar = findViewById(R.id.progressBar_company_new_profile_upload);
         //make progress bar invisible until upload is clicked
         progressBar.setVisibility(View.INVISIBLE);
-
         //add profile picture
         circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
         circularProgressDrawable.start();

@@ -1,15 +1,19 @@
 package com.shlomi123.chocolith;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +34,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private EditText email;
     private EditText password;
+    private TextView reset;
     private Button button;
     private Button change_type;
     private ProgressBar spinner;
@@ -51,6 +56,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
         password = (EditText) findViewById(R.id.editText_signIn_password);
         button = (Button) findViewById(R.id.button_signIn);
         change_type = (Button) findViewById(R.id.button_company_change_user_type);
+        reset = (TextView) findViewById(R.id.textView_company_forgot_password);
         spinner = (ProgressBar)findViewById(R.id.progressBar_signIn);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -91,43 +97,57 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                 finish();
             }
         });
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final EditText edittext = new EditText(getApplicationContext());
+                final AlertDialog alert = new AlertDialog.Builder(COMPANY_SIGN_IN.this)
+                        .setMessage("please enter your email")
+                        .setTitle("Reset Password")
+                        .setView(edittext)
+                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String email = edittext.getText().toString();
+
+                                mAuth.sendPasswordResetEmail(email)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(COMPANY_SIGN_IN.this, "email sent to reset password", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        }).setNegativeButton("Cancel", null)
+                        .create();
+                alert.show();
+            }
+        });
     }
 
     private void signIn(){
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = mAuth.getCurrentUser();
+
+
 
         if (user.isEmailVerified()){
-            db.collection("Companies").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            db.collection("Companies").document(email.getText().toString()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful())
-                    {
-                        for (DocumentSnapshot currDocument: task.getResult())
-                        {
-                            if (currDocument != null)
-                            {
-                                if (currDocument.getString("Email").equals(email.getText().toString())) {
-                                    // change company details, in the case that he signs in as a different company
-                                    editor.putString("COMPANY_EMAIL", email.getText().toString());
-                                    editor.putString("COMPANY_NAME", currDocument.getString("Name"));
-                                    editor.putString("COMPANY_PROFILE", currDocument.getString("Profile"));
-                                    editor.putInt("USER_TYPE", 1);
-                                    editor.apply();
-                                    startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-                                    finish();
-                                }
-                            }
-                        }
-                    }else{
-                        email.setVisibility(View.VISIBLE);
-                        password.setVisibility(View.VISIBLE);
-                        button.setVisibility(View.VISIBLE);
-                        spinner.setVisibility(View.INVISIBLE);
-                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        editor.putString("COMPANY_PROFILE", task.getResult().getString("Profile"));
+                        editor.putInt("USER_TYPE", 1);
+                        editor.apply();
+                        startActivity(new Intent(COMPANY_SIGN_IN.this, ADMIN_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        finish();
                     }
                 }
             });
+
         }else{
             email.setVisibility(View.VISIBLE);
             password.setVisibility(View.VISIBLE);

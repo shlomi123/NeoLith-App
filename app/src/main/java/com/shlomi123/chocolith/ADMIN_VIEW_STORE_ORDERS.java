@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,8 +34,8 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
     private SharedPreferences sharedPreferences;
     private String company_name;
     private String company_email;
-
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private List<Order> mOrders;
 
     @Override
@@ -43,8 +44,8 @@ public class ADMIN_VIEW_STORE_ORDERS extends AppCompatActivity implements OrderA
         setContentView(R.layout.activity_admin__view__store__orders);
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
-        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        company_name = mAuth.getCurrentUser().getDisplayName();
+        company_email = mAuth.getCurrentUser().getEmail();
 
         mRecyclerView = findViewById(R.id.recycler_view_orders);
         mRecyclerView.setHasFixedSize(true);

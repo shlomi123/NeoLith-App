@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -63,17 +64,20 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private ImageView profile_picture;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin__main__page);
 
+        user = mAuth.getCurrentUser();
         // company id
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
         profile_path = sharedPreferences.getString("COMPANY_PROFILE", null);
+        email = user.getEmail();
+
+
         //add custom toolbar
         Toolbar toolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(toolbar);

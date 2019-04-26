@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,6 +52,8 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
     private StorageReference mStorageRef;
     private SharedPreferences sharedPreferences;
     private String email;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +65,7 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
         name = (EditText) findViewById(R.id.editTextCompanyName);
         chooseFile = (Button) findViewById(R.id.button_open_file_chooser_for_profile);
         mImageView = (ImageView) findViewById(R.id.imageView_company_profile);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        email = mAuth.getCurrentUser().getEmail();
         mStorageRef = FirebaseStorage.getInstance().getReference("Profiles");
         progressBar = (ProgressBar) findViewById(R.id.progressBar_company_profile_upload);
         //make progress bar invisible until upload is clicked
@@ -140,6 +145,7 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                     textView.setVisibility(View.INVISIBLE);
                     button.setVisibility(View.INVISIBLE);
                     progressBar.setVisibility(View.VISIBLE);
+
                     //upload profile picture
                     fileReference.putFile(mImageUri)
                             .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -155,6 +161,8 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                             map.put("Name", name.getText().toString());
                                             map.put("Email", email);
                                             map.put("Profile", path);
+
+
 
                                             //add company to database
                                             db.collection("Companies").document(email).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -173,13 +181,26 @@ public class COMPANY_PROPERTIES extends AppCompatActivity {
                                                                         String current_name = currentDocumentSnapshot.getString("Name");
                                                                         if (current_name.equals(name.getText().toString()))
                                                                         {
-                                                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                                            editor.putString("COMPANY_NAME", name.getText().toString());
-                                                                            editor.putString("COMPANY_PROFILE", path);
-                                                                            editor.apply();
-                                                                            FirebaseAuth.getInstance().signOut();
-                                                                            startActivity(new Intent(COMPANY_PROPERTIES.this, COMPANY_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                                            finish();
+                                                                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                                                                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                                                                    .setDisplayName(name.getText().toString())
+                                                                                    .build();
+
+                                                                            user.updateProfile(profileUpdates)
+                                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                        @Override
+                                                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                                                            if (task.isSuccessful()) {
+                                                                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                                                                editor.putString("COMPANY_PROFILE", path);
+                                                                                                editor.apply();
+                                                                                                FirebaseAuth.getInstance().signOut();
+                                                                                                startActivity(new Intent(COMPANY_PROPERTIES.this, COMPANY_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                                                                finish();
+                                                                                            }
+                                                                                        }
+                                                                                    });
                                                                         }
                                                                     }
                                                                 }

@@ -21,6 +21,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -46,10 +47,9 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
     private Boolean imageFlag = false;
     private StorageReference mStorageRef;
     private String company_name;
-    private SharedPreferences sharedPreferences;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String email;
-
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +68,7 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
 
         mStorageRef = FirebaseStorage.getInstance().getReference("Products");
 
-        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        email = mAuth.getCurrentUser().getEmail();
 
 
         chooseFile.setOnClickListener(new View.OnClickListener() {

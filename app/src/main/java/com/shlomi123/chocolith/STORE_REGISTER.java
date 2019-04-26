@@ -179,14 +179,38 @@ public class STORE_REGISTER extends AppCompatActivity {
                             // email sent
                             Toast.makeText(getApplicationContext(), "verification email sent", Toast.LENGTH_SHORT).show();
 
-                            editor = sharedPreferences.edit();
-                            editor.putString("STORE_EMAIL", email.getText().toString());
-                            editor.putString("STORE_NAME", name.getText().toString());
-                            editor.apply();
+                            Store store = new Store(name.getText().toString(), email.getText().toString());
 
-                            mAuth.removeAuthStateListener(mAuthListener);
-                            startActivity(new Intent(STORE_REGISTER.this, STORE_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                            finish();
+                            db.collection("Stores")
+                                    .document(email.getText().toString())
+                                    .set(store)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                editor = sharedPreferences.edit();
+                                                editor.putString("STORE_EMAIL", email.getText().toString());
+                                                editor.putString("STORE_NAME", name.getText().toString());
+                                                editor.putInt("USER_TYPE", 2);
+                                                editor.apply();
+                                                mAuth.removeAuthStateListener(mAuthListener);
+                                                startActivity(new Intent(STORE_REGISTER.this, STORE_SIGN_IN.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                                finish();
+                                            }else {
+                                                spinner.setVisibility(View.INVISIBLE);
+                                                verify.setVisibility(View.VISIBLE);
+                                                password.setVisibility(View.VISIBLE);
+                                                verify_password.setVisibility(View.VISIBLE);
+                                                email.setVisibility(View.VISIBLE);
+                                                title.setVisibility(View.VISIBLE);
+                                                logIn.setVisibility(View.VISIBLE);
+                                                name.setVisibility(View.VISIBLE);
+                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+
                         } else {
                             spinner.setVisibility(View.INVISIBLE);
                             verify.setVisibility(View.VISIBLE);

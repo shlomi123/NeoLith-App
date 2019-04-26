@@ -133,7 +133,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         }
         else {
             alertDialog.setMessage("You want to order " + editText.getText().toString() + " boxes of product\n\n"
-                    + "Total cost: " + String.valueOf(total_cost) + "$");
+                    + "Total cost: " + String.format("%.2f", total_cost) + "$");
         }
 
         //if the user verifies the order

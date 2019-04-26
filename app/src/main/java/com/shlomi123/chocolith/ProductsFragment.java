@@ -39,7 +39,6 @@ public class ProductsFragment extends Fragment implements ProductAdapter.OnItemC
 
     private ImageButton addProduct;
     private SharedPreferences sharedPreferences;
-    private FirebaseAuth firebaseAuth;
     private FirebaseStorage mStorage;
     private RecyclerView mRecyclerView;
     private ProductAdapter mAdapter;
@@ -47,6 +46,7 @@ public class ProductsFragment extends Fragment implements ProductAdapter.OnItemC
     private List<Product> mProducts;
     private String email;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Nullable
     @Override
@@ -59,9 +59,8 @@ public class ProductsFragment extends Fragment implements ProductAdapter.OnItemC
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
 
-        firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        email = mAuth.getCurrentUser().getEmail();
         addProduct = view.findViewById(R.id.button_add_product);
         mStorage = FirebaseStorage.getInstance();
         mProgressCircle = view.findViewById(R.id.progress_circle_products);

@@ -52,8 +52,8 @@ public class ADMIN_ADD_STORE extends AppCompatActivity implements StoreSearchAda
 
         mAuth = FirebaseAuth.getInstance();
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
-        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        company_name = mAuth.getCurrentUser().getDisplayName();
+        company_email = mAuth.getCurrentUser().getEmail();
         company_profile = sharedPreferences.getString("COMPANY_PROFILE", null);
 
         search = (EditText) findViewById(R.id.editText_search);

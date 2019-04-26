@@ -157,10 +157,6 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             // email sent
-                            editor = sharedPreferences.edit();
-                            // user is verified, start company properties activity
-                            editor.putString("COMPANY_EMAIL", email.getText().toString());
-                            editor.apply();
                             mAuth.removeAuthStateListener(mAuthListener);
                             Toast.makeText(getApplicationContext(), "verification email sent", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(COMPANY_REGISTER.this, COMPANY_PROPERTIES.class));

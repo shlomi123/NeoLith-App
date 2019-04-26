@@ -36,6 +36,16 @@
         android:layout_marginBottom="50dp"
         android:text="sign in" />
 
+    <TextView
+        android:id="@+id/textView_store_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_store_signIn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-30dp"
+        android:text="forgot password?"
+        android:textColor="#393ecc" />
+
     <ProgressBar
         android:id="@+id/progressBar_store_signIn"
         style="?android:attr/progressBarStyleLarge"

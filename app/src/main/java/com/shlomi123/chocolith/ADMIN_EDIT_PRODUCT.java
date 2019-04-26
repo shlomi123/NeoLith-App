@@ -27,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -64,6 +65,7 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
     private String image_path;
     private Uri mImageUri;
     private ProgressBar progressBar;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         image_path = product.getImageUrl();
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        email = sharedPreferences.getString("COMPANY_EMAIL", null);
+        email = mAuth.getCurrentUser().getEmail();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar_product_new_image);
         product_image = (ImageView) findViewById(R.id.imageView_edit_product_image);

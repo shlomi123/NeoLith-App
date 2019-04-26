@@ -51,6 +51,7 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
     private String company_email;
     private String company_name;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     @Nullable
     @Override
@@ -65,8 +66,8 @@ public class StoresFragment extends Fragment implements StoreAdapter.OnItemClick
 
         firebaseAuth = FirebaseAuth.getInstance();
         sharedPreferences = getActivity().getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        company_email = sharedPreferences.getString("COMPANY_EMAIL", null);
-        company_name = sharedPreferences.getString("COMPANY_NAME", null);
+        company_email = mAuth.getCurrentUser().getEmail();
+        company_name = mAuth.getCurrentUser().getDisplayName();
         addStore = (ImageButton) view.findViewById(R.id.button_add_store);
         mRecyclerView = view.findViewById(R.id.recycler_view_stores_main);
         mRecyclerView.setHasFixedSize(true);
