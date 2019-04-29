@@ -16,6 +16,8 @@ public class ENTRY_POINT extends AppCompatActivity {
         setContentView(R.layout.activity_entry__point);
 
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("USER_TYPE", 0);
         int user_type = sharedPreferences.getInt("USER_TYPE", 0);
 
         switch (user_type)

@@ -112,52 +112,12 @@ public class STORE_REGISTER extends AppCompatActivity {
         mAuth.addAuthStateListener(mAuthListener);
     }
 
-    /*@Override
-    protected void onResume() {
-        // when user returns to app check if signed in before
-        super.onResume();
-        if (sign_in_flag) {
-            // if user signed in before check if he verified his email
-            mAuth.getCurrentUser().reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
 
-                        if (user.isEmailVerified()) {
-                            //add store to database
-                            Store store = new Store(name.getText().toString(), email.getText().toString());
-
-                            db.collection("Stores")
-                                    .document(email.getText().toString())
-                                    .set(store)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                editor = sharedPreferences.edit();
-                                                editor.putString("STORE_EMAIL", email.getText().toString());
-                                                editor.putString("STORE_NAME", name.getText().toString());
-                                                editor.apply();
-
-                                                mAuth.removeAuthStateListener(mAuthListener);
-                                                startActivity(new Intent(STORE_REGISTER.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                                                finish();
-                                            }else {
-                                                Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                        } else {
-                            // if user returned to application without verifying email
-                            Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            });
-
-        }
-    }*/
+        mAuth.removeAuthStateListener(mAuthListener);
+    }
 
     private void sendVerificationEmail() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

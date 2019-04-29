@@ -48,6 +48,8 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 
@@ -60,8 +62,10 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private NavigationView navigationView;
     private SharedPreferences sharedPreferences;
     private String email;
+    private String name;
     private String profile_path;
-    private ImageView profile_picture;
+    private TextView profile_name;
+    private CircleImageView profile_picture;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseUser user;
@@ -76,7 +80,7 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         profile_path = sharedPreferences.getString("COMPANY_PROFILE", null);
         email = user.getEmail();
-
+        name = user.getDisplayName();
 
         //add custom toolbar
         Toolbar toolbar = findViewById(R.id.main_page_toolbar);
@@ -104,6 +108,10 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                         .into(profile_picture);
             }
         });
+
+        //set company name
+        profile_name = navigationView.getHeaderView(0).findViewById(R.id.textView_distributor_name);
+        profile_name.setText(name);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                 R.string.navigation_drawer_open, R.string.navigation_drawer_close);

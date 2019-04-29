@@ -48,14 +48,7 @@
 
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/editTextCompanyName"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
-            android:hint="company name"/>
+
 
     </LinearLayout>
 
@@ -68,13 +61,5 @@
         android:layout_marginBottom="40dp"
         android:text="Next" />
 
-    <ProgressBar
-        android:id="@+id/progressBar_company_profile_upload"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

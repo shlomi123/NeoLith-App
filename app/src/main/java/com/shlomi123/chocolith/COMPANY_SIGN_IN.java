@@ -35,6 +35,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
     private EditText email;
     private EditText password;
     private TextView reset;
+    private TextView title;
     private Button button;
     private Button change_type;
     private ProgressBar spinner;
@@ -57,6 +58,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
         button = (Button) findViewById(R.id.button_signIn);
         change_type = (Button) findViewById(R.id.button_company_change_user_type);
         reset = (TextView) findViewById(R.id.textView_company_forgot_password);
+        title = (TextView) findViewById(R.id.textView_application_name);
         spinner = (ProgressBar)findViewById(R.id.progressBar_signIn);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -67,6 +69,8 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                 email.setVisibility(View.INVISIBLE);
                 password.setVisibility(View.INVISIBLE);
                 button.setVisibility(View.INVISIBLE);
+                reset.setVisibility(View.INVISIBLE);
+                title.setVisibility(View.INVISIBLE);
                 spinner.setVisibility(View.VISIBLE);
 
                 mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
@@ -80,6 +84,8 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
                                     email.setVisibility(View.VISIBLE);
                                     password.setVisibility(View.VISIBLE);
                                     button.setVisibility(View.VISIBLE);
+                                    reset.setVisibility(View.VISIBLE);
+                                    title.setVisibility(View.VISIBLE);
                                     spinner.setVisibility(View.INVISIBLE);
                                     Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                                 }
@@ -152,6 +158,8 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
             email.setVisibility(View.VISIBLE);
             password.setVisibility(View.VISIBLE);
             button.setVisibility(View.VISIBLE);
+            reset.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.INVISIBLE);
             Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().signOut();

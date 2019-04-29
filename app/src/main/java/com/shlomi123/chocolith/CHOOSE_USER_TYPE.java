@@ -26,9 +26,9 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
         company.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                /*SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("USER_TYPE", 1);
-                editor.apply();
+                editor.apply();*/
                 startActivity(new Intent(CHOOSE_USER_TYPE.this, COMPANY_REGISTER.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
@@ -36,9 +36,9 @@ public class CHOOSE_USER_TYPE extends AppCompatActivity {
         store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                /*SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putInt("USER_TYPE", 2);
-                editor.apply();
+                editor.apply();*/
                 startActivity(new Intent(CHOOSE_USER_TYPE.this, STORE_REGISTER.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });

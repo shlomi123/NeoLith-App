@@ -19,14 +19,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".STORE_FEEDBACK"></activity>
-        <activity android:name=".ADMIN_FEEDBACK" />
+        <activity
+            android:name=".STORE_FEEDBACK"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ADMIN_FEEDBACK"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ENTRY_POINT"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -38,47 +42,26 @@
             android:name=".ADMIN_ADD_STORE"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ADMIN_STORE_ID"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ADMIN_DELETE_STORE"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ADMIN_CHOOSE_STORE_TO_DELETE"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".LOGIN"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ADMIN_PICK_PRODUCT_IMAGE"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".CLIENT_SHOW_ALL_PRODUCTS"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ADMIN_VIEW_STORES"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ADMIN_VIEW_STORE_ORDERS"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".CLIENT_MAIN_PAGE"
             android:screenOrientation="portrait" />
         <activity
             android:name=".COMPANY_PROPERTIES"
             android:screenOrientation="portrait" />
         <activity
             android:name=".COMPANY_REGISTER"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar2"/>
         <activity
             android:name=".CHOOSE_USER_TYPE"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar2" />
         <activity
             android:name=".ADMIN_ADD_PRODUCT"
             android:screenOrientation="portrait" />
         <activity
             android:name=".COMPANY_SIGN_IN"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar2"/>
         <activity
             android:name=".STORE_REGISTER"
             android:screenOrientation="portrait" />
@@ -95,9 +78,15 @@
         <activity
             android:name=".STORE_ORDER_PRODUCT"
             android:screenOrientation="portrait" />
-        <activity android:name=".STORE_QR_SCAN" />
-        <activity android:name=".COMPANY_EDIT_PROFILE" />
-        <activity android:name=".ADMIN_EDIT_PRODUCT" />
+        <activity
+            android:name=".STORE_QR_SCAN"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".COMPANY_EDIT_PROFILE"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ADMIN_EDIT_PRODUCT"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

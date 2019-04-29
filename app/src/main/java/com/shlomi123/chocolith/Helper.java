@@ -1,6 +1,13 @@
 package com.shlomi123.chocolith;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -14,6 +21,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
+import com.google.type.Color;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +35,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+
 import org.apache.poi.*;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -117,6 +127,16 @@ public class Helper {
         public int compare(Distributor o1, Distributor o2) {
             return o1.getEmail().compareTo(o2.getEmail());
         }
+    }
+
+    public static String getRandomColor() {
+        Random random = new Random();
+
+        // create a big random number - maximum is ffffff (hex) = 16777215 (dez)
+        int nextInt = random.nextInt(0xffffff + 1);
+
+        // format it as hexadecimal string (with hashtag and leading zeros)
+        return String.format("#%06x", nextInt);
     }
 
     static public boolean saveExcelFile(Context context, Store store, List<Order> store_orders) {
