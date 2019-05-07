@@ -38,6 +38,7 @@ public class COMPANY_SIGN_IN extends AppCompatActivity {
     private TextView title;
     private Button button;
     private Button change_type;
+    private String example;
     private ProgressBar spinner;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();

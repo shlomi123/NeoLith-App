@@ -19,18 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service
+            android:name=".NewOrderService"
+            android:enabled="true"
+            android:exported="false"></service>
+
         <activity
             android:name=".STORE_FEEDBACK"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ADMIN_FEEDBACK"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ENTRY_POINT"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -50,7 +57,7 @@
         <activity
             android:name=".COMPANY_REGISTER"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar2"/>
+            android:theme="@style/AppTheme.NoActionBar2" />
         <activity
             android:name=".CHOOSE_USER_TYPE"
             android:screenOrientation="portrait"
@@ -61,7 +68,7 @@
         <activity
             android:name=".COMPANY_SIGN_IN"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar2"/>
+            android:theme="@style/AppTheme.NoActionBar2" />
         <activity
             android:name=".STORE_REGISTER"
             android:screenOrientation="portrait" />
@@ -80,13 +87,13 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".STORE_QR_SCAN"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".COMPANY_EDIT_PROFILE"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ADMIN_EDIT_PRODUCT"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

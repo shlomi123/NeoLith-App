@@ -29,19 +29,12 @@ public class ADMIN_FEEDBACK extends AppCompatActivity {
     }
 
     private void sendMail() {
-        String recipientList = "salamigoner@gmail.com";
-        String[] recipients = recipientList.split(",");
+        String recipientList = "info@techfficient.software";
 
         String subject = mEditTextSubject.getText().toString();
         String message = mEditTextMessage.getText().toString();
 
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-
-        intent.setType("message/rfc822");
-        startActivity(Intent.createChooser(intent, "Choose an email client"));
-        finish();
+        SendMail sendMail = new SendMail(ADMIN_FEEDBACK.this, recipientList, subject, message, 1);
+        sendMail.execute();
     }
 }

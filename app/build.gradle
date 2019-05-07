@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.shlomi123.chocolith"
-        minSdkVersion 17
+        minSdkVersion 24
         targetSdkVersion 26
         multiDexEnabled true
         versionCode 1
@@ -55,6 +55,9 @@ dependencies {
     implementation 'androidmads.library.qrgenearator:QRGenearator:1.0.3'
     implementation 'de.hdodenhof:circleimageview:3.0.0'
     implementation files('libs/poi-3.9.jar')
+    implementation files('libs/activation.jar')
+    implementation files('libs/additionnal.jar')
+    implementation files('libs/mail.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

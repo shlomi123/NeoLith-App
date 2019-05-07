@@ -37,6 +37,7 @@ import java.util.HashMap;
 public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
     private String store_email;
+    private String store_name;
     private String distributor_email;
     private String distributor_name;
     private String product_name;
@@ -62,6 +63,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
         store_email = sharedPreferences.getString("STORE_EMAIL", null);
+        store_name = sharedPreferences.getString("STORE_NAME", null);
 
         distributor_email = getIntent().getStringExtra("DISTRIBUTOR_EMAIL");
         distributor_name = getIntent().getStringExtra("DISTRIBUTOR_NAME");
@@ -147,7 +149,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                 else
                 {
                     //first make sure he sends the email before order is logged
-                    sendMail(context, product_name);
+                    orderProduct(getApplicationContext());
                     dialogInterface.dismiss();
                 }
             }
@@ -161,7 +163,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         alert.show();
     }
 
-    private void sendMail(final Context context, final String name)
+    /*private void sendMail(final Context context, final String name)
     {
         //get store details for email
         db.collection("Companies")
@@ -175,6 +177,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot documentSnapshot = task.getResult();
                             Store store = documentSnapshot.toObject(Store.class);
+
 
 
                             //make email
@@ -212,34 +215,54 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "You must send email in order to complete the order", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     //log the order
     private void orderProduct(final Context context)
     {
-        Order order = new Order(Timestamp.now().toDate(), product_name, quantity, distributor_name, product_img_url, total_cost);
+        mailClientOpened = true;
+        final Order order = new Order(Timestamp.now().toDate(), product_name, quantity, distributor_name, product_img_url, total_cost, store_email, store_name);
 
-        db.collection("Stores")
-                .document(store_email)
+        db.collection("Companies")
+                .document(distributor_email)
                 .collection("Orders")
                 .add(order)
                 .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        if (task.isSuccessful()) {
-                            finish();
-                        } else {
-                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
-                        }
+                        db.collection("Stores")
+                                .document(store_email)
+                                .collection("Orders")
+                                .add(order)
+                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                        if (task.isSuccessful()) {
+                                            //send mail
+                                            SendMail sendMail = new SendMail(STORE_ORDER_PRODUCT.this, distributor_email, "Product Order",
+                                                    "Store: " + store_name + "\n" +
+                                                            "Order: " + String.valueOf(quantity) + " boxes of " + product_name + "\n\n" +
+                                                            "Total cost: " + String.valueOf(total_cost), 0);
+
+                                            sendMail.execute();
+                                        } else {
+                                            Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                     }
                 });
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
-        //if user didn't open email client flag is false and order won't be logged
-        mailClientOpened = false;
+        //if user ordered
+        if (mailClientOpened){
+            startActivity(new Intent(STORE_ORDER_PRODUCT.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            finish();
+        }
+
     }
 
     @Override
@@ -247,5 +270,5 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         super.onStop();
         //if user opened email client flag is true
         mailClientOpened = true;
-    }
+    }*/
 }

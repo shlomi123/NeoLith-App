@@ -293,6 +293,7 @@ public class COMPANY_REGISTER extends AppCompatActivity {
                                                                                             if (task.isSuccessful()) {
                                                                                                 editor = sharedPreferences.edit();
                                                                                                 editor.putString("COMPANY_PROFILE", path);
+                                                                                                editor.putString("COMPANY_EMAIL", email.getText().toString());
                                                                                                 editor.apply();
                                                                                                 mAuth.removeAuthStateListener(mAuthListener);
                                                                                                 FirebaseAuth.getInstance().signOut();
