@@ -3,6 +3,7 @@ package com.shlomi123.chocolith;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +27,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +55,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -74,9 +79,12 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
     private String profile_path;
     private TextView profile_name;
     private CircleImageView profile_picture;
+    private Button change_profile_picture;
     private CircularProgressDrawable circularProgressDrawable;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private FirebaseUser user;
+    private Uri mImageUri;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,8 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         email = user.getEmail();
         name = user.getDisplayName();
 
+
+
         //start service for new orders
         //startService(new Intent(NewOrderService.class.getName()).putExtra("DISTRIBUTOR_EMAIL", email));
 
@@ -101,6 +111,9 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         drawer = findViewById(R.id.main_page_drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        progressBar = navigationView.getHeaderView(0).findViewById(R.id.progressBar_company_new_profile_upload);
+        progressBar.setVisibility(View.INVISIBLE);
 
         //add profile picture
         circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
@@ -119,6 +132,16 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                         .into(profile_picture);
             }
         });
+
+        //change profile picture
+        change_profile_picture = navigationView.getHeaderView(0).findViewById(R.id.button_open_file_chooser_change_profile);
+        change_profile_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
 
         //set company name
         profile_name = navigationView.getHeaderView(0).findViewById(R.id.textView_distributor_name);
@@ -208,10 +231,11 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                         new ScanFragment()).commit();
                 getSupportActionBar().setTitle("Scan Feature");
                 break;
-            case R.id.nav_profile:
+            case R.id.nav_orders:
                 //open edit profile fragment
-                fragment_num = 3;
-                startActivity(new Intent(ADMIN_MAIN_PAGE.this, COMPANY_EDIT_PROFILE.class));
+                getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                        new OrderFragment()).commit();
+                getSupportActionBar().setTitle("Orders");
                 break;
             case R.id.nav_sign_out:
                 mAuth.signOut();
@@ -246,9 +270,97 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE}, 1);
     }
 
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, 1);
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+
+            profile_picture.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+
+            StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
+
+            storageReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        StorageReference newStorageReference = FirebaseStorage.getInstance()
+                                .getReference("Profiles")
+                                .child(name + "." + getFileExtension(mImageUri));
+
+                        newStorageReference.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                taskSnapshot.getMetadata().getReference().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        final String path = uri.toString();
+
+                                        db.collection("Companies")
+                                                .document(email)
+                                                .update("Profile", path)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                            editor.putString("COMPANY_PROFILE", path);
+                                                            editor.apply();
+
+                                                            final StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
+                                                            storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                                                @Override
+                                                                public void onSuccess(StorageMetadata storageMetadata) {
+
+                                                                    GlideApp.with(getApplicationContext())
+                                                                            .load(storageReference)
+                                                                            .fitCenter()
+                                                                            .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                                                                            .placeholder(circularProgressDrawable)
+                                                                            .into(profile_picture);
+                                                                }
+                                                            });
+                                                            profile_picture.setVisibility(View.VISIBLE);
+                                                            progressBar.setVisibility(View.INVISIBLE);
+                                                        }
+                                                    }
+                                                });
+
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+                                progressBar.setProgress((int) progress);
+                            }
+                        });
+
+                    }else {
+                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
     }
 }

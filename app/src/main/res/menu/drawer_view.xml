@@ -13,9 +13,9 @@
             android:icon="@drawable/ic_kitchen_black_24dp"
             android:title="products" />
         <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_person_outline_black_24dp"
-            android:title="profile" />
+            android:id="@+id/nav_orders"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="orders" />
         <item
             android:id="@+id/nav_scan_feature"
             android:icon="@drawable/ic_qr_code"

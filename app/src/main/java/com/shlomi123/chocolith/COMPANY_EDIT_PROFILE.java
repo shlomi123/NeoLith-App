@@ -56,7 +56,7 @@ public class COMPANY_EDIT_PROFILE extends AppCompatActivity {
         name = mAuth.getCurrentUser().getDisplayName();
         change_profile = findViewById(R.id.buttonPickNewPicture);
         profile_picture = findViewById(R.id.imageViewCurrentProfilePicture);
-        progressBar = findViewById(R.id.progressBar_company_new_profile_upload);
+        progressBar = findViewById(R.id.progressBar_company_new_profile_upload_blaaa);
         //make progress bar invisible until upload is clicked
         progressBar.setVisibility(View.INVISIBLE);
         //add profile picture
