@@ -34,6 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
 
     private Button chooseFile;
@@ -42,7 +44,8 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
     private EditText cost;
     private EditText units;
     private Uri mImageUri;
-    private ImageView mImageView;
+    private ImageView placeholder;
+    private CircleImageView circleImageView;
     private ProgressBar progressBar;
     private Boolean imageFlag = false;
     private StorageReference mStorageRef;
@@ -57,7 +60,8 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
         setContentView(R.layout.activity_admin__add__product);
 
         chooseFile = (Button) findViewById(R.id.button_open_file_chooser);
-        mImageView = (ImageView) findViewById(R.id.imageView_product_image);
+        placeholder = (ImageView) findViewById(R.id.imageView_product_image_placeholder);
+        circleImageView = (CircleImageView) findViewById(R.id.imageView_product_image);
         upload = (Button) findViewById(R.id.button_upload_product);
         name = (EditText)findViewById(R.id.editText_product_name);
         cost = (EditText)findViewById(R.id.editText_cost_per_unit);
@@ -65,11 +69,11 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar_product_upload);
         //make progress bar invisible until upload is clicked
         progressBar.setVisibility(View.INVISIBLE);
+        circleImageView.setVisibility(View.INVISIBLE);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("Products");
 
         email = mAuth.getCurrentUser().getEmail();
-
 
         chooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +104,8 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                                             Toast.makeText(getApplicationContext(), "product already exists", Toast.LENGTH_SHORT).show();
                                         } else {
                                             chooseFile.setVisibility(View.INVISIBLE);
-                                            mImageView.setVisibility(View.INVISIBLE);
+                                            circleImageView.setVisibility(View.INVISIBLE);
+                                            placeholder.setVisibility(View.INVISIBLE);
                                             upload.setVisibility(View.INVISIBLE);
                                             name.setVisibility(View.INVISIBLE);
                                             cost.setVisibility(View.INVISIBLE);
@@ -129,8 +134,10 @@ public class ADMIN_ADD_PRODUCT extends AppCompatActivity {
                 && data != null && data.getData() != null) {
             mImageUri = data.getData();
 
-            Picasso.with(this).load(mImageUri).into(mImageView);
+            Picasso.with(this).load(mImageUri).into(circleImageView);
             imageFlag = true;
+            placeholder.setVisibility(View.INVISIBLE);
+            circleImageView.setVisibility(View.VISIBLE);
         }
     }
 

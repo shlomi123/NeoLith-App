@@ -4,30 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     tools:context=".COMPANY_SIGN_IN">
-
-    <TextView
-        android:id="@+id/textView_application_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="52sp" />
 
     <EditText
         android:id="@+id/editText_signIn_email"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/textView_application_name"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="180dp"
         android:hint="email"
         android:ems="10"
-        android:textSize="15sp"
         android:inputType="textEmailAddress" />
 
     <EditText
@@ -36,10 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/editText_signIn_email"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:hint="password"
         android:ems="10"
-        android:textSize="15sp"
         android:inputType="textPassword"/>
 
     <Button
@@ -76,5 +61,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:text="forgot password?"
-        android:textColor="@color/white" />
+        android:textColor="@color/colorAccent" />
 </RelativeLayout>

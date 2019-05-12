@@ -46,8 +46,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
     public void onBindViewHolder(final DistributorAdapter.DistributorViewHolder holder, int position) {
         final Distributor distributorCurrent = mDistributor.get(position);
         holder.Name.setText(distributorCurrent.getName());
-
-
+        holder.Email.setText(distributorCurrent.getEmail());
 
         final StorageReference storageReference = storage.getReferenceFromUrl(distributorCurrent.getProfile());
 
@@ -61,7 +60,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
                 GlideApp.with(mContext)
                         .load(storageReference)
                         .fitCenter()
-                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        //.signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
                         .placeholder(circularProgressDrawable)
                         .into(holder.Profile);
             }
@@ -76,6 +75,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
 
     public class DistributorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView Name;
+        public TextView Email;
         public ImageView Profile;
 
         public DistributorViewHolder(View itemView) {
@@ -85,6 +85,7 @@ public class DistributorAdapter extends RecyclerView.Adapter<DistributorAdapter.
             //itemView.setOnCreateContextMenuListener(this);
 
             Name = itemView.findViewById(R.id.textViewDistributorName);
+            Email = itemView.findViewById(R.id.textViewDistributorEmail);
             Profile = itemView.findViewById(R.id.imageViewDistributorProfilePicture);
         }
 

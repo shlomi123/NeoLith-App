@@ -1,6 +1,8 @@
 package com.shlomi123.chocolith;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -40,6 +43,8 @@ public class StoreSearchAdapter extends RecyclerView.Adapter<StoreSearchAdapter.
         final Store StoreCurrent = mStoresFull.get(position);
         holder.Name.setText(StoreCurrent.get_name());
         holder.Email.setText("Email: " + StoreCurrent.get_email());
+        holder.Button.setText(Character.toString(StoreCurrent.get_name().charAt(0)));
+        holder.Button.getBackground().setColorFilter(Color.parseColor(Helper.getRandomColor()), PorterDuff.Mode.LIGHTEN);
     }
 
     @Override
@@ -50,7 +55,7 @@ public class StoreSearchAdapter extends RecyclerView.Adapter<StoreSearchAdapter.
     public class StoreViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView Name;
         public TextView Email;
-        public ImageView button;
+        public Button Button;
 
 
         public StoreViewHolder(View itemView) {
@@ -60,6 +65,7 @@ public class StoreSearchAdapter extends RecyclerView.Adapter<StoreSearchAdapter.
 
             Name = itemView.findViewById(R.id.textViewStoreName);
             Email = itemView.findViewById(R.id.textViewStoreEmail);
+            Button = itemView.findViewById(R.id.store_letter);
         }
 
         @Override

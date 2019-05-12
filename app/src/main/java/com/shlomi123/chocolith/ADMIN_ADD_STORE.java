@@ -7,9 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +46,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity implements StoreSearchAda
     private RecyclerView mRecyclerView;
     private StoreSearchAdapter mAdapter;
     private List<Store> mStores;
+    private SearchView searchView;
     final private List<String> mExistingStores = new ArrayList<>();
 
     @Override
@@ -56,7 +60,7 @@ public class ADMIN_ADD_STORE extends AppCompatActivity implements StoreSearchAda
         company_email = mAuth.getCurrentUser().getEmail();
         company_profile = sharedPreferences.getString("COMPANY_PROFILE", null);
 
-        search = (EditText) findViewById(R.id.editText_search);
+        //search = (EditText) findViewById(R.id.editText_search);
         mProgressCircle = findViewById(R.id.progress_circle_add_store);
 
         mRecyclerView = findViewById(R.id.recycler_view_add_store);
@@ -111,78 +115,33 @@ public class ADMIN_ADD_STORE extends AppCompatActivity implements StoreSearchAda
                         }
                     }
                 });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu( Menu menu) {
+        getMenuInflater().inflate( R.menu.search_menu, menu);
 
-
-
-        search.addTextChangedListener(new TextWatcher() {
+        final MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                mAdapter.getFilter().filter(charSequence);
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.getFilter().filter(query);
+                return false;
             }
-
             @Override
-            public void afterTextChanged(Editable editable) { }
+            public boolean onQueryTextChange(String s) {
+                mAdapter.getFilter().filter(s);
+                return false;
+            }
         });
-        /*button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // check for internet connection
-                /*if (Helper.isNetworkAvailable(getApplicationContext()))
-                {
-                // verify email
-                if (!email.getText().toString().equals(verifyEmail.getText().toString())) {
-                    Toast.makeText(getApplicationContext(), "Email is incorrect", Toast.LENGTH_LONG).show();
-                } else {
-                    //show progress circle and make other views invisible
-                    mProgressCircle.setVisibility(View.VISIBLE);
-                    address.setVisibility(View.INVISIBLE);
-                    store.setVisibility(View.INVISIBLE);
-                    email.setVisibility(View.INVISIBLE);
-                    verifyEmail.setVisibility(View.INVISIBLE);
-                    phoneNum.setVisibility(View.INVISIBLE);
-                    button.setVisibility(View.INVISIBLE);
-                    //get company's document
-
-                    db.collection("Companies")
-                            .document(company_email)
-                            .collection("Stores")
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                // check that store name doesn't already exist
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (DocumentSnapshot document : task.getResult()) {
-                                            //if store name exists return
-                                            if (document != null) {
-                                                if (document.getString("_name") == store.getText().toString()) {
-                                                    Toast.makeText(getApplicationContext(), "That store name already exists.", Toast.LENGTH_SHORT).show();
-                                                    return;
-                                                }
-                                            }
-                                        }
-                                        String name = store.getText().toString();
-                                        String e = email.getText().toString();
-                                        String a = address.getText().toString();
-                                        int phone = Integer.parseInt(phoneNum.getText().toString());
-                                        // if store name doesn't exist create new store
-                                        addStoreToDataBase(name, e, a, phone);
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                }
-            }
-        });*/
+        return true;
     }
 
     private void addStoreToDataBase(final String name, final String email) {
         //add new store to databased
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mProgressCircle.setVisibility(View.VISIBLE);
         final Store s = new Store(name, email);
         db.collection("Companies")
                 .document(company_email)

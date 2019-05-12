@@ -22,7 +22,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -62,34 +64,28 @@ public class OrderFragment extends Fragment {
         db.collection("Companies")
                 .document(email)
                 .collection("Orders")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful())
-                        {
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                             mOrders.clear();
-                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                                 Order order = documentSnapshot.toObject(Order.class);
                                 mOrders.add(order);
-                            }
-
-                            if (mOrders.isEmpty())
-                            {
-                                Toast.makeText(getContext(), "No orders made", Toast.LENGTH_SHORT).show();
                             }
 
                             Collections.sort(mOrders, new Helper.sortOrdersByDate());
 
                             mAdapter.notifyDataSetChanged();
                             mProgressCircle.setVisibility(View.INVISIBLE);
-                        }
-                        else
-                        {
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "No orders made", Toast.LENGTH_SHORT).show();
                             mProgressCircle.setVisibility(View.INVISIBLE);
-                            mAdapter.notifyDataSetChanged();
                             mOrders.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -102,7 +98,10 @@ public class OrderFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-
+            case R.id.item_orders_sort_by_store:
+                Collections.sort(mOrders, new Helper.sortOrdersByStore());
+                mAdapter.notifyDataSetChanged();
+                return true;
             case R.id.item_orders_sort_by_name:
                 Collections.sort(mOrders, new Helper.sortOrdersByProductName());
                 mAdapter.notifyDataSetChanged();

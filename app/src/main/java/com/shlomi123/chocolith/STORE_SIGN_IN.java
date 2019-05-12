@@ -65,6 +65,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                 email.setVisibility(View.INVISIBLE);
                 password.setVisibility(View.INVISIBLE);
                 button.setVisibility(View.INVISIBLE);
+                reset.setVisibility(View.INVISIBLE);
                 spinner.setVisibility(View.VISIBLE);
 
                 mAuth.signInWithEmailAndPassword(email.getText().toString(), password.getText().toString())
@@ -78,6 +79,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
                                     email.setVisibility(View.VISIBLE);
                                     password.setVisibility(View.VISIBLE);
                                     button.setVisibility(View.VISIBLE);
+                                    reset.setVisibility(View.VISIBLE);
                                     spinner.setVisibility(View.INVISIBLE);
                                     Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
                                 }
@@ -149,6 +151,7 @@ public class STORE_SIGN_IN extends AppCompatActivity {
             email.setVisibility(View.VISIBLE);
             password.setVisibility(View.VISIBLE);
             button.setVisibility(View.VISIBLE);
+            reset.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.INVISIBLE);
             Toast.makeText(getApplicationContext(), "email wasn't verified", Toast.LENGTH_SHORT).show();
             FirebaseAuth.getInstance().signOut();

@@ -8,32 +8,34 @@
 
     <EditText
         android:id="@+id/editText_store_signIn_email"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="200dp"
-        android:hint="email"
+        android:layout_marginTop="180dp"
+        android:hint="email@example.com"
         android:ems="10"
         android:inputType="textEmailAddress" />
 
     <EditText
         android:id="@+id/editText_store_signIn_password"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/editText_store_signIn_email"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:hint="password"
         android:ems="10"
         android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/button_store_signIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/editText_store_signIn_password"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/rounded_rectangle"
+        android:textColor="@color/white"
         android:text="sign in" />
 
     <TextView
@@ -42,9 +44,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/button_store_signIn"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="-30dp"
+        android:layout_marginTop="30dp"
         android:text="forgot password?"
-        android:textColor="#393ecc" />
+        android:textColor="@color/colorAccent" />
 
     <ProgressBar
         android:id="@+id/progressBar_store_signIn"

@@ -39,9 +39,7 @@ public class STORE_REGISTER extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private Boolean sign_in_flag = false;
     private ProgressBar spinner;
-    private TextView textView;
     private EditText verify_password;
-    private TextView title;
     private TextView logIn;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -60,10 +58,7 @@ public class STORE_REGISTER extends AppCompatActivity {
         name = (EditText) findViewById(R.id.editTextStoreName);
         password = (EditText) findViewById(R.id.editTextStorePassword);
         verify_password = (EditText) findViewById(R.id.editTextStorePasswordVerify);
-        title = (TextView) findViewById(R.id.textViewStoreRegister);
         logIn = (TextView) findViewById(R.id.textView_store_log_in);
-        textView = (TextView) findViewById(R.id.textView_store_instruction);
-        textView.setVisibility(View.INVISIBLE);
         spinner = (ProgressBar) findViewById(R.id.progressBarStoreLogIn);
         spinner.setVisibility(View.INVISIBLE);
 
@@ -128,7 +123,6 @@ public class STORE_REGISTER extends AppCompatActivity {
         verify_password.setVisibility(View.INVISIBLE);
         email.setVisibility(View.INVISIBLE);
         name.setVisibility(View.INVISIBLE);
-        title.setVisibility(View.INVISIBLE);
         logIn.setVisibility(View.INVISIBLE);
 
         user.sendEmailVerification()
@@ -162,7 +156,6 @@ public class STORE_REGISTER extends AppCompatActivity {
                                                 password.setVisibility(View.VISIBLE);
                                                 verify_password.setVisibility(View.VISIBLE);
                                                 email.setVisibility(View.VISIBLE);
-                                                title.setVisibility(View.VISIBLE);
                                                 logIn.setVisibility(View.VISIBLE);
                                                 name.setVisibility(View.VISIBLE);
                                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -177,7 +170,6 @@ public class STORE_REGISTER extends AppCompatActivity {
                             password.setVisibility(View.VISIBLE);
                             verify_password.setVisibility(View.VISIBLE);
                             email.setVisibility(View.VISIBLE);
-                            title.setVisibility(View.VISIBLE);
                             logIn.setVisibility(View.VISIBLE);
                             name.setVisibility(View.VISIBLE);
                             Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_LONG).show();

@@ -25,7 +25,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -40,7 +42,7 @@ public class StoreOrdersFragment extends Fragment {
     private ProgressBar mProgressCircle;
     private SharedPreferences sharedPreferences;
     private RecyclerView mRecyclerView;
-    private OrderAdapter mAdapter;
+    private StoreOrderAdapter mAdapter;
     private List<Order> mOrders;
     private String store_email;
 
@@ -62,40 +64,34 @@ public class StoreOrdersFragment extends Fragment {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mProgressCircle = view.findViewById(R.id.progress_circle_store_orders);
         mOrders = new ArrayList<>();
-        mAdapter = new OrderAdapter(getContext(), mOrders);
+        mAdapter = new StoreOrderAdapter(getContext(), mOrders);
         mRecyclerView.setAdapter(mAdapter);
 
         db.collection("Stores")
                 .document(store_email)
                 .collection("Orders")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful())
-                        {
+                    public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            return;
+                        }
+                        if (queryDocumentSnapshots != null && !queryDocumentSnapshots.isEmpty()) {
                             mOrders.clear();
-                            for (DocumentSnapshot documentSnapshot : task.getResult()){
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
                                 Order order = documentSnapshot.toObject(Order.class);
                                 mOrders.add(order);
-                            }
-
-                            if (mOrders.isEmpty())
-                            {
-                                Toast.makeText(getContext(), "No orders made", Toast.LENGTH_SHORT).show();
                             }
 
                             Collections.sort(mOrders, new Helper.sortOrdersByDate());
 
                             mAdapter.notifyDataSetChanged();
                             mProgressCircle.setVisibility(View.INVISIBLE);
-                        }
-                        else
-                        {
-                            Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "No orders made", Toast.LENGTH_SHORT).show();
                             mProgressCircle.setVisibility(View.INVISIBLE);
-                            mAdapter.notifyDataSetChanged();
                             mOrders.clear();
+                            mAdapter.notifyDataSetChanged();
                         }
                     }
                 });

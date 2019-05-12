@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,8 +48,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ImageVie
     @Override
     public void onBindViewHolder(final ImageViewHolder holder, int position) {
         circularProgressDrawable = new CircularProgressDrawable(mContext);
-        circularProgressDrawable.setStrokeWidth(10f);
-        circularProgressDrawable.setCenterRadius(30f);
         circularProgressDrawable.start();
 
         Product ProductCurrent = mProducts.get(position);
@@ -61,12 +60,17 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ImageVie
             @Override
             public void onSuccess(StorageMetadata storageMetadata) {
 
-                GlideApp.with(mContext)
-                        .load(storageReference)
-                        .fitCenter()
-                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
-                        .placeholder(circularProgressDrawable)
-                        .into(holder.imageView);
+                try{
+                    GlideApp.with(mContext)
+                            .load(storageReference)
+                            .fitCenter()
+                            .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                            .placeholder(circularProgressDrawable)
+                            .into(holder.imageView);
+                }catch(Exception e){
+                    Log.d("blaaaa", e.getMessage());
+                }
+
             }
         });
     }
