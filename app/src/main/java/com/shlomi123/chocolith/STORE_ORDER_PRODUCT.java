@@ -34,6 +34,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+//TODO work on ui
 public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
     private String store_email;

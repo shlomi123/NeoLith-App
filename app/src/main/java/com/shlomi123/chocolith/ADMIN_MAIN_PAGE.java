@@ -1,5 +1,6 @@
 package com.shlomi123.chocolith;
 
+import android.app.ActivityManager;
 import android.app.DownloadManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -98,66 +99,13 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
         email = user.getEmail();
         name = user.getDisplayName();
 
-
+        setUpSlideMenu(savedInstanceState);
 
         //start service for new orders
-        //startService(new Intent(NewOrderService.class.getName()).putExtra("DISTRIBUTOR_EMAIL", email));
+        /*if (!isMyServiceRunning(NewOrderService.class)) {
+            startService(new Intent(this, NewOrderService.class).putExtra("DISTRIBUTOR_EMAIL", email));
+        }*/
 
-        //add custom toolbar
-        Toolbar toolbar = findViewById(R.id.main_page_toolbar);
-        setSupportActionBar(toolbar);
-
-        //drawer settings
-        drawer = findViewById(R.id.main_page_drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        progressBar = navigationView.getHeaderView(0).findViewById(R.id.progressBar_company_new_profile_upload);
-        progressBar.setVisibility(View.INVISIBLE);
-
-        //add profile picture
-        circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
-        circularProgressDrawable.start();
-        profile_picture = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
-        final StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
-        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-            @Override
-            public void onSuccess(StorageMetadata storageMetadata) {
-
-                GlideApp.with(getApplicationContext())
-                        .load(storageReference)
-                        .fitCenter()
-                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
-                        .placeholder(circularProgressDrawable)
-                        .into(profile_picture);
-            }
-        });
-
-        //change profile picture
-        change_profile_picture = navigationView.getHeaderView(0).findViewById(R.id.button_open_file_chooser_change_profile);
-        change_profile_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFileChooser();
-            }
-        });
-
-
-        //set company name
-        profile_name = navigationView.getHeaderView(0).findViewById(R.id.textView_distributor_name);
-        profile_name.setText(name);
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
-                    new StoresFragment()).commit();
-            navigationView.setCheckedItem(R.id.nav_stores);
-            getSupportActionBar().setTitle("Stores");
-        }
 
         if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.M)
         {
@@ -361,6 +309,74 @@ public class ADMIN_MAIN_PAGE extends AppCompatActivity implements NavigationView
                     }
                 }
             });
+        }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setUpSlideMenu(Bundle savedInstanceState){
+        //add custom toolbar
+        Toolbar toolbar = findViewById(R.id.main_page_toolbar);
+        setSupportActionBar(toolbar);
+
+        //drawer settings
+        drawer = findViewById(R.id.main_page_drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        progressBar = navigationView.getHeaderView(0).findViewById(R.id.progressBar_company_new_profile_upload);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        //add profile picture
+        circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+        circularProgressDrawable.start();
+        profile_picture = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        final StorageReference storageReference = storage.getReferenceFromUrl(profile_path);
+        storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+
+                GlideApp.with(getApplicationContext())
+                        .load(storageReference)
+                        .fitCenter()
+                        .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                        .placeholder(circularProgressDrawable)
+                        .into(profile_picture);
+            }
+        });
+
+        //change profile picture
+        change_profile_picture = navigationView.getHeaderView(0).findViewById(R.id.button_open_file_chooser_change_profile);
+        change_profile_picture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFileChooser();
+            }
+        });
+
+
+        //set company name
+        profile_name = navigationView.getHeaderView(0).findViewById(R.id.textView_distributor_name);
+        profile_name.setText(name);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.content_frame,
+                    new StoresFragment()).commit();
+            navigationView.setCheckedItem(R.id.nav_stores);
+            getSupportActionBar().setTitle("Stores");
         }
     }
 }

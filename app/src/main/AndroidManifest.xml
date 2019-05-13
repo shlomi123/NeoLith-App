@@ -23,7 +23,7 @@
         <service
             android:name=".NewOrderService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".STORE_FEEDBACK"
