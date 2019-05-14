@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -27,18 +28,20 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
     private String email;
     private String subject;
     private String message;
+    private String name;
     private int flag;
 
     //Progressdialog to show while sending email
     private ProgressDialog progressDialog;
 
     //Class Constructor
-    public SendMail(Context context, String email, String subject, String message, int flag){
+    public SendMail(Context context, String email, String subject, String message, String name, int flag){
         //Initializing variables
         this.context = context;
         this.email = email;
         this.subject = subject;
         this.message = message;
+        this.name = name;
         this.flag = flag;
     }
 
@@ -55,7 +58,7 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         //Dismissing the progress dialog
         progressDialog.dismiss();
         //Showing a success message
-        Toast.makeText(context,"sent...",Toast.LENGTH_LONG).show();
+        Toast.makeText(context,"sent",Toast.LENGTH_LONG).show();
         switch(flag){
             case 0:
                 context.startActivity(new Intent(context, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
@@ -91,20 +94,20 @@ public class SendMail extends AsyncTask<Void,Void,Void> {
         try {
             //Creating MimeMessage object
             MimeMessage mm = new MimeMessage(session);
-
             //Setting sender address
-            mm.setFrom(new InternetAddress(Config.EMAIL));
+            mm.setFrom(new InternetAddress(Config.EMAIL, name));
             //Adding receiver
             mm.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             //Adding subject
             mm.setSubject(subject);
             //Adding message
             mm.setText(message);
+            //mm.setSender(name);
 
             //Sending email
             Transport.send(mm);
 
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             Log.d("blaaaa", e.toString());
             e.printStackTrace();
         }

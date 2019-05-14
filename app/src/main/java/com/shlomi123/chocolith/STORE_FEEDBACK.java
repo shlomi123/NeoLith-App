@@ -1,6 +1,8 @@
 package com.shlomi123.chocolith;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +12,8 @@ import android.widget.EditText;
 public class STORE_FEEDBACK extends AppCompatActivity {
     private EditText mEditTextSubject;
     private EditText mEditTextMessage;
+    private SharedPreferences sharedPreferences;
+    private String store_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,9 @@ public class STORE_FEEDBACK extends AppCompatActivity {
 
         mEditTextSubject = findViewById(R.id.store_edit_text_subject);
         mEditTextMessage = findViewById(R.id.store_edit_text_message);
+
+        sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        store_name = sharedPreferences.getString("STORE_NAME", null);
 
         Button buttonSend = findViewById(R.id.store_button_send);
         buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +41,7 @@ public class STORE_FEEDBACK extends AppCompatActivity {
         String subject = mEditTextSubject.getText().toString();
         String message = mEditTextMessage.getText().toString();
 
-        SendMail sendMail = new SendMail(STORE_FEEDBACK.this, recipientList, subject, message, 0);
+        SendMail sendMail = new SendMail(STORE_FEEDBACK.this, recipientList, subject, message, store_name, 0);
         sendMail.execute();
     }
 }

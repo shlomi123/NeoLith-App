@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class ADMIN_FEEDBACK extends AppCompatActivity {
     private EditText mEditTextSubject;
     private EditText mEditTextMessage;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private String company_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +22,8 @@ public class ADMIN_FEEDBACK extends AppCompatActivity {
 
         mEditTextSubject = findViewById(R.id.edit_text_subject);
         mEditTextMessage = findViewById(R.id.edit_text_message);
+
+        company_name = mAuth.getCurrentUser().getDisplayName();
 
         Button buttonSend = findViewById(R.id.button_send);
         buttonSend.setOnClickListener(new View.OnClickListener() {
@@ -34,7 +40,7 @@ public class ADMIN_FEEDBACK extends AppCompatActivity {
         String subject = mEditTextSubject.getText().toString();
         String message = mEditTextMessage.getText().toString();
 
-        SendMail sendMail = new SendMail(ADMIN_FEEDBACK.this, recipientList, subject, message, 1);
+        SendMail sendMail = new SendMail(ADMIN_FEEDBACK.this, recipientList, subject, message, company_name, 1);
         sendMail.execute();
     }
 }

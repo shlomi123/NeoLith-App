@@ -86,7 +86,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
 
         //set text view to product name
         textView.setText(product_name);
-        textView_units.setText("one package contains " + String.valueOf(product_units_per_package) + " units");
+        textView_units.setText("one order contains " + String.valueOf(product_units_per_package) + " units of product");
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,60 +164,6 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
         alert.show();
     }
 
-    /*private void sendMail(final Context context, final String name)
-    {
-        //get store details for email
-        db.collection("Companies")
-                .document(distributor_email)
-                .collection("Stores")
-                .document(store_email)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            Store store = documentSnapshot.toObject(Store.class);
-
-
-
-                            //make email
-                            String[] TO = {distributor_email};
-                            Intent emailIntent = new Intent(Intent.ACTION_SEND);
-
-                            emailIntent.setData(Uri.parse("mailto:"));
-                            emailIntent.setType("message/rfc822");
-                            emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Product Order");
-                            emailIntent.putExtra(Intent.EXTRA_TEXT, "Store: " + store.get_name() + "\n" +
-                                    "Order: " + String.valueOf(quantity) + " boxes of " + name + "\n\n" +
-                                    "Total cost: " + String.valueOf(total_cost));
-
-                            try {
-                                //open email client
-                                startActivityForResult(emailIntent, 1);
-                            } catch (android.content.ActivityNotFoundException ex) {
-                                Toast.makeText(context, "There is no email client installed.", Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                }
-            });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // check if user opened email client
-        if(requestCode == 1 && mailClientOpened){
-            orderProduct(getApplicationContext());
-        }
-        else
-        {
-            Toast.makeText(getApplicationContext(), "You must send email in order to complete the order", Toast.LENGTH_SHORT).show();
-        }
-    }*/
-
     //log the order
     private void orderProduct(final Context context)
     {
@@ -243,7 +189,7 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                                             SendMail sendMail = new SendMail(STORE_ORDER_PRODUCT.this, distributor_email, "Product Order",
                                                     "Store: " + store_name + "\n" +
                                                             "Order: " + String.valueOf(quantity) + " boxes of " + product_name + "\n\n" +
-                                                            "Total cost: " + String.valueOf(total_cost), 0);
+                                                            "Total cost: " + String.format("%.2f", total_cost) + "$", store_name, 0);
 
                                             sendMail.execute();
                                         } else {
@@ -254,22 +200,4 @@ public class STORE_ORDER_PRODUCT extends AppCompatActivity {
                     }
                 });
     }
-
-    /*@Override
-    protected void onResume() {
-        super.onResume();
-        //if user ordered
-        if (mailClientOpened){
-            startActivity(new Intent(STORE_ORDER_PRODUCT.this, STORE_MAIN_PAGE.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-            finish();
-        }
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //if user opened email client flag is true
-        mailClientOpened = true;
-    }*/
 }
