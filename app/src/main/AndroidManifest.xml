@@ -53,9 +53,6 @@
             android:name=".ADMIN_VIEW_STORE_ORDERS"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".COMPANY_PROPERTIES"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".COMPANY_REGISTER"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar2" />

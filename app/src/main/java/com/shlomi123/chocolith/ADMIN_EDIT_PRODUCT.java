@@ -38,6 +38,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
 
     private ImageView edit4;
@@ -59,13 +61,15 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private String email;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
-    private ImageView product_image;
+    private CircleImageView product_image;
+    private ImageView placeholder;
     private Button choose_file;
     private CircularProgressDrawable circularProgressDrawable;
     private String image_path;
     private Uri mImageUri;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private String product_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +84,8 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         email = mAuth.getCurrentUser().getEmail();
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar_product_new_image);
-        product_image = (ImageView) findViewById(R.id.imageView_edit_product_image);
+        product_image = (CircleImageView) findViewById(R.id.imageView_edit_product_image);
+        placeholder = (ImageView) findViewById(R.id.imageView_edit_product_image_placeholder);
         choose_file = (Button) findViewById(R.id.button_open_file_chooser_for_product);
         edit4 = (ImageView) findViewById(R.id.imageView_edit_4);
         edit3 = (ImageView) findViewById(R.id.imageView_edit_3);
@@ -99,6 +104,7 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         edit_units_per_package = (EditText) findViewById(R.id.editText_units_per_package);
 
         progressBar.setVisibility(View.INVISIBLE);
+        product_image.setVisibility(View.INVISIBLE);
 
         product_name.setText(product.getName());
         edit_product_name.setVisibility(View.INVISIBLE);
@@ -129,8 +135,14 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                         .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
                         .placeholder(circularProgressDrawable)
                         .into(product_image);
+
+                product_image.setVisibility(View.VISIBLE);
+                placeholder.setVisibility(View.INVISIBLE);
             }
         });
+
+        //set product id
+        getProductId();
 
         // open file chooser
         choose_file.setOnClickListener(new View.OnClickListener() {
@@ -156,14 +168,14 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         check4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edit_product_name.getText().toString().equals("")){
-                    Toast.makeText(getApplicationContext(),"please enter something", Toast.LENGTH_SHORT).show();
-                }else{
+                if (edit_product_name.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "please enter something", Toast.LENGTH_SHORT).show();
+                } else {
                     progress_name.setVisibility(View.VISIBLE);
                     check4.setVisibility(View.INVISIBLE);
 
                     try {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -172,32 +184,17 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                     db.collection("Companies")
                             .document(email)
                             .collection("Products")
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            .document(product_id)
+                            .update("name", edit_product_name.getText().toString())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Product currProduct = documentSnapshot.toObject(Product.class);
-
-                                        if (currProduct.getName().equals(product_name.getText().toString())) {
-                                            db.collection("Companies")
-                                                    .document(email)
-                                                    .collection("Products")
-                                                    .document(documentSnapshot.getId())
-                                                    .update("name", edit_product_name.getText().toString())
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            product_name.setVisibility(View.VISIBLE);
-                                                            edit_product_name.setVisibility(View.INVISIBLE);
-                                                            edit4.setVisibility(View.VISIBLE);
-                                                            progress_name.setVisibility(View.INVISIBLE);
-                                                            product_name.setText(edit_product_name.getText().toString());
-                                                            Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        }
-                                    }
+                                public void onSuccess(Void aVoid) {
+                                    product_name.setVisibility(View.VISIBLE);
+                                    edit_product_name.setVisibility(View.INVISIBLE);
+                                    edit4.setVisibility(View.VISIBLE);
+                                    progress_name.setVisibility(View.INVISIBLE);
+                                    product_name.setText(edit_product_name.getText().toString());
+                                    Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -219,14 +216,14 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         check3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edit_units_per_package.getText().toString().equals("")){
-                    Toast.makeText(getApplicationContext(),"please enter something", Toast.LENGTH_SHORT).show();
-                }else{
+                if (edit_units_per_package.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "please enter something", Toast.LENGTH_SHORT).show();
+                } else {
                     progress_units.setVisibility(View.VISIBLE);
                     check3.setVisibility(View.INVISIBLE);
 
                     try {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -235,33 +232,18 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                     db.collection("Companies")
                             .document(email)
                             .collection("Products")
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            .document(product_id)
+                            .update("units_per_package", Integer.parseInt(edit_units_per_package.getText().toString()))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Product currProduct = documentSnapshot.toObject(Product.class);
-
-                                        if (currProduct.getUnits_per_package() == Integer.parseInt(units_per_package.getText().toString())) {
-                                            db.collection("Companies")
-                                                    .document(email)
-                                                    .collection("Products")
-                                                    .document(documentSnapshot.getId())
-                                                    .update("units_per_package", Integer.parseInt(edit_units_per_package.getText().toString()))
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            units_per_package.setVisibility(View.VISIBLE);
-                                                            edit_units_per_package.setVisibility(View.INVISIBLE);
-                                                            edit3.setVisibility(View.VISIBLE);
-                                                            check3.setVisibility(View.INVISIBLE);
-                                                            units_per_package.setText(edit_units_per_package.getText().toString());
-                                                            progress_units.setVisibility(View.INVISIBLE);
-                                                            Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        }
-                                    }
+                                public void onSuccess(Void aVoid) {
+                                    units_per_package.setVisibility(View.VISIBLE);
+                                    edit_units_per_package.setVisibility(View.INVISIBLE);
+                                    edit3.setVisibility(View.VISIBLE);
+                                    check3.setVisibility(View.INVISIBLE);
+                                    units_per_package.setText(edit_units_per_package.getText().toString());
+                                    progress_units.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -283,14 +265,14 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
         check2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (edit_price_per_unit.getText().toString().equals("")){
-                    Toast.makeText(getApplicationContext(),"please enter something", Toast.LENGTH_SHORT).show();
-                }else{
+                if (edit_price_per_unit.getText().toString().equals("")) {
+                    Toast.makeText(getApplicationContext(), "please enter something", Toast.LENGTH_SHORT).show();
+                } else {
                     progress_price.setVisibility(View.VISIBLE);
                     check2.setVisibility(View.INVISIBLE);
 
                     try {
-                        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -299,33 +281,18 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                     db.collection("Companies")
                             .document(email)
                             .collection("Products")
-                            .get()
-                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            .document(product_id)
+                            .update("cost", Double.parseDouble(edit_price_per_unit.getText().toString()))
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                                        Product currProduct = documentSnapshot.toObject(Product.class);
-
-                                        if (currProduct.getCost() == Integer.parseInt(price_per_unit.getText().toString())) {
-                                            db.collection("Companies")
-                                                    .document(email)
-                                                    .collection("Products")
-                                                    .document(documentSnapshot.getId())
-                                                    .update("cost", Integer.parseInt(edit_price_per_unit.getText().toString()))
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            price_per_unit.setVisibility(View.VISIBLE);
-                                                            edit_price_per_unit.setVisibility(View.INVISIBLE);
-                                                            edit2.setVisibility(View.VISIBLE);
-                                                            check2.setVisibility(View.INVISIBLE);
-                                                            price_per_unit.setText(edit_price_per_unit.getText().toString());
-                                                            progress_price.setVisibility(View.INVISIBLE);
-                                                            Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        }
-                                    }
+                                public void onSuccess(Void aVoid) {
+                                    price_per_unit.setVisibility(View.VISIBLE);
+                                    edit_price_per_unit.setVisibility(View.INVISIBLE);
+                                    edit2.setVisibility(View.VISIBLE);
+                                    check2.setVisibility(View.INVISIBLE);
+                                    price_per_unit.setText(edit_price_per_unit.getText().toString());
+                                    progress_price.setVisibility(View.INVISIBLE);
+                                    Toast.makeText(getApplicationContext(), "succesfully upated", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -374,47 +341,37 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                                         final String path = uri.toString();
                                         image_path = path;
 
+
                                         db.collection("Companies")
                                                 .document(email)
                                                 .collection("Products")
-                                                .whereEqualTo("name", product_name.getText().toString())
-                                                .get()
-                                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                .document(product_id)
+                                                .update("imageUrl", path)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
-                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots)
-                                                        {
-                                                            db.collection("Companies")
-                                                                    .document(email)
-                                                                    .collection("Products")
-                                                                    .document(documentSnapshot.getId())
-                                                                    .update("imageUrl", path)
-                                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<Void> task) {
-                                                                            if (task.isSuccessful()) {
-                                                                                // show new image
-                                                                                product_image.setVisibility(View.VISIBLE);
-                                                                                progressBar.setVisibility(View.INVISIBLE);
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            // show new image
+                                                            placeholder.setVisibility(View.VISIBLE);
+                                                            progressBar.setVisibility(View.INVISIBLE);
 
-                                                                                circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
-                                                                                circularProgressDrawable.start();
-                                                                                final StorageReference storageReference = storage.getReferenceFromUrl(image_path);
-                                                                                storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                                                                                    @Override
-                                                                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                                            circularProgressDrawable = new CircularProgressDrawable(getApplicationContext());
+                                                            circularProgressDrawable.start();
+                                                            final StorageReference storageReference = storage.getReferenceFromUrl(image_path);
+                                                            storageReference.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                                                @Override
+                                                                public void onSuccess(StorageMetadata storageMetadata) {
 
-                                                                                        GlideApp.with(getApplicationContext())
-                                                                                                .load(storageReference)
-                                                                                                .fitCenter()
-                                                                                                .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
-                                                                                                .placeholder(circularProgressDrawable)
-                                                                                                .into(product_image);
-                                                                                    }
-                                                                                });
-                                                                            }
-                                                                        }
-                                                                    });
+                                                                    GlideApp.with(getApplicationContext())
+                                                                            .load(storageReference)
+                                                                            .fitCenter()
+                                                                            .signature(new ObjectKey(storageMetadata.getCreationTimeMillis()))
+                                                                            .placeholder(circularProgressDrawable)
+                                                                            .into(product_image);
+                                                                    placeholder.setVisibility(View.INVISIBLE);
+                                                                    product_image.setVisibility(View.VISIBLE);
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 });
@@ -434,11 +391,30 @@ public class ADMIN_EDIT_PRODUCT extends AppCompatActivity {
                             }
                         });
 
-                    }else {
+                    } else {
                         Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
         }
+    }
+
+    private void getProductId() {
+        db.collection("Companies")
+                .document(email)
+                .collection("Products")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Product currProduct = documentSnapshot.toObject(Product.class);
+
+                            if (currProduct.getName().equals(product_name.getText().toString()) && currProduct.getImageUrl().equals(image_path)) {
+                                product_id = documentSnapshot.getId();
+                            }
+                        }
+                    }
+                });
     }
 }
